@@ -1,0 +1,161 @@
+Development mode: Using devStore (Using devStore mode for development)
+VocabMaster server running on port 3000
+Development mode: Using devStore (Using devStore mode for development)
+
+=== EXPORT ENDPOINT DEBUG ===
+DEBUG: Starting export request
+DEBUG: User ID: mrm2qobd08zca1kn
+DEBUG: User found: true Has creatorCode: true
+DEBUG: isDbConnected: false
+DEBUG: Using devStore to build cohort students
+DEBUG: Got students from devStore: 1
+DEBUG: Students structure sample: [
+  'id',
+  'name',
+  'email',
+  'totalXP',
+  'sessionsCompleted',
+  'avgAccuracy',
+  'wordsLearned',
+  'streak',
+  'lastActivityDate',
+  'exerciseBreakdown'
+]
+DEBUG: Overview metrics calculated: {
+  totalStudents: 1,
+  activeStudents: 1,
+  avgXP: 250,
+  avgAccuracy: 87,
+  avgSessions: 3,
+  totalSessionsAll: 3
+}
+DEBUG: Skill gaps calculated: 0
+DEBUG: Top performers: 1 Struggling: 0
+DEBUG: Got words: 4
+DEBUG: Vocabulary metadata: { avgDifficulty: 3, wordsThisWeek: 4, bestStreak: 4 }
+DEBUG: Cohort data structure ready: [
+  'overview',
+  'students',
+  'classSkillGaps',
+  'topPerformers',
+  'struggling',
+  'vocabularyMetadata'
+]
+DEBUG: Format requested: csv
+=== EXPORT ENDPOINT DEBUG - DATA PREP DONE ===
+
+DEBUG: About to format CSV. Cohort data: {
+  "overview": {
+    "totalStudents": 1,
+    "activeStudents": 1,
+    "avgXP": 250,
+    "avgAccuracy": 87,
+    "avgSessions": 3,
+    "totalSessionsAll": 3
+  },
+  "students": [
+    {
+      "id": "mrm2qodlzqtro5q2",
+      "name": "Demo Student",
+      "email": "student@test.local",
+      "totalXP": 250,
+      "sessionsCompleted": 3,
+      "avgAccuracy": 87,
+      "wordsLearned": 12,
+      "streak": 4,
+      "lastActivityDate": "2026-07-15T12:46:33.000Z",
+      "exerciseBreakdown": [
+        {
+   
+DEBUG: Creator info: { name: 'Demo Creator', creatorCode: 'DEMO01' }
+DEBUG: CSV formatted successfully. Length: 593
+
+=== EXPORT ENDPOINT DEBUG ===
+DEBUG: Starting export request
+DEBUG: User ID: mrm2qobd08zca1kn
+DEBUG: User found: true Has creatorCode: true
+DEBUG: isDbConnected: false
+DEBUG: Using devStore to build cohort students
+DEBUG: Got students from devStore: 1
+DEBUG: Students structure sample: [
+  'id',
+  'name',
+  'email',
+  'totalXP',
+  'sessionsCompleted',
+  'avgAccuracy',
+  'wordsLearned',
+  'streak',
+  'lastActivityDate',
+  'exerciseBreakdown'
+]
+DEBUG: Overview metrics calculated: {
+  totalStudents: 1,
+  activeStudents: 1,
+  avgXP: 250,
+  avgAccuracy: 87,
+  avgSessions: 3,
+  totalSessionsAll: 3
+}
+DEBUG: Skill gaps calculated: 0
+DEBUG: Top performers: 1 Struggling: 0
+DEBUG: Got words: 4
+DEBUG: Vocabulary metadata: { avgDifficulty: 3, wordsThisWeek: 4, bestStreak: 4 }
+DEBUG: Cohort data structure ready: [
+  'overview',
+  'students',
+  'classSkillGaps',
+  'topPerformers',
+  'struggling',
+  'vocabularyMetadata'
+]
+DEBUG: Format requested: pdf
+=== EXPORT ENDPOINT DEBUG - DATA PREP DONE ===
+
+DEBUG: About to format PDF. Cohort data keys: [
+  'overview',
+  'students',
+  'classSkillGaps',
+  'topPerformers',
+  'struggling',
+  'vocabularyMetadata'
+]
+DEBUG: PDF formatted successfully. HTML length: 6697
+
+=== EXPORT ENDPOINT DEBUG ===
+DEBUG: Starting export request
+Development mode: Using devStore (Using devStore mode for development)
+Development mode: Using devStore (Using devStore mode for development)
+Development mode: Using devStore (Using devStore mode for development)
+Development mode: Using devStore (Using devStore mode for development)
+Development mode: Using devStore (Using devStore mode for development)
+Development mode: Using devStore (Using devStore mode for development)
+Development mode: Using devStore (Using devStore mode for development)
+Development mode: Using devStore (Using devStore mode for development)
+Development mode: Using devStore (Using devStore mode for development)
+Development mode: Using devStore (Using devStore mode for development)
+Development mode: Using devStore (Using devStore mode for development)
+Development mode: Using devStore (Using devStore mode for development)
+Development mode: Using devStore (Using devStore mode for development)
+Development mode: Using devStore (Using devStore mode for development)
+Development mode: Using devStore (Using devStore mode for development)
+Development mode: Using devStore (Using devStore mode for development)
+Development mode: Using devStore (Using devStore mode for development)
+Development mode: Using devStore (Using devStore mode for development)
+Development mode: Using devStore (Using devStore mode for development)
+Development mode: Using devStore (Using devStore mode for development)
+Development mode: Using devStore (Using devStore mode for development)
+Development mode: Using devStore (Using devStore mode for development)
+Development mode: Using devStore (Using devStore mode for development)
+Development mode: Using devStore (Using devStore mode for development)
+Development mode: Using devStore (Using devStore mode for development)
+Development mode: Using devStore (Using devStore mode for development)
+Development mode: Using devStore (Using devStore mode for development)
+Development mode: Using devStore (Using devStore mode for development)
+Development mode: Using devStore (Using devStore mode for development)
+Development mode: Using devStore (Using devStore mode for development)
+Development mode: Using devStore (Using devStore mode for development)
+Development mode: Using devStore (Using devStore mode for development)
+Development mode: Using devStore (Using devStore mode for development)
+Development mode: Using devStore (Using devStore mode for development)
+Development mode: Using devStore (Using devStore mode for development)

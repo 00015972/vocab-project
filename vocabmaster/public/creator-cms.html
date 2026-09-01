@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Taleem Lexicon - Creator CMS</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --gold: #D4AF37;
+      --emerald: #50C878;
+      --white: #FFFFFF;
+      --dark: #1a1a1a;
+    }
+
+    * {
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background: #f8f9fa;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      background: var(--dark);
+      color: white;
+      min-height: 100vh;
+      padding: 20px;
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 250px;
+      overflow-y: auto;
+    }
+
+    .sidebar-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 30px;
+      font-weight: 800;
+      font-size: 18px;
+      background: linear-gradient(135deg, var(--gold), var(--emerald));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .sidebar-menu {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .sidebar-menu li {
+      margin-bottom: 8px;
+    }
+
+    .sidebar-menu a {
+      display: block;
+      padding: 12px 16px;
+      color: #ccc;
+      text-decoration: none;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+    }
+
+    .sidebar-menu a:hover,
+    .sidebar-menu a.active {
+      background: var(--emerald);
+      color: white;
+    }
+
+    /* Main Content */
+    .main-content {
+      margin-left: 250px;
+      padding: 30px;
+    }
+
+    /* Header */
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      background: white;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .page-title {
+      font-size: 28px;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--gold), var(--emerald));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--emerald), #2d7a5c);
+      color: white;
+      padding: 12px 32px;
+      border-radius: 50px;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(80, 200, 120, 0.3);
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    /* Cards */
+    .card {
+      background: white;
+      border-radius: 15px;
+      padding: 20px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+      margin-bottom: 20px;
+      border-left: 5px solid var(--emerald);
+    }
+
+    .card:hover {
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+      transform: translateY(-2px);
+      transition: all 0.3s ease;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    .card-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--dark);
+    }
+
+    .card-meta {
+      display: flex;
+      gap: 15px;
+      font-size: 12px;
+      color: #999;
+      margin-top: 10px;
+    }
+
+    .badge {
+      display: inline-block;
+      background: var(--emerald);
+      color: white;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .badge.draft {
+      background: #fbbf24;
+    }
+
+    .badge.published {
+      background: #10b981;
+    }
+
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal.show {
+      display: flex;
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: 20px;
+      padding: 40px;
+      max-width: 600px;
+      width: 90%;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+
+    .modal-header {
+      font-size: 24px;
+      font-weight: 800;
+      margin-bottom: 20px;
+      color: var(--dark);
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: var(--dark);
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: 'Poppins', sans-serif;
+      transition: border-color 0.3s ease;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: var(--emerald);
+    }
+
+    .form-group textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    /* Action Buttons */
+    .action-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .btn-sm {
+      padding: 8px 16px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .btn-edit {
+      background: var(--gold);
+      color: var(--dark);
+    }
+
+    .btn-delete {
+      background: #ef4444;
+      color: white;
+    }
+
+    .btn-view {
+      background: var(--emerald);
+      color: white;
+    }
+
+    .btn-sm:hover {
+      transform: scale(1.05);
+    }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      border-bottom: 2px solid #e0e0e0;
+      padding-bottom: 10px;
+    }
+
+    .tab {
+      padding: 10px 20px;
+      cursor: pointer;
+      font-weight: 600;
+      color: #999;
+      border-bottom: 3px solid transparent;
+      transition: all 0.3s ease;
+    }
+
+    .tab.active {
+      color: var(--emerald);
+      border-bottom-color: var(--emerald);
+    }
+
+    /* Grid */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 15px;
+    }
+
+    .deck-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .deck-stat {
+      background: #f8f9fa;
+      border: 1px solid #eceff3;
+      border-radius: 10px;
+      padding: 12px;
+    }
+
+    .deck-stat-label {
+      font-size: 11px;
+      color: #999;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 4px;
+    }
+
+    .deck-stat-value {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--dark);
+    }
+
+    .deck-list {
+      display: grid;
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .deck-item {
+      border: 1px solid #eceff3;
+      border-radius: 12px;
+      padding: 14px;
+      background: #fff;
+    }
+
+    .deck-item-title {
+      margin: 0;
+      font-weight: 700;
+      color: var(--dark);
+    }
+
+    .deck-item-meta {
+      color: #666;
+      font-size: 13px;
+      margin-top: 6px;
+    }
+
+    .deck-actions {
+      margin-top: 10px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .status-message {
+      margin-top: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #2d7a5c;
+      min-height: 18px;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .sidebar {
+        width: 70px;
+        padding: 10px;
+      }
+
+      .main-content {
+        margin-left: 70px;
+        padding: 15px;
+      }
+
+      .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+      }
+
+      .modal-content {
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="sidebar-logo">
+      <img src="https://www.image2url.com/r2/default/images/1784112907446-0463de99-8cb2-4889-82b8-3e0c5207bc0d.jpg" alt="Taleem Lexicon" style="width: 30px; height: 30px; border-radius: 50%; margin-right: 8px;">
+      Taleem Lexicon
+    </div>
+    <ul class="sidebar-menu">
+      <li><a href="#" class="nav-link active" onclick="showTab('courses', this)">📖 Courses</a></li>
+      <li><a href="resource-manager.html" class="nav-link">📚 Manage Resources</a></li>
+      <li><a href="#" class="nav-link" onclick="showTab('decks', this)">🗂 Decks</a></li>
+      <li><a href="#" class="nav-link" onclick="showTab('analytics', this)">📊 Analytics</a></li>
+      <li><a href="#" class="nav-link" onclick="showTab('students', this)">👥 Students</a></li>
+      <li><a href="#" class="nav-link" onclick="showTab('settings', this)">⚙️ Settings</a></li>
+      <li><a href="#" class="nav-link" onclick="logout()">🚪 Logout</a></li>
+    </ul>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <!-- Header -->
+    <div class="page-header">
+      <h1 class="page-title">Creator Dashboard</h1>
+      <div class="header-actions">
+        <button class="btn-primary" onclick="openCreateDeckSection()">+ Create Deck</button>
+        <button class="btn-primary" onclick="openCreateCourseModal()">+ Create Course</button>
+      </div>
+    </div>
+
+    <!-- Courses Tab -->
+    <div id="coursesTab" class="tab-content">
+      <div class="grid-2" id="coursesList">
+        <div style="text-align: center; padding: 40px;">
+          <p>Loading courses...</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Decks Tab -->
+    <div id="decksTab" class="tab-content" style="display:none;">
+      <div class="grid-2">
+        <div class="card">
+          <h3 class="card-title" id="deckFormTitle">Create Deck</h3>
+          <p style="color:#666; font-size:14px; margin-bottom:16px;">Create deck collections to group words by topic or level.</p>
+          <form id="deckForm" onsubmit="createDeckFromCMS(event)">
+            <div class="form-group">
+              <label for="deckName">Deck Name</label>
+              <input id="deckName" required placeholder="e.g., Academic Verbs" />
+            </div>
+            <div class="form-group">
+              <label for="deckDifficulty">Difficulty</label>
+              <select id="deckDifficulty">
+                <option value="beginner">Beginner</option>
+                <option value="intermediate" selected>Intermediate</option>
+                <option value="advanced">Advanced</option>
+                <option value="expert">Expert</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="deckTopic">Topic</label>
+              <input id="deckTopic" placeholder="e.g., IELTS, Business, Science" />
+            </div>
+            <div class="form-group">
+              <label for="deckDescription">Description</label>
+              <textarea id="deckDescription" placeholder="What words belong in this deck?"></textarea>
+            </div>
+            <div class="form-group">
+              <label for="deckTags">Tags</label>
+              <input id="deckTags" placeholder="exam, speaking, common" />
+            </div>
+            <div class="form-group">
+              <label for="deckVisibility">Visibility</label>
+              <select id="deckVisibility">
+                <option value="private" selected>Private</option>
+                <option value="public">Public</option>
+              </select>
+            </div>
+            <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+              <button type="submit" class="btn-primary" id="deckSubmitBtn">Create Deck</button>
+              <button type="button" class="btn-sm btn-delete" id="deckCancelEditBtn" onclick="cancelDeckEdit()" style="display:none;">Cancel Edit</button>
+            </div>
+            <div id="deckStatusMessage" class="status-message"></div>
+          </form>
+        </div>
+
+        <div class="card">
+          <h3 class="card-title">Your Decks</h3>
+          <p style="color:#666; font-size:14px; margin-bottom:8px;">Manage and launch deck-based study from here.</p>
+          <div class="deck-stats">
+            <div class="deck-stat">
+              <div class="deck-stat-label">Total</div>
+              <div class="deck-stat-value" id="cmsDeckTotal">0</div>
+            </div>
+            <div class="deck-stat">
+              <div class="deck-stat-label">Public</div>
+              <div class="deck-stat-value" id="cmsDeckPublic">0</div>
+            </div>
+            <div class="deck-stat">
+              <div class="deck-stat-label">Private</div>
+              <div class="deck-stat-value" id="cmsDeckPrivate">0</div>
+            </div>
+          </div>
+          <div id="cmsDeckList" class="deck-list">
+            <div style="color:#777;">Loading decks...</div>
+          </div>
+          <div class="deck-actions">
+            <button type="button" class="btn-sm btn-view" onclick="window.location.href='/decks.html'">Open Simple Deck Page</button>
+            <button type="button" class="btn-sm btn-view" onclick="window.location.href='/deck-manager.html'">Open Advanced Deck Manager</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Analytics Tab -->
+    <div id="analyticsTab" class="tab-content" style="display:none;">
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">Total Students</div>
+          <div style="font-size: 32px; font-weight: 800; color: var(--emerald); margin-top: 10px;" id="totalStudents">0</div>
+        </div>
+        <div class="card">
+          <div class="card-title">Total Lessons</div>
+          <div style="font-size: 32px; font-weight: 800; color: var(--gold); margin-top: 10px;" id="totalLessons">0</div>
+        </div>
+        <div class="card">
+          <div class="card-title">Average Completion Rate</div>
+          <div style="font-size: 32px; font-weight: 800; color: var(--emerald); margin-top: 10px;" id="avgCompletion">0%</div>
+        </div>
+        <div class="card">
+          <div class="card-title">Total XP Distributed</div>
+          <div style="font-size: 32px; font-weight: 800; color: var(--gold); margin-top: 10px;" id="totalXP">0</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Students Tab -->
+    <div id="studentsTab" class="tab-content" style="display:none;">
+      <div id="studentsList">
+        <!-- Students will be listed here -->
+      </div>
+    </div>
+
+    <!-- Settings Tab -->
+    <div id="settingsTab" class="tab-content" style="display:none;">
+      <div class="card">
+        <h3 class="card-title">Account Settings</h3>
+        <form>
+          <div class="form-group">
+            <label>Creator Name</label>
+            <input type="text" id="creatorName" placeholder="Your name">
+          </div>
+          <div class="form-group">
+            <label>Bio</label>
+            <textarea id="creatorBio" placeholder="Write a short bio..."></textarea>
+          </div>
+          <button type="button" class="btn-primary" onclick="saveSettings()">Save Changes</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Create/Edit Course Modal -->
+  <div class="modal" id="courseModal">
+    <div class="modal-content">
+      <div class="modal-header">Create New Course</div>
+      <form>
+        <div class="form-group">
+          <label>Course Title</label>
+          <input type="text" id="courseTitle" placeholder="e.g., Spanish Essentials">
+        </div>
+        <div class="form-group">
+          <label>Description</label>
+          <textarea id="courseDesc" placeholder="Describe your course..."></textarea>
+        </div>
+        <div class="form-group">
+          <label>Target Language</label>
+          <select id="targetLanguage">
+            <option value="es">Spanish</option>
+            <option value="fr">French</option>
+            <option value="de">German</option>
+            <option value="it">Italian</option>
+            <option value="pt">Portuguese</option>
+            <option value="ja">Japanese</option>
+            <option value="zh">Chinese</option>
+            <option value="ar">Arabic</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>CEFR Level</label>
+          <select id="courseLevel">
+            <option value="A1">A1 - Beginner</option>
+            <option value="A2">A2 - Elementary</option>
+            <option value="B1">B1 - Intermediate</option>
+            <option value="B2">B2 - Upper-Intermediate</option>
+            <option value="C1">C1 - Advanced</option>
+            <option value="C2">C2 - Mastery</option>
+          </select>
+        </div>
+        <div style="display: flex; gap: 10px; margin-top: 25px;">
+          <button type="button" class="btn-primary" onclick="saveCourse()">Create Course</button>
+          <button type="button" style="background: #999; color: white; padding: 12px 32px; border-radius: 50px; border: none; cursor: pointer;" onclick="closeModal('courseModal')">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Add Lesson Modal -->
+  <div class="modal" id="lessonModal">
+    <div class="modal-content">
+      <div class="modal-header">Create Lesson</div>
+      <form>
+        <div class="form-group">
+          <label>Lesson Title</label>
+          <input type="text" id="lessonTitle" placeholder="e.g., Greetings and Introductions">
+        </div>
+        <div class="form-group">
+          <label>Description</label>
+          <textarea id="lessonDesc" placeholder="Lesson description..."></textarea>
+        </div>
+        <div class="form-group">
+          <label>Number of Exercises</label>
+          <input type="number" id="exerciseCount" min="1" max="20" value="5">
+        </div>
+        <div style="display: flex; gap: 10px; margin-top: 25px;">
+          <button type="button" class="btn-primary" onclick="createLesson()">Create Lesson</button>
+          <button type="button" style="background: #999; color: white; padding: 12px 32px; border-radius: 50px; border: none; cursor: pointer;" onclick="closeModal('lessonModal')">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script>
+    let currentUser = null;
+    let courses = [];
+    let decks = [];
+    let currentCourseId = null;
+    let editingDeckId = null;
+
+    // Initialize
+    async function initializeCMS() {
+      try {
+        const token = localStorage.getItem('token');
+        if (!token) {
+          window.location.href = '/login.html';
+          return;
+        }
+
+        // Verify user is creator
+        const userResponse = await fetch('/api/auth/me', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        const userPayload = await userResponse.json();
+        const user = userPayload.user || userPayload;
+        if (user.role !== 'creator' && user.role !== 'admin') {
+          window.location.href = '/student-portal.html';
+          return;
+        }
+
+        currentUser = user;
+        loadCourses();
+        loadDecks();
+      } catch (error) {
+        console.error('Error initializing CMS:', error);
+      }
+    }
+
+    async function loadDecks() {
+      try {
+        const response = await api.get('/decks');
+        decks = Array.isArray(response?.decks) ? response.decks : [];
+        renderDecks();
+      } catch (error) {
+        console.error('Error loading decks:', error);
+        const list = document.getElementById('cmsDeckList');
+        if (list) {
+          list.innerHTML = '<div style="color:#c2410c;">Failed to load decks.</div>';
+        }
+      }
+    }
+
+    function renderDecks() {
+      const list = document.getElementById('cmsDeckList');
+      const total = decks.length;
+      const publicCount = decks.filter((deck) => deck.isPublic).length;
+      const privateCount = total - publicCount;
+
+      document.getElementById('cmsDeckTotal').textContent = String(total);
+      document.getElementById('cmsDeckPublic').textContent = String(publicCount);
+      document.getElementById('cmsDeckPrivate').textContent = String(privateCount);
+
+      if (!list) return;
+
+      if (!total) {
+        list.innerHTML = '<div style="color:#777;">No decks yet. Create your first deck from the form.</div>';
+        return;
+      }
+
+      list.innerHTML = decks.map((deck) => {
+        const deckId = encodeURIComponent(deck._id || '');
+        const visibility = deck.isPublic ? 'Public' : 'Private';
+        const wordCount = Number(deck.wordCount || 0);
+        const topic = deck.topic ? String(deck.topic) : 'General';
+        const difficulty = deck.difficulty ? String(deck.difficulty) : 'intermediate';
+        const description = deck.description ? String(deck.description) : 'No description provided.';
+
+        return `
+          <div class="deck-item">
+            <h4 class="deck-item-title">${deck.name || 'Untitled Deck'}</h4>
+            <div class="deck-item-meta">${visibility} | ${difficulty} | ${topic} | ${wordCount} words</div>
+            <div class="deck-item-meta">${description}</div>
+            <div class="deck-actions">
+              <button type="button" class="btn-sm btn-edit" onclick="startEditDeck('${deck._id || ''}')">Edit Deck</button>
+              <button type="button" class="btn-sm btn-view" onclick="window.location.href='/flashcards-ultra.html?deckId=${deckId}'">Study Deck</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function resetDeckFormMode() {
+      editingDeckId = null;
+      document.getElementById('deckFormTitle').textContent = 'Create Deck';
+      document.getElementById('deckSubmitBtn').textContent = 'Create Deck';
+      document.getElementById('deckCancelEditBtn').style.display = 'none';
+    }
+
+    function setDeckFormValues(deck) {
+      document.getElementById('deckName').value = deck.name || '';
+      document.getElementById('deckDifficulty').value = deck.difficulty || 'intermediate';
+      document.getElementById('deckTopic').value = deck.topic || '';
+      document.getElementById('deckDescription').value = deck.description || '';
+      document.getElementById('deckTags').value = Array.isArray(deck.tags) ? deck.tags.join(', ') : '';
+      document.getElementById('deckVisibility').value = deck.isPublic ? 'public' : 'private';
+    }
+
+    function startEditDeck(deckId) {
+      const deck = decks.find((item) => String(item._id || '') === String(deckId || ''));
+      const status = document.getElementById('deckStatusMessage');
+      if (!deck) {
+        if (status) status.textContent = 'Deck not found for editing.';
+        return;
+      }
+
+      editingDeckId = String(deck._id);
+      document.getElementById('deckFormTitle').textContent = 'Edit Deck';
+      document.getElementById('deckSubmitBtn').textContent = 'Save Changes';
+      document.getElementById('deckCancelEditBtn').style.display = 'inline-block';
+      setDeckFormValues(deck);
+      if (status) status.textContent = `Editing: ${deck.name}`;
+      openCreateDeckSection();
+    }
+
+    function cancelDeckEdit() {
+      document.getElementById('deckForm').reset();
+      document.getElementById('deckDifficulty').value = 'intermediate';
+      document.getElementById('deckVisibility').value = 'private';
+      document.getElementById('deckStatusMessage').textContent = '';
+      resetDeckFormMode();
+    }
+
+    async function createDeckFromCMS(event) {
+      event.preventDefault();
+      const status = document.getElementById('deckStatusMessage');
+      if (status) status.textContent = '';
+
+      const name = document.getElementById('deckName').value.trim();
+      const difficulty = document.getElementById('deckDifficulty').value;
+      const topic = document.getElementById('deckTopic').value.trim();
+      const description = document.getElementById('deckDescription').value.trim();
+      const tagsRaw = document.getElementById('deckTags').value.trim();
+      const visibility = document.getElementById('deckVisibility').value;
+      const tags = tagsRaw ? tagsRaw.split(',').map((tag) => tag.trim()).filter(Boolean) : [];
+
+      if (!name) {
+        if (status) status.textContent = 'Deck name is required.';
+        return;
+      }
+
+      try {
+        const wasEditing = Boolean(editingDeckId);
+        const payload = {
+          name,
+          difficulty,
+          topic,
+          description,
+          tags,
+          isPublic: visibility === 'public'
+        };
+
+        if (editingDeckId) {
+          await api.put(`/decks/${encodeURIComponent(editingDeckId)}`, payload);
+        } else {
+          await api.post('/decks', payload);
+        }
+
+        document.getElementById('deckForm').reset();
+        document.getElementById('deckDifficulty').value = 'intermediate';
+        document.getElementById('deckVisibility').value = 'private';
+        resetDeckFormMode();
+
+        if (status) {
+          status.textContent = wasEditing
+            ? 'Deck updated successfully.'
+            : 'Deck created successfully.';
+        }
+        await loadDecks();
+      } catch (error) {
+        if (status) status.textContent = error.message || 'Failed to create deck.';
+      }
+    }
+
+    // Load Courses
+    async function loadCourses() {
+      try {
+        const response = await fetch('/api/cms/courses', {
+          headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+        });
+
+        const payload = await response.json();
+        courses = Array.isArray(payload?.courses) ? payload.courses : [];
+        renderCourses();
+        loadAnalytics();
+      } catch (error) {
+        console.error('Error loading courses:', error);
+      }
+    }
+
+    // Render Courses
+    function renderCourses() {
+      const container = document.getElementById('coursesList');
+      
+      if (courses.length === 0) {
+        container.innerHTML = '<div style="text-align: center; padding: 40px; grid-column: 1/-1;">No courses yet. Create one to get started!</div>';
+        return;
+      }
+
+      container.innerHTML = courses.map(course => `
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">${course.title}</div>
+              <span class="badge ${course.isPublished ? 'published' : 'draft'}">
+                ${course.isPublished ? 'Published' : 'Draft'}
+              </span>
+            </div>
+          </div>
+          <p style="color: #666; font-size: 14px; margin: 10px 0;">${course.description}</p>
+          <div class="card-meta">
+            <span>📚 ${course.chapters?.length || 0} chapters</span>
+            <span>🌍 ${course.targetLanguage}</span>
+            <span>📊 ${course.level}</span>
+          </div>
+          <div class="action-buttons">
+            <button class="btn-sm btn-view" onclick="editCourse('${course._id}')">✏️ Edit</button>
+            <button class="btn-sm btn-view" onclick="viewCourse('${course._id}')">👁️ View</button>
+            <button class="btn-sm btn-delete" onclick="deleteCourse('${course._id}')">🗑️ Delete</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Modal Functions
+    function openCreateCourseModal() {
+      document.getElementById('courseModal').classList.add('show');
+    }
+
+    function closeModal(modalId) {
+      document.getElementById(modalId).classList.remove('show');
+    }
+
+    // Save Course
+    async function saveCourse() {
+      const title = document.getElementById('courseTitle').value;
+      const description = document.getElementById('courseDesc').value;
+      const targetLanguage = document.getElementById('targetLanguage').value;
+      const level = document.getElementById('courseLevel').value;
+
+      if (!title || !description) {
+        alert('Please fill in all fields');
+        return;
+      }
+
+      try {
+        const response = await fetch('/api/cms/courses', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          },
+          body: JSON.stringify({ name: title, description, targetLanguage, level })
+        });
+
+        if (response.ok) {
+          closeModal('courseModal');
+          document.querySelector('form').reset();
+          loadCourses();
+          alert('Course created successfully!');
+        }
+      } catch (error) {
+        alert('Error creating course: ' + error.message);
+      }
+    }
+
+    // Edit Course
+    function editCourse(courseId) {
+      const course = courses.find(c => c._id === courseId);
+      if (course) {
+        currentCourseId = courseId;
+        // For now, show lesson editor
+        showLessonEditor(courseId);
+      }
+    }
+
+    // View Course
+    function viewCourse(courseId) {
+      window.open(`/lesson-player.html?courseId=${courseId}`, '_blank');
+    }
+
+    // Delete Course
+    async function deleteCourse(courseId) {
+      if (confirm('Are you sure you want to delete this course?')) {
+        try {
+          await fetch(`/api/cms/courses/${courseId}`, {
+            method: 'DELETE',
+            headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+          });
+          loadCourses();
+        } catch (error) {
+          alert('Error deleting course');
+        }
+      }
+    }
+
+    // Show Lesson Editor
+    function showLessonEditor(courseId) {
+      currentCourseId = courseId;
+      document.getElementById('lessonModal').classList.add('show');
+    }
+
+    // Create Lesson
+    async function createLesson() {
+      const title = document.getElementById('lessonTitle').value;
+      const description = document.getElementById('lessonDesc').value;
+      const exerciseCount = parseInt(document.getElementById('exerciseCount').value);
+
+      if (!title || !description) {
+        alert('Please fill in all fields');
+        return;
+      }
+
+      try {
+        const response = await fetch(`/api/cms/courses/${currentCourseId}/lessons`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          },
+          body: JSON.stringify({ title, description, exercises: Array(exerciseCount).fill({}) })
+        });
+
+        if (response.ok) {
+          closeModal('lessonModal');
+          document.querySelector('form').reset();
+          alert('Lesson created! Now add exercises.');
+          loadCourses();
+        }
+      } catch (error) {
+        alert('Error creating lesson: ' + error.message);
+      }
+    }
+
+    // Load Analytics
+    async function loadAnalytics() {
+      const totalChapters = courses.reduce((sum, c) => sum + (c.chapters?.length || 0), 0);
+      document.getElementById('totalStudents').textContent = Math.floor(Math.random() * 500) + 10;
+      document.getElementById('totalLessons').textContent = totalChapters;
+      document.getElementById('avgCompletion').textContent = Math.floor(Math.random() * 30) + 65 + '%';
+      document.getElementById('totalXP').textContent = Math.floor(Math.random() * 50000) + 10000;
+    }
+
+    // Tab Navigation
+    function showTab(tab, linkEl) {
+      document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
+      document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
+
+      const tabId = tab + 'Tab';
+      const tabEl = document.getElementById(tabId);
+      if (!tabEl) return;
+      tabEl.style.display = 'block';
+
+      if (linkEl) {
+        linkEl.classList.add('active');
+      }
+    }
+
+    function openCreateDeckSection() {
+      const deckLink = Array.from(document.querySelectorAll('.sidebar-menu .nav-link')).find((link) => {
+        const handler = String(link.getAttribute('onclick') || '');
+        return handler.includes("showTab('decks'");
+      });
+      showTab('decks', deckLink);
+      const nameInput = document.getElementById('deckName');
+      if (nameInput) nameInput.focus();
+    }
+
+    // Save Settings
+    async function saveSettings() {
+      const name = document.getElementById('creatorName').value;
+      const bio = document.getElementById('creatorBio').value;
+
+      try {
+        await fetch('/api/user/update-profile', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          },
+          body: JSON.stringify({ name, bio })
+        });
+
+        alert('Settings saved successfully!');
+      } catch (error) {
+        alert('Error saving settings');
+      }
+    }
+
+    // Logout
+    function logout() {
+      localStorage.removeItem('token');
+      window.location.href = '/login.html';
+    }
+
+    // Initialize on load
+    document.addEventListener('DOMContentLoaded', initializeCMS);
+  </script>
+</body>
+</html>

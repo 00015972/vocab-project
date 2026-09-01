@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Profile — VocabMaster</title>
+  <link rel="stylesheet" href="/css/main.css" />
+  <style>
+    .profile-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); gap:20px; }
+    .section-head { font-size:1rem; font-weight:700; color:var(--accent2); margin-bottom:16px; }
+    .info-row { display:flex; justify-content:space-between; align-items:center; padding:12px 0; border-bottom:1px solid var(--border); }
+    .info-row:last-child { border-bottom:none; }
+    .info-label { color:var(--muted); font-size:0.85rem; }
+    .info-value { font-weight:500; }
+    .danger-zone { border-color:#5a2020; }
+    .danger-zone .section-head { color:var(--red); }
+  </style>
+</head>
+<body>
+<div class="app-layout">
+  <button class="sidebar-toggle" id="sidebarToggle">☰</button>
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo" style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
+      <img src="https://www.image2url.com/r2/default/images/1784112907446-0463de99-8cb2-4889-82b8-3e0c5207bc0d.jpg" alt="Taleem Lexicon" style="width:40px; height:40px; border-radius:50%;">
+      <span style="font-weight:bold; color:var(--accent);">Taleem Lexicon</span>
+    </div>
+    <nav class="sidebar-nav">
+      <a class="nav-item" data-page="dashboard" href="/dashboard.html"><span class="nav-icon">📚</span> My Words</a>
+      <a class="nav-item" data-page="flashcards" href="/flashcards.html"><span class="nav-icon">🃏</span> Flashcards</a>
+      <a class="nav-item" data-page="quiz" href="/quiz.html"><span class="nav-icon">✏️</span> Quiz</a>
+      <a class="nav-item" data-page="ai-tutor" href="/ai-tutor.html"><span class="nav-icon">🤖</span> AI Tutor</a>
+      <a class="nav-item active" data-page="profile" href="/profile.html"><span class="nav-icon">👤</span> Profile</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="user-avatar" id="userAvatar">?</div>
+        <div class="user-info"><div class="user-name" id="sidebarUserName"></div><div class="user-email" id="sidebarUserEmail"></div></div>
+      </div>
+      <button type="button" class="nav-item" data-logout onclick="logout()" style="color:var(--red)"><span class="nav-icon">🚪</span> Logout</button>
+    </div>
+  </aside>
+  <main class="main-content">
+    <div class="page-header"><h1>👤 Profile</h1><p>Manage your account settings.</p></div>
+    <div class="page-content">
+      <div class="profile-grid">
+
+        <!-- Account Info -->
+        <div class="card">
+          <div class="section-head">Account Information</div>
+          <div class="info-row"><span class="info-label">Full Name</span><span class="info-value" id="pName">—</span></div>
+          <div class="info-row"><span class="info-label">Email</span><span class="info-value" id="pEmail">—</span></div>
+          <div class="info-row"><span class="info-label">Member Since</span><span class="info-value" id="pSince">—</span></div>
+          <div class="info-row"><span class="info-label">Status</span><span class="info-value" style="color:var(--green)">✅ Verified</span></div>
+        </div>
+
+        <!-- Stats -->
+        <div class="card">
+          <div class="section-head">📊 Your Stats</div>
+          <div class="info-row"><span class="info-label">Total Words</span><span class="info-value" id="pTotal">—</span></div>
+          <div class="info-row"><span class="info-label">Added This Week</span><span class="info-value" id="pWeek">—</span></div>
+          <div class="info-row"><span class="info-label">Average Difficulty</span><span class="info-value" id="pAvgDiff">—</span></div>
+        </div>
+
+        <!-- Change Password -->
+        <div class="card">
+          <div class="section-head">🔐 Change Password</div>
+          <div id="pwAlertBox"></div>
+          <form id="pwForm">
+            <div class="form-group">
+              <label>Current Password</label>
+              <input type="password" id="currentPw" placeholder="Your current password" required />
+            </div>
+            <div class="form-group">
+              <label>New Password</label>
+              <input type="password" id="newPw" placeholder="At least 6 characters" required />
+            </div>
+            <div class="form-group">
+              <label>Confirm New Password</label>
+              <input type="password" id="confirmPw" placeholder="Repeat new password" required />
+            </div>
+            <button type="submit" class="btn btn-secondary btn-full" id="pwBtn">Update Password</button>
+          </form>
+        </div>
+
+        <!-- Danger Zone -->
+        <div class="card danger-zone">
+          <div class="section-head">⚠️ Danger Zone</div>
+          <p style="color:var(--muted);font-size:0.88rem;margin-bottom:16px;line-height:1.6">Deleting your account is permanent. All your words and data will be lost forever.</p>
+          <button class="btn btn-danger btn-full" onclick="deleteAccount()">🗑️ Delete My Account</button>
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<div id="toast"></div>
+<script src="/js/api.js"></script>
+<script>
+if (!requireAuth()) {
+  // Redirect is handled in requireAuth; avoid throwing uncaught errors.
+}
+
+async function init() {
+  initSidebar('profile');
+  const user = getUser();
+  if (user) {
+    document.getElementById('pName').textContent = user.name;
+    document.getElementById('pEmail').textContent = user.email;
+    document.getElementById('pSince').textContent = new Date(user.createdAt).toLocaleDateString('en-US', {year:'numeric',month:'long',day:'numeric'});
+  }
+  try {
+    const s = await api.get('/words/stats');
+    document.getElementById('pTotal').textContent = s.total;
+    document.getElementById('pWeek').textContent  = s.thisWeek;
+    document.getElementById('pAvgDiff').textContent = s.avgDifficulty || '—';
+  } catch {}
+}
+
+document.getElementById('pwForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const currentPassword = document.getElementById('currentPw').value;
+  const newPassword = document.getElementById('newPw').value;
+  const confirmPassword = document.getElementById('confirmPw').value;
+  const alertBox = document.getElementById('pwAlertBox');
+  alertBox.innerHTML = '';
+  if (newPassword !== confirmPassword) {
+    alertBox.innerHTML = '<div class="alert alert-error">New passwords do not match.</div>';
+    return;
+  }
+  const btn = document.getElementById('pwBtn');
+  setLoading(btn, true, 'Updating...');
+  try {
+    await api.post('/auth/change-password', { currentPassword, newPassword });
+    alertBox.innerHTML = '<div class="alert alert-success">Password updated successfully!</div>';
+    document.getElementById('pwForm').reset();
+  } catch (err) {
+    alertBox.innerHTML = `<div class="alert alert-error">${esc(err.message)}</div>`;
+  } finally {
+    setLoading(btn, false);
+  }
+});
+
+async function deleteAccount() {
+  if (!confirm('Are you absolutely sure? This will permanently delete your account and ALL your vocabulary data.')) return;
+  if (!confirm('This cannot be undone. Delete account?')) return;
+  try {
+    await api.delete('/auth/account');
+    clearAuth();
+    window.location.href = '/';
+  } catch (err) {
+    showToast(err.message, 'error');
+  }
+}
+
+init();
+</script>
+</body>
+</html>

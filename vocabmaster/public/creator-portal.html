@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Creator Portal — VocabMaster</title>
+  <link rel="stylesheet" href="/css/main.css" />
+  <style>
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #f8f7ff 0%, #eef2ff 100%);
+      color: #333;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .portal {
+      width: 100%;
+      max-width: 360px;
+      background: #fff;
+      border-radius: 20px;
+      padding: 24px 20px;
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.12);
+      border: 1px solid #e5e7eb;
+    }
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+      gap: 10px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 900;
+      font-size: 18px;
+      color: #333;
+    }
+    .brand img {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+    }
+    .nav-link {
+      color: #333;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .title {
+      font-size: 22px;
+      font-weight: 900;
+      color: #333;
+      margin: 4px 0 8px;
+    }
+    .muted {
+      font-size: 13px;
+      line-height: 18px;
+      color: #555;
+      margin-bottom: 14px;
+    }
+    .form-group {
+      margin-bottom: 10px;
+    }
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #333;
+    }
+    input {
+      width: 100%;
+      outline: 0;
+      background: #fff;
+      box-shadow: transparent 0px 0px 0px 1px inset;
+      padding: 0.7em;
+      border-radius: 14px;
+      border: 1px solid #333;
+      color: #111;
+      caret-color: #111;
+      -webkit-text-fill-color: #111;
+      font: inherit;
+    }
+    button {
+      width: 100%;
+      border: 0;
+      background: #111;
+      color: #fff;
+      padding: 0.68em;
+      border-radius: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 6px;
+    }
+    button:hover {
+      opacity: 0.9;
+    }
+    .alert {
+      border-radius: 12px;
+      padding: 8px 10px;
+      margin-bottom: 10px;
+      font-size: 13px;
+      line-height: 1.4;
+    }
+    .alert-error {
+      background: #fff1f2;
+      color: #b91c1c;
+      border: 1px solid #fecdd3;
+    }
+    .footer-links {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 12px;
+      font-size: 13px;
+    }
+    .footer-links a {
+      color: #111;
+      text-decoration: none;
+      font-weight: 700;
+    }
+    .small {
+      font-size: 12px;
+      color: #666;
+      margin-top: 10px;
+      line-height: 1.4;
+    }
+  </style>
+</head>
+<body>
+  <div class="portal">
+    <div class="topbar">
+      <div class="brand">
+        <img src="https://www.image2url.com/r2/default/images/1784112907446-0463de99-8cb2-4889-82b8-3e0c5207bc0d.jpg" alt="Taleem Lexicon">
+        <span>Taleem Lexicon</span>
+      </div>
+      <a class="nav-link" href="/index-ultra.html">Home</a>
+    </div>
+
+    <div class="title">Creator Control</div>
+    <div class="muted">Enter your creator access code to open the dashboard.</div>
+
+    <div id="alertBox"></div>
+
+    <form id="creatorForm">
+      <div class="form-group">
+        <label for="creatorPortalCode">Creator Access Code</label>
+        <input type="text" id="creatorPortalCode" placeholder="Enter creator access code" required />
+      </div>
+
+      <button type="submit" id="submitBtn">Open Dashboard</button>
+    </form>
+
+    <div class="footer-links">
+      <a href="/student-portal.html">Student Portal</a>
+    </div>
+  </div>
+
+  <div id="toast"></div>
+  <script src="/js/api.js"></script>
+  <script>
+    const form = document.getElementById('creatorForm');
+    form.addEventListener('submit', async function (event) {
+      event.preventDefault();
+      const creatorPortalCode = document.getElementById('creatorPortalCode').value.trim();
+      const submitBtn = document.getElementById('submitBtn');
+      const alertBox = document.getElementById('alertBox');
+
+      alertBox.innerHTML = '';
+      setLoading(submitBtn, true, 'Entering...');
+
+      console.log('creator-portal: submitting code', creatorPortalCode);
+      try {
+        const data = await api.post('/auth/creator-access', { creatorPortalCode });
+        console.log('creator-portal: response', data);
+
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('user', JSON.stringify(data.user));
+        // use relative redirect to respect hosting subpaths
+        window.location.href = 'creator-dashboard-new.html';
+      } catch (err) {
+        console.error('creator-portal error', err);
+        alertBox.innerHTML = '<div class="alert alert-error">' + esc(err.message) + '</div>';
+      } finally {
+        setLoading(submitBtn, false, 'Enter Creator Studio');
+      }
+    });
+  </script>
+</body>
+</html>

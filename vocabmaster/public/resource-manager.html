@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Taleem Lexicon - Resource Manager</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --gold: #D4AF37;
+      --emerald: #50C878;
+      --dark: #1a1a1a;
+    }
+
+    * { font-family: 'Poppins', sans-serif; }
+    body { background: #f0f9ff; }
+
+    .sidebar {
+      background: var(--dark);
+      color: white;
+      min-height: 100vh;
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 250px;
+      padding: 20px;
+      overflow-y: auto;
+    }
+
+    .main { margin-left: 250px; padding: 30px; }
+
+    .logo {
+      font-size: 18px;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--gold), var(--emerald));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 30px;
+    }
+
+    .nav-item {
+      padding: 12px 16px;
+      margin-bottom: 8px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s;
+      border: none;
+      background: none;
+      color: #ccc;
+      width: 100%;
+      text-align: left;
+      font-weight: 600;
+    }
+
+    .nav-item:hover, .nav-item.active {
+      background: var(--emerald);
+      color: white;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      background: white;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    .title {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--dark);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--emerald), #2d7a5c);
+      color: white;
+      padding: 12px 32px;
+      border-radius: 50px;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(80, 200, 120, 0.3); }
+
+    .content { background: white; border-radius: 15px; padding: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
+
+    .resources-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .resource-card {
+      background: white;
+      border: 2px solid #e0e0e0;
+      border-radius: 15px;
+      padding: 20px;
+      transition: all 0.3s;
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+    }
+
+    .resource-card:hover {
+      border-color: var(--emerald);
+      box-shadow: 0 8px 20px rgba(80, 200, 120, 0.15);
+      transform: translateY(-2px);
+    }
+
+    .resource-word {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--dark);
+      margin-bottom: 10px;
+    }
+    .resource-thumb { width:96px;height:72px;object-fit:cover;border-radius:8px;border:1px solid #e6eef0;flex-shrink:0 }
+
+    .resource-meta {
+      display: flex;
+      gap: 10px;
+      font-size: 12px;
+      color: #999;
+      margin-bottom: 15px;
+    }
+
+    .badge {
+      background: var(--emerald);
+      color: white;
+      padding: 4px 10px;
+      border-radius: 15px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .resource-definition {
+      color: #666;
+      font-size: 13px;
+      line-height: 1.5;
+      margin-bottom: 15px;
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn-sm {
+      padding: 8px 16px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+
+    .btn-edit {
+      background: var(--gold);
+      color: var(--dark);
+    }
+
+    .btn-delete {
+      background: #ef4444;
+      color: white;
+    }
+
+    .btn-sm:hover { transform: scale(1.05); }
+
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal.show { display: flex; }
+
+    .modal-content {
+      background: white;
+      border-radius: 20px;
+      padding: 40px;
+      max-width: 600px;
+      width: 90%;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: var(--dark);
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: 'Poppins', sans-serif;
+      transition: border-color 0.3s;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: var(--emerald);
+    }
+
+    .form-group textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      border-bottom: 2px solid #e0e0e0;
+      padding-bottom: 10px;
+    }
+
+    .tab {
+      padding: 10px 20px;
+      cursor: pointer;
+      font-weight: 600;
+      color: #999;
+      border-bottom: 3px solid transparent;
+      transition: all 0.3s;
+    }
+
+    .tab.active {
+      color: var(--emerald);
+      border-bottom-color: var(--emerald);
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .upload-zone {
+      border: 2px dashed var(--emerald);
+      border-radius: 12px;
+      padding: 30px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .upload-zone:hover {
+      background: rgba(80, 200, 120, 0.05);
+    }
+
+    .search-bar {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .search-bar input {
+      flex: 1;
+      padding: 12px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin-bottom: 30px;
+    }
+
+    .stat-card {
+      background: linear-gradient(135deg, rgba(80,200,120,0.1), rgba(212,175,55,0.05));
+      border-left: 5px solid var(--emerald);
+      padding: 20px;
+      border-radius: 10px;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: #666;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .stat-number {
+      font-size: 32px;
+      font-weight: 800;
+      color: var(--emerald);
+      margin-top: 10px;
+    }
+
+    @media (max-width: 768px) {
+      .sidebar { width: 70px; }
+      .main { margin-left: 70px; padding: 15px; }
+      .resources-grid { grid-template-columns: 1fr; }
+      .header { flex-direction: column; gap: 15px; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="logo" style="display:flex; align-items:center; gap:8px; margin-bottom:10px;">
+      <img src="https://www.image2url.com/r2/default/images/1784112907446-0463de99-8cb2-4889-82b8-3e0c5207bc0d.jpg" alt="Taleem Lexicon" style="width:35px; height:35px; border-radius:50%;">
+      <span style="font-weight:bold;">Taleem Lexicon</span>
+    </div>
+    <button class="nav-item active" onclick="switchTab('resources', this)">📖 My Resources</button>
+    <button class="nav-item" onclick="window.location.href='/decks.html'">🗂️ Decks</button>
+    <button class="nav-item" onclick="switchTab('create', this)">➕ Add New</button>
+    <button class="nav-item" onclick="switchTab('import', this)">📥 Bulk Import</button>
+    <button class="nav-item" onclick="switchTab('analytics', this)">📊 Analytics</button>
+    <button class="nav-item" onclick="logout()">🚪 Logout</button>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main">
+    <!-- Header -->
+    <div class="header">
+      <h1 class="title">Vocabulary Resource Manager</h1>
+      <button class="btn-primary" onclick="openAddModal()">+ Add Word</button>
+    </div>
+
+    <!-- Resources Tab -->
+    <div id="resourcesTab" class="tab-content active">
+      <div class="content">
+        <h2 style="font-size: 20px; font-weight: 700; margin-bottom: 20px;">Your Resources</h2>
+
+        <div class="search-bar">
+          <input type="text" id="searchInput" placeholder="Search words..." onkeyup="searchResources()">
+          <select id="filterLanguage" style="padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px;">
+            <option value="">All Languages</option>
+            <option value="es">Spanish</option>
+            <option value="fr">French</option>
+            <option value="de">German</option>
+            <option value="it">Italian</option>
+          </select>
+        </div>
+
+        <div class="resources-grid" id="resourcesList">
+          <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #999;">
+            No resources yet. Create one to get started!
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Create Tab -->
+    <div id="createTab" class="tab-content">
+      <div class="content">
+        <h2 style="font-size: 20px; font-weight: 700; margin-bottom: 20px;">Add New Vocabulary Word</h2>
+
+        <form onsubmit="saveResource(event)">
+          <div class="form-group">
+            <label>Word</label>
+            <input type="text" id="word" required placeholder="e.g., hola">
+          </div>
+
+          <div class="form-group">
+            <label>Definition</label>
+            <textarea id="definition" required placeholder="Define the word..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label>Part of Speech</label>
+            <select id="partOfSpeech" required>
+              <option value="noun">Noun</option>
+              <option value="verb">Verb</option>
+              <option value="adjective">Adjective</option>
+              <option value="adverb">Adverb</option>
+              <option value="preposition">Preposition</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Language</label>
+            <select id="language" required>
+              <option value="es">Spanish</option>
+              <option value="fr">French</option>
+              <option value="de">German</option>
+              <option value="it">Italian</option>
+              <option value="pt">Portuguese</option>
+              <option value="ja">Japanese</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Example Sentence</label>
+            <textarea id="example" placeholder="Use this word in a sentence..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label>Difficulty Level</label>
+            <select id="difficulty">
+              <option value="beginner">Beginner</option>
+              <option value="intermediate">Intermediate</option>
+              <option value="advanced">Advanced</option>
+            </select>
+          </div>
+
+          <button type="submit" class="btn-primary">Add Word</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Bulk Import Tab -->
+    <div id="importTab" class="tab-content">
+      <div class="content">
+        <h2 style="font-size: 20px; font-weight: 700; margin-bottom: 20px;">Bulk Import Words</h2>
+
+        <div class="upload-zone" onclick="document.getElementById('fileInput').click()">
+          <p style="font-size: 18px; margin-bottom: 10px;">📁 Drag & drop CSV/JSON or click to upload</p>
+          <p style="color: #999; font-size: 12px;">CSV: word, definition, language, partOfSpeech</p>
+          <input type="file" id="fileInput" hidden accept=".csv,.json" onchange="handleFileUpload(event)">
+        </div>
+
+        <div id="importPreview" style="margin-top: 30px;"></div>
+
+        <div id="importStatus" style="margin-top: 20px;"></div>
+
+        <button class="btn-primary" onclick="importResources()" style="margin-top: 20px; display: none;" id="importBtn">Import Words</button>
+      </div>
+    </div>
+
+    <!-- Analytics Tab -->
+    <div id="analyticsTab" class="tab-content">
+      <div class="content">
+        <h2 style="font-size: 20px; font-weight: 700; margin-bottom: 20px;">Resource Analytics</h2>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-label">Total Words</div>
+            <div class="stat-number" id="totalWords">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Languages</div>
+            <div class="stat-number" id="totalLanguages">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Used in Courses</div>
+            <div class="stat-number" id="usedInCourses">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">This Month</div>
+            <div class="stat-number" id="thisMonth">0</div>
+          </div>
+        </div>
+
+        <div id="analyticsDetails" style="background: #f8f9fa; border-radius: 10px; padding: 20px; margin-top: 20px;">
+          <h3 style="font-weight: 700; margin-bottom: 15px;">Words by Language</h3>
+          <div id="languageBreakdown"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="resourceImageModal">
+    <div class="modal-content" style="max-width:900px;">
+      <div style="display:flex;justify-content:flex-end;margin-bottom:8px;"><button class="btn-sm btn-delete" onclick="closeResourceImageModal()">Close</button></div>
+      <img id="resourceImageModalImg" src="" style="max-width:100%;height:auto;border-radius:10px;" />
+    </div>
+  </div>
+
+  <!-- Add/Edit Modal -->
+  <div class="modal" id="resourceModal">
+    <div class="modal-content">
+      <h2 style="font-size: 24px; font-weight: 800; margin-bottom: 20px;">Add Word</h2>
+      <form onsubmit="saveResource(event)">
+        <div class="form-group">
+          <label>Word</label>
+          <input type="text" id="modalWord" required>
+        </div>
+        <div class="form-group">
+          <label>Definition</label>
+          <textarea id="modalDefinition" required></textarea>
+        </div>
+        <div class="form-group">
+          <label>Language</label>
+          <select id="modalLanguage" required>
+            <option value="es">Spanish</option>
+            <option value="fr">French</option>
+            <option value="de">German</option>
+          </select>
+        </div>
+        <div style="display: flex; gap: 10px;">
+          <button type="submit" class="btn-primary" style="flex: 1;">Save</button>
+          <button type="button" onclick="closeModal('resourceModal')" style="flex: 1; background: #999; color: white; padding: 12px; border-radius: 8px; border: none; cursor: pointer;">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script>
+    let allResources = [];
+    let importedData = [];
+
+    async function initialize() {
+      const token = localStorage.getItem('token');
+      if (!token) return window.location.href = '/login.html';
+
+      try {
+        const userPayload = await (await fetch('/api/auth/me', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        })).json();
+        const user = userPayload.user || userPayload;
+
+        if (user.role !== 'creator' && user.role !== 'admin') {
+          return window.location.href = '/student-dashboard.html';
+        }
+
+        loadResources();
+        loadAnalytics();
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    }
+
+    async function loadResources() {
+      const token = localStorage.getItem('token');
+      try {
+        const response = await fetch('/api/words?limit=1000', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await response.json();
+        allResources = data.words || [];
+        renderResources(allResources);
+      } catch (error) {
+        console.error('Error loading resources:', error);
+      }
+    }
+
+    function renderResources(resources) {
+      const container = document.getElementById('resourcesList');
+      if (resources.length === 0) {
+        container.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #999;">No resources found</div>';
+        return;
+      }
+
+      container.innerHTML = resources.map(word => `
+        <div class="resource-card">
+          ${word.imageUrl ? `<img src="${word.imageUrl.startsWith('https://image.pollinations.ai/') ? '/api/image-proxy?url=' + encodeURIComponent(word.imageUrl) : word.imageUrl}" class="resource-thumb" onclick="openImagePreviewResource('${word.imageUrl.replace(/'/g, "\\'")}')" onerror="this.style.display='none'" />` : ''}
+          <div style="flex:1;min-width:0;">
+            <div class="resource-word">${word.word}</div>
+            <div class="resource-meta">
+              <span class="badge">${word.language || 'es'}</span>
+              <span>${word.partOfSpeech || 'word'}</span>
+            </div>
+            <div class="resource-definition">${word.definition}</div>
+            ${word.example ? `<div style="font-size: 12px; color: #999; italic; margin-bottom: 15px;">"${word.example}"</div>` : ''}
+            <div class="actions">
+              <button class="btn-sm btn-edit" onclick="editResource('${word._id}')">Edit</button>
+              <button class="btn-sm btn-delete" onclick="deleteResource('${word._id}')">Delete</button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function searchResources() {
+      const query = document.getElementById('searchInput').value.toLowerCase();
+      const language = document.getElementById('filterLanguage').value;
+
+      const filtered = allResources.filter(r => {
+        const matchesSearch = r.word.toLowerCase().includes(query) || r.definition.toLowerCase().includes(query);
+        const matchesLanguage = !language || r.language === language;
+        return matchesSearch && matchesLanguage;
+      });
+
+      renderResources(filtered);
+    }
+
+    async function saveResource(event) {
+      event.preventDefault();
+      const token = localStorage.getItem('token');
+
+      const resource = {
+        word: document.getElementById('word')?.value || document.getElementById('modalWord').value,
+        definition: document.getElementById('definition')?.value || document.getElementById('modalDefinition').value,
+        language: document.getElementById('language')?.value || document.getElementById('modalLanguage').value,
+        partOfSpeech: document.getElementById('partOfSpeech')?.value || 'word',
+        example: document.getElementById('example')?.value,
+        difficulty: document.getElementById('difficulty')?.value || 'beginner'
+      };
+
+      try {
+        const response = await fetch('/api/words', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify(resource)
+        });
+
+        if (response.ok) {
+          alert('Word added successfully!');
+          closeModal('resourceModal');
+          document.querySelector('form').reset();
+          loadResources();
+        } else {
+          alert('Error adding word');
+        }
+      } catch (error) {
+        alert('Error: ' + error.message);
+      }
+    }
+
+    async function deleteResource(id) {
+      if (!confirm('Delete this word?')) return;
+
+      const token = localStorage.getItem('token');
+      try {
+        await fetch(`/api/words/${id}`, {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        loadResources();
+      } catch (error) {
+        alert('Error deleting word');
+      }
+    }
+
+    async function loadAnalytics() {
+      const token = localStorage.getItem('token');
+      try {
+        const response = await fetch('/api/words?limit=10000', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await response.json();
+        const words = data.words || [];
+
+        document.getElementById('totalWords').textContent = words.length;
+
+        const languages = [...new Set(words.map(w => w.language))].length;
+        document.getElementById('totalLanguages').textContent = languages;
+
+        const thisMonth = words.filter(w => new Date(w.createdAt) > new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)).length;
+        document.getElementById('thisMonth').textContent = thisMonth;
+
+        const breakdown = {};
+        words.forEach(w => {
+          breakdown[w.language || 'other'] = (breakdown[w.language || 'other'] || 0) + 1;
+        });
+
+        const html = Object.entries(breakdown).map(([lang, count]) => `
+          <div style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #e0e0e0;">
+            <span>${lang.toUpperCase()}</span>
+            <span style="font-weight: 700;">${count}</span>
+          </div>
+        `).join('');
+
+        document.getElementById('languageBreakdown').innerHTML = html;
+      } catch (error) {
+        console.error('Error loading analytics:', error);
+      }
+    }
+
+    function handleFileUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          if (file.type === 'application/json') {
+            importedData = JSON.parse(e.target.result);
+          } else {
+            // Parse CSV
+            const lines = e.target.result.split('\n');
+            importedData = lines.slice(1).map(line => {
+              const [word, definition, language, pos] = line.split(',');
+              return { word, definition, language, partOfSpeech: pos };
+            }).filter(r => r.word);
+          }
+
+          document.getElementById('importPreview').innerHTML = `
+            <div style="background: #f0f9ff; padding: 20px; border-radius: 10px;">
+              <h3 style="font-weight: 700; margin-bottom: 10px;">Preview (${importedData.length} words)</h3>
+              ${importedData.slice(0, 5).map(w => `<div style="padding: 8px 0; border-bottom: 1px solid #e0e0e0;">
+                <strong>${w.word}</strong> (${w.language}) - ${w.definition}
+              </div>`).join('')}
+              ${importedData.length > 5 ? `<div style="padding: 10px 0; color: #999;">... and ${importedData.length - 5} more</div>` : ''}
+            </div>
+          `;
+
+          document.getElementById('importBtn').style.display = 'block';
+        } catch (error) {
+          alert('Error parsing file: ' + error.message);
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    async function importResources() {
+      if (importedData.length === 0) {
+        alert('No data to import');
+        return;
+      }
+
+      const token = localStorage.getItem('token');
+      document.getElementById('importStatus').innerHTML = '<div style="color: #999;">Importing...</div>';
+
+      let success = 0;
+      for (const word of importedData) {
+        try {
+          await fetch('/api/words', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(word)
+          });
+          success++;
+        } catch (error) {
+          console.error('Error importing word:', error);
+        }
+      }
+
+      document.getElementById('importStatus').innerHTML = `<div style="color: var(--emerald); font-weight: 700;">✓ Successfully imported ${success}/${importedData.length} words!</div>`;
+      loadResources();
+    }
+
+    // Image preview modal for resource manager
+    function openImagePreviewResource(src) {
+      if (!src) return;
+      const modal = document.getElementById('resourceImageModal');
+      const img = document.getElementById('resourceImageModalImg');
+      img.src = src.startsWith('https://image.pollinations.ai/') ? '/api/image-proxy?url=' + encodeURIComponent(src) : src;
+      modal.classList.add('show');
+    }
+
+    function closeResourceImageModal() {
+      const modal = document.getElementById('resourceImageModal');
+      const img = document.getElementById('resourceImageModalImg');
+      img.src = '';
+      modal.classList.remove('show');
+    }
+
+    function switchTab(tab, eventTarget) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.getElementById(tab + 'Tab').classList.add('active');
+      document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+      if (eventTarget) {
+        eventTarget.classList.add('active');
+      }
+    }
+
+    function openAddModal() {
+      document.getElementById('resourceModal').classList.add('show');
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.remove('show');
+    }
+
+    function logout() {
+      localStorage.removeItem('token');
+      window.location.href = '/login.html';
+    }
+
+    document.addEventListener('DOMContentLoaded', initialize);
+  </script>
+</body>
+</html>

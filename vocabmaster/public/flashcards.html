@@ -1,0 +1,661 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="refresh" content="0; url=/flashcards-ultra.html" />
+  <title>Flashcards — VocabMaster</title>
+  <link rel="stylesheet" href="/css/main.css" />
+  <style>
+    :root {
+      --primary: #6c63ff;
+      --primary-light: #a78bfa;
+      --success: #10b981;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --bg: #0f1117;
+      --bg-secondary: #1a1d27;
+      --text: #e2e8f0;
+      --text-muted: #94a3b8;
+      --border: #2e3250;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    .flashcard-container {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: linear-gradient(135deg, rgba(108, 99, 255, 0.1), rgba(167, 139, 250, 0.05));
+    }
+
+    /* TOP BAR */
+    .top-bar {
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .logo {
+      font-size: 18px;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      cursor: pointer;
+    }
+
+    .session-info {
+      display: flex;
+      gap: 24px;
+      align-items: center;
+    }
+
+    .session-stat {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+    }
+
+    .session-stat-value {
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    /* MAIN CONTENT */
+    .content {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+      max-width: 100%;
+    }
+
+    .flashcard-wrapper {
+      width: 100%;
+      max-width: 600px;
+      perspective: 1000px;
+    }
+
+    /* FLASHCARD */
+    .flashcard {
+      background: var(--bg-secondary);
+      border: 2px solid var(--border);
+      border-radius: 16px;
+      padding: 60px 40px;
+      text-align: center;
+      min-height: 400px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      position: relative;
+      transform-style: preserve-3d;
+    }
+
+    .flashcard:hover {
+      border-color: var(--primary);
+      box-shadow: 0 20px 40px rgba(108, 99, 255, 0.2);
+    }
+
+    .flashcard.flipped {
+      transform: rotateY(180deg);
+    }
+
+    .flashcard-side {
+      backface-visibility: hidden;
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .flashcard-front {
+      color: var(--text);
+    }
+
+    .flashcard-back {
+      transform: rotateY(180deg);
+      color: var(--success);
+    }
+
+    .flashcard.flipped .flashcard-back {
+      display: flex;
+    }
+
+    .flashcard.flipped .flashcard-front {
+      display: none;
+    }
+
+    .flashcard-label {
+      font-size: 12px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 20px;
+      font-weight: 600;
+    }
+
+    .flashcard-word {
+      font-size: 48px;
+      font-weight: 800;
+      margin-bottom: 30px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .flashcard-definition {
+      font-size: 18px;
+      color: var(--text);
+      line-height: 1.6;
+      max-width: 400px;
+      margin-bottom: 20px;
+    }
+
+    .flashcard-hint {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-top: 20px;
+      font-style: italic;
+    }
+
+    .audio-button {
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      font-size: 24px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s;
+      margin-top: 20px;
+    }
+
+    .audio-button:hover {
+      transform: scale(1.1);
+    }
+
+    /* CONTROLS */
+    .controls {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      margin-top: 40px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      color: white;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 16px rgba(108, 99, 255, 0.3);
+    }
+
+    .btn-success {
+      background: var(--success);
+      color: white;
+    }
+
+    .btn-success:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 16px rgba(16, 185, 129, 0.3);
+    }
+
+    .btn-danger {
+      background: var(--danger);
+      color: white;
+    }
+
+    .btn-danger:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 16px rgba(239, 68, 68, 0.3);
+    }
+
+    .btn-secondary {
+      background: var(--bg-secondary);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    /* FEEDBACK MODAL */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 40px;
+      max-width: 400px;
+      width: 90%;
+      text-align: center;
+    }
+
+    .modal-icon {
+      font-size: 60px;
+      margin-bottom: 20px;
+    }
+
+    .modal-title {
+      font-size: 24px;
+      font-weight: 800;
+      margin-bottom: 12px;
+    }
+
+    .modal-message {
+      color: var(--text-muted);
+      font-size: 14px;
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+
+    .modal-xp {
+      font-size: 32px;
+      font-weight: 800;
+      color: var(--warning);
+      margin-bottom: 20px;
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+      position: fixed;
+      left: 24px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      z-index: 40;
+    }
+
+    .sidebar-stat {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-size: 13px;
+      text-align: center;
+      min-width: 80px;
+    }
+
+    .sidebar-stat-value {
+      font-weight: 700;
+      font-size: 18px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    @media (max-width: 768px) {
+      .sidebar {
+        position: static;
+        flex-direction: row;
+        justify-content: center;
+        margin-bottom: 20px;
+        transform: none;
+      }
+
+      .flashcard {
+        padding: 40px 24px;
+        min-height: 300px;
+      }
+
+      .flashcard-word {
+        font-size: 36px;
+      }
+
+      .flashcard-definition {
+        font-size: 16px;
+      }
+
+      .controls {
+        gap: 8px;
+      }
+
+      .btn {
+        padding: 10px 16px;
+        font-size: 13px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="flashcard-container">
+    <!-- TOP BAR -->
+    <div class="top-bar">
+      <div class="logo" onclick="window.location.href='/student-learn.html'">📚 VocabMaster</div>
+      <div class="session-info">
+        <div class="session-stat">
+          <span>📍</span>
+          <span class="session-stat-value" id="cardCount">1 / 10</span>
+        </div>
+        <div class="session-stat">
+          <span>⏱️</span>
+          <span class="session-stat-value" id="sessionTimer">00:00</span>
+        </div>
+        <div class="session-stat">
+          <span>🔥</span>
+          <span class="session-stat-value" id="comboCount">0</span>
+        </div>
+        <div class="session-stat">
+          <span>⭐</span>
+          <span class="session-stat-value" id="xpEarned">0</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div class="sidebar-stat">
+        <div class="sidebar-stat-value" id="sidebarCombo">0</div>
+        <div style="font-size: 11px; color: var(--text-muted);">Combo</div>
+      </div>
+      <div class="sidebar-stat">
+        <div class="sidebar-stat-value" id="sidebarXp">0</div>
+        <div style="font-size: 11px; color: var(--text-muted);">XP</div>
+      </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="content">
+      <div class="flashcard-wrapper">
+        <div id="flashcard" class="flashcard">
+          <div class="flashcard-side flashcard-front">
+            <div class="flashcard-label">Word</div>
+            <div class="flashcard-word" id="cardWord">Loading...</div>
+            <div class="flashcard-hint">Click to reveal definition</div>
+          </div>
+          <div class="flashcard-side flashcard-back">
+            <div class="flashcard-label">Definition</div>
+            <div class="flashcard-definition" id="cardDefinition">Loading...</div>
+            <button class="audio-button" id="audioBtn" title="Play pronunciation">🔊</button>
+          </div>
+        </div>
+
+        <div class="controls">
+          <button class="btn btn-danger" onclick="markIncorrect()">❌ Incorrect</button>
+          <button class="btn btn-secondary" onclick="toggleFlip()">🔄 Flip</button>
+          <button class="btn btn-success" onclick="markCorrect()">✅ Correct</button>
+          <button class="btn btn-secondary" onclick="goBack()">⬅️ Exit</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FEEDBACK MODAL -->
+  <div id="feedbackModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-icon" id="feedbackIcon">✅</div>
+      <div class="modal-title" id="feedbackTitle">Great!</div>
+      <div class="modal-message" id="feedbackMessage">You got it right!</div>
+      <div class="modal-xp" id="feedbackXp">+10 XP</div>
+      <button class="btn btn-primary" onclick="nextCard()" style="width: 100%;">Next Card →</button>
+    </div>
+  </div>
+
+  <!-- SESSION SUMMARY MODAL -->
+  <div id="summaryModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-icon">📊</div>
+      <div class="modal-title">Session Complete!</div>
+      <div class="modal-message" style="margin-bottom: 8px;">
+        You reviewed <strong id="summaryCount">0</strong> words
+      </div>
+      <div class="modal-message" style="margin-bottom: 8px;">
+        Correct: <strong id="summaryCorrect">0</strong> | Incorrect: <strong id="summaryIncorrect">0</strong>
+      </div>
+      <div class="modal-xp" id="summaryXp">+0 XP</div>
+      <button class="btn btn-primary" onclick="goBack()" style="width: 100%;">Back to Learn →</button>
+    </div>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script>
+    redirectIfNotAuth();
+
+    let currentCards = [];
+    let currentIndex = 0;
+    let sessionStartTime = Date.now();
+    let sessionStats = { correct: 0, incorrect: 0, xp: 0, combo: 0 };
+    let isFlipped = false;
+    let canInteract = true;
+
+    // SM-2 Spaced Repetition Algorithm
+    function calculateNextReview(quality, interval, easeFactor) {
+      let newInterval;
+      let newEaseFactor = Math.max(1.3, easeFactor + (0.1 - (5 - quality) * (0.08 + (5 - quality) * 0.02)));
+      
+      if (quality < 3) {
+        newInterval = 1;
+      } else {
+        if (interval === 0) newInterval = 1;
+        else if (interval === 1) newInterval = 3;
+        else newInterval = Math.round(interval * newEaseFactor);
+      }
+      
+      return { newInterval, newEaseFactor };
+    }
+
+    async function init() {
+      try {
+        const response = await api.get('/auth/me');
+
+        const wordsResponse = await api.get('/words');
+        currentCards = (wordsResponse.words || []).map(w => ({
+          _id: w._id,
+          word: w.word,
+          definition: w.definition,
+          mastery: 0,
+          interval: 0,
+          easeFactor: 2.5
+        }));
+
+        if (currentCards.length === 0) {
+          alert('No words available. Go back and ask your creator to add words.');
+          window.location.href = '/student-learn.html';
+          return;
+        }
+
+        loadCard();
+        startTimer();
+      } catch (err) {
+        console.error('Init error:', err);
+        window.location.href = '/student-learn.html';
+      }
+    }
+
+    function loadCard() {
+      if (currentIndex >= currentCards.length) {
+        endSession();
+        return;
+      }
+
+      const card = currentCards[currentIndex];
+      document.getElementById('cardWord').textContent = card.word;
+      document.getElementById('cardDefinition').textContent = card.definition;
+      document.getElementById('cardCount').textContent = (currentIndex + 1) + ' / ' + currentCards.length;
+      document.getElementById('flashcard').classList.remove('flipped');
+      isFlipped = false;
+      canInteract = true;
+    }
+
+    function toggleFlip() {
+      if (!canInteract) return;
+      const card = document.getElementById('flashcard');
+      card.classList.toggle('flipped');
+      isFlipped = !isFlipped;
+    }
+
+    function markCorrect() {
+      if (!canInteract) return;
+      canInteract = false;
+
+      const card = currentCards[currentIndex];
+      const xpGain = 10 + (sessionStats.combo * 2);
+      sessionStats.correct++;
+      sessionStats.combo++;
+      sessionStats.xp += xpGain;
+
+      // SM-2: quality 4 (good response)
+      const { newInterval, newEaseFactor } = calculateNextReview(4, card.interval, card.easeFactor);
+      card.interval = newInterval;
+      card.easeFactor = newEaseFactor;
+      card.mastery = Math.min(card.mastery + 1, 5);
+
+      showFeedback(true, xpGain);
+      updateStats();
+    }
+
+    function markIncorrect() {
+      if (!canInteract) return;
+      canInteract = false;
+
+      const card = currentCards[currentIndex];
+      sessionStats.incorrect++;
+      sessionStats.combo = 0;
+
+      // SM-2: quality 1 (wrong response)
+      const { newInterval, newEaseFactor } = calculateNextReview(1, card.interval, card.easeFactor);
+      card.interval = newInterval;
+      card.easeFactor = newEaseFactor;
+      card.mastery = Math.max(card.mastery - 1, 0);
+
+      showFeedback(false, 0);
+      updateStats();
+    }
+
+    function showFeedback(isCorrect, xp) {
+      const modal = document.getElementById('feedbackModal');
+      if (isCorrect) {
+        document.getElementById('feedbackIcon').textContent = '✅';
+        document.getElementById('feedbackTitle').textContent = 'Excellent!';
+        document.getElementById('feedbackMessage').textContent = 'Keep it up!';
+        document.getElementById('feedbackXp').textContent = '+' + xp + ' XP';
+      } else {
+        document.getElementById('feedbackIcon').textContent = '❌';
+        document.getElementById('feedbackTitle').textContent = 'Try Again';
+        document.getElementById('feedbackMessage').textContent = 'Better luck next time!';
+        document.getElementById('feedbackXp').textContent = '+0 XP';
+      }
+      modal.classList.add('active');
+    }
+
+    function nextCard() {
+      document.getElementById('feedbackModal').classList.remove('active');
+      currentIndex++;
+      loadCard();
+    }
+
+    function updateStats() {
+      document.getElementById('comboCount').textContent = sessionStats.combo;
+      document.getElementById('xpEarned').textContent = sessionStats.xp;
+      document.getElementById('sidebarCombo').textContent = sessionStats.combo;
+      document.getElementById('sidebarXp').textContent = sessionStats.xp;
+    }
+
+    function startTimer() {
+      setInterval(() => {
+        const elapsed = Math.floor((Date.now() - sessionStartTime) / 1000);
+        const mins = Math.floor(elapsed / 60);
+        const secs = elapsed % 60;
+        document.getElementById('sessionTimer').textContent = 
+          String(mins).padStart(2, '0') + ':' + String(secs).padStart(2, '0');
+      }, 1000);
+    }
+
+    function endSession() {
+      const sessionLength = Math.floor((Date.now() - sessionStartTime) / 1000);
+      const totalWords = currentIndex;
+      const accuracy = totalWords > 0 ? Math.round((sessionStats.correct / totalWords) * 100) : 0;
+
+      // Save to localStorage
+      const userStats = JSON.parse(localStorage.getItem('userStats') || '{"streak": 0, "points": 0}');
+      userStats.points = (userStats.points || 0) + sessionStats.xp;
+      userStats.lastSession = new Date().toISOString();
+      localStorage.setItem('userStats', JSON.stringify(userStats));
+
+      document.getElementById('summaryCount').textContent = totalWords;
+      document.getElementById('summaryCorrect').textContent = sessionStats.correct;
+      document.getElementById('summaryIncorrect').textContent = sessionStats.incorrect;
+      document.getElementById('summaryXp').textContent = '+' + sessionStats.xp + ' XP';
+      document.getElementById('summaryModal').classList.add('active');
+    }
+
+    function goBack() {
+      window.location.href = '/student-learn.html';
+    }
+
+    document.getElementById('flashcard').addEventListener('click', toggleFlip);
+    document.getElementById('audioBtn').addEventListener('click', (e) => {
+      e.stopPropagation();
+      const utterance = new SpeechSynthesisUtterance(currentCards[currentIndex].word);
+      speechSynthesis.speak(utterance);
+    });
+
+    init();
+  </script>
+</body>
+</html>

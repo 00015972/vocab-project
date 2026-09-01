@@ -1,0 +1,569 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="refresh" content="0; url=/quiz-ultra.html" />
+  <title>Quiz Mode — VocabMaster</title>
+  <link rel="stylesheet" href="/css/main.css" />
+  <style>
+    :root {
+      --primary: #6c63ff;
+      --primary-light: #a78bfa;
+      --success: #10b981;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --bg: #0f1117;
+      --bg-secondary: #1a1d27;
+      --text: #e2e8f0;
+      --text-muted: #94a3b8;
+      --border: #2e3250;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    .quiz-container {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: linear-gradient(135deg, rgba(108, 99, 255, 0.1), rgba(167, 139, 250, 0.05));
+    }
+
+    /* TOP BAR */
+    .top-bar {
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .logo {
+      font-size: 18px;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      cursor: pointer;
+    }
+
+    .progress-info {
+      display: flex;
+      gap: 24px;
+      align-items: center;
+    }
+
+    .progress-bar-mini {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+    }
+
+    .progress-bar-mini-track {
+      width: 120px;
+      height: 6px;
+      background: var(--border);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .progress-bar-mini-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary), var(--primary-light));
+      transition: width 0.3s;
+    }
+
+    /* MAIN CONTENT */
+    .content {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+      max-width: 100%;
+    }
+
+    .quiz-wrapper {
+      width: 100%;
+      max-width: 700px;
+    }
+
+    .quiz-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .quiz-question {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 32px;
+      color: var(--text);
+    }
+
+    /* ANSWER OPTIONS */
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 32px;
+    }
+
+    .option {
+      background: var(--bg-secondary);
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-size: 15px;
+    }
+
+    .option:hover {
+      border-color: var(--primary);
+      background: var(--bg);
+    }
+
+    .option.selected {
+      border-color: var(--primary);
+      background: rgba(108, 99, 255, 0.15);
+    }
+
+    .option.correct {
+      border-color: var(--success);
+      background: rgba(16, 185, 129, 0.15);
+    }
+
+    .option.incorrect {
+      border-color: var(--danger);
+      background: rgba(239, 68, 68, 0.15);
+    }
+
+    .option-letter {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--border);
+      font-weight: 700;
+      font-size: 13px;
+      flex-shrink: 0;
+    }
+
+    .option.selected .option-letter {
+      background: var(--primary);
+      color: white;
+    }
+
+    .option.correct .option-letter {
+      background: var(--success);
+      color: white;
+    }
+
+    .option.incorrect .option-letter {
+      background: var(--danger);
+      color: white;
+    }
+
+    /* EXPLANATION */
+    .explanation {
+      display: none;
+      background: var(--bg);
+      border-left: 4px solid var(--primary);
+      padding: 16px;
+      border-radius: 8px;
+      margin-top: 20px;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .explanation.show {
+      display: block;
+    }
+
+    /* CONTROLS */
+    .controls {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      color: white;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 16px rgba(108, 99, 255, 0.3);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .btn-secondary {
+      background: var(--bg-secondary);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    /* FEEDBACK MODAL */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 40px;
+      max-width: 500px;
+      width: 90%;
+      text-align: center;
+    }
+
+    .modal-icon {
+      font-size: 60px;
+      margin-bottom: 20px;
+    }
+
+    .modal-title {
+      font-size: 24px;
+      font-weight: 800;
+      margin-bottom: 12px;
+    }
+
+    .modal-message {
+      color: var(--text-muted);
+      font-size: 14px;
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+
+    .modal-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 12px;
+      margin: 20px 0;
+    }
+
+    .stat-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+    }
+
+    .stat-card-value {
+      font-size: 28px;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .stat-card-label {
+      font-size: 12px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      margin-top: 4px;
+    }
+
+    @media (max-width: 768px) {
+      .content {
+        padding: 20px 16px;
+      }
+
+      .quiz-wrapper {
+        max-width: 100%;
+      }
+
+      .quiz-question {
+        font-size: 18px;
+      }
+
+      .option {
+        padding: 16px;
+        font-size: 14px;
+      }
+
+      .option-letter {
+        width: 28px;
+        height: 28px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="quiz-container">
+    <!-- TOP BAR -->
+    <div class="top-bar">
+      <div class="logo" onclick="goBack()">📚 VocabMaster</div>
+      <div class="progress-info">
+        <div class="progress-bar-mini">
+          <span id="questionCount">1 / 10</span>
+          <div class="progress-bar-mini-track">
+            <div class="progress-bar-mini-fill" id="progressFill" style="width: 0%"></div>
+          </div>
+        </div>
+        <div style="display: flex; gap: 8px; align-items: center;">
+          <span>⭐</span>
+          <span style="font-weight: 700; font-size: 14px;" id="scoreDisplay">0 pts</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="content">
+      <div class="quiz-wrapper">
+        <div class="quiz-header">
+          <div class="quiz-question" id="question">What is the definition of 'serendipity'?</div>
+        </div>
+
+        <div class="options" id="optionsContainer">
+          <!-- Options will be generated by JS -->
+        </div>
+
+        <div class="explanation" id="explanation"></div>
+
+        <div class="controls">
+          <button class="btn btn-secondary" onclick="goBack()">⬅️ Exit</button>
+          <button class="btn btn-primary" id="submitBtn" onclick="submitAnswer()" disabled>Submit Answer</button>
+          <button class="btn btn-primary" id="nextBtn" onclick="nextQuestion()" style="display: none;">Next Question →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUMMARY MODAL -->
+  <div id="summaryModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-icon">📊</div>
+      <div class="modal-title">Quiz Complete!</div>
+      <div class="modal-stats">
+        <div class="stat-card">
+          <div class="stat-card-value" id="finalScore">0</div>
+          <div class="stat-card-label">Points</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-value" id="finalCorrect">0</div>
+          <div class="stat-card-label">Correct</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-value" id="finalAccuracy">0%</div>
+          <div class="stat-card-label">Accuracy</div>
+        </div>
+      </div>
+      <div class="modal-message" id="summaryMessage">Great effort!</div>
+      <button class="btn btn-primary" onclick="goBack()" style="width: 100%; margin-top: 12px;">Back to Learn →</button>
+    </div>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script>
+    redirectIfNotAuth();
+
+    let quizWords = [];
+    let currentQuestionIndex = 0;
+    let totalScore = 0;
+    let correctCount = 0;
+    let selectedAnswer = null;
+    let answered = false;
+
+    async function init() {
+      try {
+        const response = await api.get('/auth/me');
+
+        const wordsResponse = await api.get('/words');
+        quizWords = (wordsResponse.words || []).slice(0, 10); // Limit to 10 for demo
+
+        if (quizWords.length === 0) {
+          alert('No words available. Go back and ask your creator to add words.');
+          window.location.href = '/student-learn.html';
+          return;
+        }
+
+        loadQuestion();
+      } catch (err) {
+        console.error('Init error:', err);
+        window.location.href = '/student-learn.html';
+      }
+    }
+
+    function generateOptions(correctWord) {
+      const options = [correctWord];
+      const otherWords = quizWords.filter(w => w.word !== correctWord);
+      
+      // Shuffle and pick 3 more words
+      otherWords.sort(() => Math.random() - 0.5);
+      options.push(...otherWords.slice(0, 3).map(w => w.definition));
+      
+      // Shuffle options
+      options.sort(() => Math.random() - 0.5);
+      return options;
+    }
+
+    function loadQuestion() {
+      if (currentQuestionIndex >= quizWords.length) {
+        endQuiz();
+        return;
+      }
+
+      const word = quizWords[currentQuestionIndex];
+      document.getElementById('question').textContent = What is the definition of ''?;
+      document.getElementById('questionCount').textContent = (currentQuestionIndex + 1) + ' / ' + quizWords.length;
+
+      const progress = ((currentQuestionIndex) / quizWords.length) * 100;
+      document.getElementById('progressFill').style.width = progress + '%';
+
+      const options = generateOptions(word.definition);
+      const optionsHtml = options
+        .map((opt, idx) => 
+          <div class="option" onclick="selectOption(this, '')">
+            <div class="option-letter"></div>
+            <span></span>
+          </div>
+        )
+        .join('');
+
+      document.getElementById('optionsContainer').innerHTML = optionsHtml;
+      document.getElementById('explanation').innerHTML = '';
+      document.getElementById('explanation').classList.remove('show');
+      document.getElementById('submitBtn').style.display = 'block';
+      document.getElementById('nextBtn').style.display = 'none';
+      document.getElementById('submitBtn').disabled = true;
+      selectedAnswer = null;
+      answered = false;
+    }
+
+    function selectOption(element, answer) {
+      if (answered) return;
+
+      document.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
+      element.classList.add('selected');
+      selectedAnswer = answer;
+      document.getElementById('submitBtn').disabled = false;
+    }
+
+    function submitAnswer() {
+      if (!selectedAnswer || answered) return;
+
+      answered = true;
+      const word = quizWords[currentQuestionIndex];
+      const isCorrect = selectedAnswer === word.definition;
+
+      // Update score
+      const points = isCorrect ? 10 : 0;
+      totalScore += points;
+      if (isCorrect) correctCount++;
+
+      // Show feedback
+      const options = document.querySelectorAll('.option');
+      options.forEach(opt => {
+        const text = opt.querySelector('span').textContent;
+        if (text === word.definition) {
+          opt.classList.add('correct');
+        } else if (text === selectedAnswer) {
+          opt.classList.add('incorrect');
+        }
+        opt.style.cursor = 'default';
+      });
+
+      // Show explanation
+      document.getElementById('explanation').innerHTML = 
+        <strong></strong><br>
+        <strong></strong> means: 
+      ;
+      document.getElementById('explanation').classList.add('show');
+
+      document.getElementById('submitBtn').style.display = 'none';
+      document.getElementById('nextBtn').style.display = 'flex';
+      document.getElementById('scoreDisplay').textContent = totalScore + ' pts';
+    }
+
+    function nextQuestion() {
+      currentQuestionIndex++;
+      loadQuestion();
+    }
+
+    function endQuiz() {
+      const accuracy = Math.round((correctCount / quizWords.length) * 100);
+      document.getElementById('finalScore').textContent = totalScore;
+      document.getElementById('finalCorrect').textContent = correctCount;
+      document.getElementById('finalAccuracy').textContent = accuracy + '%';
+
+      let message = '';
+      if (accuracy >= 80) message = 'Excellent work! You\\'re on fire! 🔥';
+      else if (accuracy >= 60) message = 'Good effort! Keep practicing! 💪';
+      else message = 'Keep learning! You\\'ll improve with practice! 📚';
+      document.getElementById('summaryMessage').textContent = message;
+
+      // Save stats
+      const userStats = JSON.parse(localStorage.getItem('userStats') || '{"streak": 0, "points": 0}');
+      userStats.points = (userStats.points || 0) + totalScore;
+      localStorage.setItem('userStats', JSON.stringify(userStats));
+
+      document.getElementById('summaryModal').classList.add('active');
+    }
+
+    function goBack() {
+      window.location.href = '/student-learn.html';
+    }
+
+    init();
+  </script>
+</body>
+</html>

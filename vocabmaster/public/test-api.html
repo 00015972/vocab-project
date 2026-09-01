@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>VocabMaster API Test</title>
+    <style>
+        body { font-family: Arial; margin: 20px; }
+        .result { background: #f0f0f0; padding: 10px; margin-top: 10px; white-space: pre-wrap; }
+        button { padding: 10px 20px; margin: 5px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>VocabMaster API Testing</h1>
+    
+    <h2>Test Registration</h2>
+    <button onclick="testStudentRegistration()">Register Student</button>
+    <button onclick="testCreatorRegistration()">Register Creator</button>
+    <button onclick="testLogin()">Login</button>
+    <button onclick="testProgress()">Get Progress</button>
+    
+    <div id="result" class="result"></div>
+    
+    <script>
+        const API_URL = 'http://localhost:3000';
+        let studentToken = null;
+        let creatorToken = null;
+        
+        function log(msg) {
+            document.getElementById('result').textContent += msg + '\n';
+        }
+        
+        function clearLog() {
+            document.getElementById('result').textContent = '';
+        }
+        
+        async function testStudentRegistration() {
+            clearLog();
+            log('Testing student registration...\n');
+            
+            try {
+                const response = await fetch(`${API_URL}/api/auth/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: 'student' + Date.now() + '@test.com',
+                        password: 'Test123456!',
+                        name: 'John Student',
+                        role: 'student'
+                    })
+                });
+                
+                const data = await response.json();
+                log(`Status: ${response.status}`);
+                log(`Response: ${JSON.stringify(data, null, 2)}`);
+                
+                if (data.token) {
+                    studentToken = data.token;
+                    log('\n✓ Token received and saved!');
+                }
+            } catch (err) {
+                log(`Error: ${err.message}`);
+            }
+        }
+        
+        async function testCreatorRegistration() {
+            clearLog();
+            log('Testing creator registration...\n');
+            
+            try {
+                const response = await fetch(`${API_URL}/api/auth/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: 'creator' + Date.now() + '@test.com',
+                        password: 'Test123456!',
+                        name: 'Jane Creator',
+                        role: 'creator',
+                        creatorPortalCode: 'SAT141900'
+                    })
+                });
+                
+                const data = await response.json();
+                log(`Status: ${response.status}`);
+                log(`Response: ${JSON.stringify(data, null, 2)}`);
+                
+                if (data.token) {
+                    creatorToken = data.token;
+                    log('\n✓ Token received and saved!');
+                }
+            } catch (err) {
+                log(`Error: ${err.message}`);
+            }
+        }
+        
+        async function testLogin() {
+            clearLog();
+            log('Testing login...\n');
+            
+            try {
+                const response = await fetch(`${API_URL}/api/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: 'student1@test.com',
+                        password: 'Test123456!'
+                    })
+                });
+                
+                const data = await response.json();
+                log(`Status: ${response.status}`);
+                log(`Response: ${JSON.stringify(data, null, 2)}`);
+            } catch (err) {
+                log(`Error: ${err.message}`);
+            }
+        }
+        
+        async function testProgress() {
+            clearLog();
+            log('Testing progress API...\n');
+            
+            if (!studentToken) {
+                log('❌ No student token! Register first.');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_URL}/api/progress`, {
+                    method: 'GET',
+                    headers: { 
+                        'Authorization': `Bearer ${studentToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                log(`Status: ${response.status}`);
+                log(`Response: ${JSON.stringify(data, null, 2)}`);
+            } catch (err) {
+                log(`Error: ${err.message}`);
+            }
+        }
+    </script>
+</body>
+</html>

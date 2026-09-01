@@ -1,0 +1,2606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Statistics - Taleem Lexicon</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.9.4/dist/dotlottie-wc.js" type="module"></script>
+  <style>
+    :root {
+      --emerald: #50C878;
+      --emerald-dark: #2d7a5c;
+      --gold: #D4AF37;
+      --ink: #0f172a;
+      --slate: #334155;
+      --muted: #64748b;
+      --line: rgba(15, 23, 42, 0.12);
+      --panel: rgba(255, 255, 255, 0.86);
+      --panel-strong: #ffffff;
+      --shadow: 0 18px 50px rgba(15, 23, 42, 0.10);
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      color: var(--ink);
+      background:
+        linear-gradient(135deg, rgba(6, 34, 25, 0.42), rgba(12, 52, 41, 0.30)),
+        url('https://t4.ftcdn.net/jpg/07/53/58/81/360_F_753588167_W30rYUoyNIkO702vftdkgPf0UhBufpmw.jpg') center/cover no-repeat fixed;
+    }
+
+    .shell {
+      max-width: 1340px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, rgba(14, 61, 47, 0.52), rgba(37, 120, 95, 0.38));
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      border-radius: 28px;
+      padding: 26px;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(2px);
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      inset: auto -80px -80px auto;
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      background: rgba(212, 175, 55, 0.20);
+      filter: blur(10px);
+    }
+
+    .hero-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      flex-wrap: wrap;
+      position: relative;
+      z-index: 1;
+    }
+
+    .brand-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 12px;
+    }
+
+    .brand-row img {
+      width: 52px;
+      height: 52px;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.18);
+      border: 1px solid rgba(255, 255, 255, 0.24);
+      color: #ecfff4;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: clamp(30px, 4vw, 48px);
+      line-height: 1.05;
+      letter-spacing: -0.04em;
+    }
+
+    .hero p {
+      margin: 0;
+      max-width: 760px;
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .btn {
+      border: 0;
+      border-radius: 14px;
+      padding: 12px 16px;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+    }
+
+    .btn:hover { transform: translateY(-1px); }
+    .btn-primary {
+      background: linear-gradient(135deg, #fff, #fff7da);
+      color: #144b37;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.12);
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+    }
+
+    .overview {
+      display: grid;
+      grid-template-columns: repeat(8, minmax(140px, 1fr));
+      gap: 14px;
+      margin-top: 18px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.10);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      border-radius: 22px;
+      box-shadow: 0 14px 34px rgba(15, 23, 42, 0.08);
+      padding: 18px;
+    }
+
+    .book-card {
+      position: relative;
+      width: 100%;
+      height: 240px;
+      min-width: 0;
+      perspective: 1400px;
+      transform-style: preserve-3d;
+    }
+
+    .book-shell {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transform-style: preserve-3d;
+      transition: transform 0.8s ease;
+    }
+
+    .book-card:hover .book-shell {
+      transform: rotateY(-18deg) translateX(-4px);
+    }
+
+    .book-page {
+      position: absolute;
+      inset: 0 0 0 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 18px 18px 16px 24px;
+      border-radius: 22px;
+      background: linear-gradient(180deg, rgba(255, 248, 240, 0.98), rgba(255, 238, 220, 0.94));
+      border: 1px solid rgba(120, 62, 22, 0.10);
+      box-shadow: 18px 16px 28px rgba(107, 64, 34, 0.12), -8px -8px 20px rgba(255,255,255,0.72);
+      z-index: 1;
+    }
+
+    .book-page-header {
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+    }
+
+    .book-page-label {
+      color: rgba(110, 59, 16, 0.80);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-weight: 800;
+    }
+
+    .book-page-number {
+      font-size: clamp(26px, 2vw, 36px);
+      line-height: 1;
+      font-weight: 800;
+      letter-spacing: -0.06em;
+      color: rgba(54, 35, 19, 0.96);
+    }
+
+    .book-page-note {
+      font-size: 12px;
+      line-height: 1.5;
+      color: rgba(88, 65, 44, 0.85);
+    }
+
+    .book-cover {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding: 18px 16px 16px 18px;
+      border-radius: 22px;
+      color: #fff;
+      background: linear-gradient(135deg, rgba(255,255,255,0.18), rgba(255,255,255,0.04)),
+        linear-gradient(135deg, #e91e63 0%, #ff5722 52%, #ff9800 100%);
+      border: 1px solid rgba(255,255,255,0.25);
+      box-shadow: 18px 18px 32px rgba(123, 30, 61, 0.18);
+      transform-origin: left center;
+      transition: transform 0.8s ease, box-shadow 0.3s ease;
+      z-index: 3;
+      overflow: hidden;
+    }
+
+    .book-cover::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.16), transparent 50%);
+      pointer-events: none;
+    }
+
+    .book-card:hover .book-cover {
+      transform: rotateY(-78deg) translateX(-4px);
+      box-shadow: 10px 12px 25px rgba(16, 24, 40, 0.08);
+    }
+
+    .book-cover-label {
+      position: relative;
+      z-index: 1;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .book-cover-icon {
+      position: relative;
+      z-index: 1;
+      width: 76px;
+      height: 76px;
+      display: block;
+      margin: auto 0 0 0;
+      filter: drop-shadow(0 8px 20px rgba(0,0,0,0.15));
+    }
+
+    .stat-card {
+      min-height: 116px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      background: transparent;
+      border: none;
+      border-radius: 22px;
+      padding: 0;
+    }
+
+    .stat-label {
+      display: none;
+    }
+
+    .stat-value {
+      display: none;
+    }
+
+    .stat-note {
+      display: none;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 18px;
+      margin-top: 18px;
+    }
+
+    .section-title {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-end;
+      margin-bottom: 14px;
+    }
+
+    .section-title h2 {
+      margin: 0;
+      font-size: 20px;
+      letter-spacing: -0.03em;
+    }
+
+    .section-title p {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .subgrid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .mini-chart {
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      border-radius: 22px;
+      padding: 18px;
+      box-shadow: 0 14px 34px rgba(15, 23, 42, 0.10);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .chart-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .chart-head h3 {
+      margin: 0;
+      font-size: 15px;
+      letter-spacing: -0.02em;
+    }
+
+    .chart-head span {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .chart-canvas {
+      width: 100%;
+      height: 260px;
+    }
+
+    .bars {
+      display: flex;
+      align-items: flex-end;
+      gap: 6px;
+      height: 200px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+    }
+
+    .bar-wrap {
+      min-width: 18px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 6px;
+    }
+
+    .bar {
+      width: 100%;
+      min-height: 8px;
+      border-radius: 999px 999px 8px 8px;
+      background: linear-gradient(180deg, var(--gold), rgba(212, 175, 55, 0.35));
+      box-shadow: inset 0 -8px 18px rgba(0, 0, 0, 0.08);
+      position: relative;
+    }
+
+    .bar.accent {
+      background: linear-gradient(180deg, var(--emerald), rgba(80, 200, 120, 0.35));
+    }
+
+    .bar-label {
+      width: 100%;
+      text-align: center;
+      font-size: 10px;
+      color: var(--muted);
+      transform: rotate(-35deg);
+      transform-origin: center;
+      margin-top: 10px;
+      white-space: nowrap;
+    }
+
+    .ring-card {
+      display: grid;
+      grid-template-columns: 170px 1fr;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .ring {
+      width: 170px;
+      height: 170px;
+      border-radius: 50%;
+      background: conic-gradient(var(--emerald) 0deg, #dbeafe 0deg);
+      position: relative;
+      box-shadow: inset 0 0 0 14px rgba(255,255,255,0.85), var(--shadow);
+      margin: 0 auto;
+    }
+
+    .ring::after {
+      content: '';
+      position: absolute;
+      inset: 28px;
+      border-radius: 50%;
+      background: white;
+      box-shadow: inset 0 0 0 1px var(--line);
+    }
+
+    .ring-center {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1;
+      text-align: center;
+      padding: 30px;
+      flex-direction: column;
+    }
+
+    .ring-center strong {
+      font-size: 32px;
+      line-height: 1;
+      letter-spacing: -0.05em;
+    }
+
+    .ring-center span {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 6px;
+    }
+
+    .legend {
+      display: grid;
+      gap: 10px;
+      align-content: center;
+    }
+
+    .legend-item {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      font-size: 13px;
+    }
+
+    .legend-left {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      min-width: 0;
+    }
+
+    .swatch {
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      flex: 0 0 auto;
+    }
+
+    .legend-name {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .legend-value {
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .panel {
+      margin-top: 18px;
+      background: rgba(255, 255, 255, 0.10);
+      border: 1px solid rgba(255, 255, 255, 0.20);
+      border-radius: 26px;
+      box-shadow: 0 14px 34px rgba(15, 23, 42, 0.08);
+      overflow: hidden;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .panel-inner {
+      padding: 20px;
+    }
+
+    .filters {
+      display: grid;
+      grid-template-columns: 1.2fr 160px 160px 160px 160px;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    input, select {
+      width: 100%;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      border-radius: 14px;
+      padding: 12px 14px;
+      font: inherit;
+      color: var(--ink);
+      background: rgba(255, 255, 255, 0.18);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      outline: none;
+    }
+
+    input:focus, select:focus {
+      border-color: rgba(80, 200, 120, 0.55);
+      box-shadow: 0 0 0 4px rgba(80, 200, 120, 0.12);
+    }
+
+    .table-wrap {
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 18px;
+      overflow: auto;
+      background: rgba(255, 255, 255, 0.10);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 920px;
+    }
+
+    th, td {
+      padding: 14px 16px;
+      border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+      text-align: left;
+      font-size: 14px;
+      vertical-align: top;
+    }
+
+    th {
+      position: sticky;
+      top: 0;
+      background: rgba(255, 255, 255, 0.14);
+      color: rgba(255, 255, 255, 0.88);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      z-index: 1;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+
+    tr:hover td { background: rgba(255, 255, 255, 0.06); }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .pill.mastered { background: rgba(80, 200, 120, 0.16); color: #166534; }
+    .pill.strong { background: rgba(212, 175, 55, 0.18); color: #8a6615; }
+    .pill.growing { background: rgba(37, 99, 235, 0.12); color: #1d4ed8; }
+    .pill.learning { background: rgba(245, 158, 11, 0.14); color: #9a5b00; }
+    .pill.new { background: rgba(148, 163, 184, 0.16); color: #475569; }
+
+    .muted { color: var(--muted); }
+    .empty {
+      text-align: center;
+      padding: 34px;
+      color: var(--muted);
+    }
+
+    .loading {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--muted);
+    }
+
+    .spinner {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 2px solid rgba(80, 200, 120, 0.18);
+      border-top-color: var(--emerald);
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .footer-note {
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .range-btn {
+      padding: 5px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.7);
+      color: var(--slate);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .range-btn.active {
+      background: var(--emerald);
+      border-color: var(--emerald);
+      color: #fff;
+    }
+    .range-btn:hover:not(.active) {
+      background: rgba(80,200,120,0.1);
+      border-color: rgba(80,200,120,0.3);
+    }
+
+    /* ── Enhanced Empty State Styling ──────────────────────────── */
+    .empty-state-card {
+      text-align: center;
+      padding: 36px 24px;
+      color: var(--muted);
+      border-radius: 16px;
+      background: linear-gradient(135deg, rgba(80, 200, 120, 0.04), rgba(212, 175, 55, 0.02));
+      border: 1px solid rgba(80, 200, 120, 0.12);
+    }
+
+    .empty-state-icon {
+      font-size: 48px;
+      line-height: 1;
+      margin-bottom: 12px;
+      display: block;
+    }
+
+    .empty-state-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--slate);
+      margin: 0 0 8px;
+    }
+
+    .empty-state-desc {
+      font-size: 13px;
+      line-height: 1.6;
+      margin: 0 0 16px;
+      max-width: 420px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .empty-state-tips {
+      display: grid;
+      gap: 8px;
+      margin: 16px 0 0;
+      font-size: 12px;
+      text-align: left;
+      max-width: 420px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .tip-item {
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+      padding: 8px;
+      background: rgba(255, 255, 255, 0.5);
+      border-radius: 8px;
+      border-left: 2px solid var(--emerald);
+    }
+
+    .tip-item strong {
+      color: var(--ink);
+      min-width: 60px;
+    }
+
+    .tip-icon {
+      font-size: 14px;
+      line-height: 1.4;
+      flex-shrink: 0;
+    }
+
+    .empty-state-cta {
+      display: inline-block;
+      margin-top: 12px;
+      padding: 10px 14px;
+      background: linear-gradient(135deg, var(--emerald), var(--emerald-dark));
+      color: white;
+      text-decoration: none;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 12px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .empty-state-cta:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(80, 200, 120, 0.3);
+    }
+
+    .stage4-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      margin-top: 18px;
+    }
+
+    .mini-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .chart-panel {
+      background: rgba(255, 255, 255, 0.14);
+      border: 1px solid rgba(255, 255, 255, 0.20);
+      border-radius: 18px;
+      padding: 14px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.20);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+
+    .chart-panel + .chart-panel {
+      margin-top: 12px;
+    }
+
+    .chart-panel-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .chart-panel-head strong {
+      font-size: 13px;
+      letter-spacing: -0.01em;
+    }
+
+    .chart-panel-head span {
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .chart-mini-note {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 6px;
+    }
+
+    .leaderboard-filters {
+      display: grid;
+      grid-template-columns: minmax(130px, 1fr) minmax(130px, 1fr) minmax(160px, 1.1fr) auto;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .leaderboard-filters .btn {
+      padding: 10px 12px;
+      border-radius: 12px;
+    }
+
+    .leaderboard-note {
+      margin: 0 0 10px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .mini-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.72);
+    }
+
+    .mini-row-left {
+      min-width: 0;
+    }
+
+    .mini-row-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--ink);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .mini-row-note {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .mini-row-value {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--slate);
+      white-space: nowrap;
+    }
+
+    @media (max-width: 1180px) {
+      .overview { grid-template-columns: repeat(4, minmax(140px, 1fr)); }
+      .grid { grid-template-columns: 1fr; }
+      .stage4-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 760px) {
+      .shell { padding: 14px; }
+      .hero { padding: 18px; border-radius: 22px; }
+      .overview { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .subgrid { grid-template-columns: 1fr; }
+      .ring-card { grid-template-columns: 1fr; }
+      .filters { grid-template-columns: 1fr; }
+      .leaderboard-filters { grid-template-columns: 1fr; }
+      .chart-canvas { height: 220px; }
+      table { min-width: 720px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <section class="hero">
+      <div class="hero-top">
+        <div>
+          <div class="brand-row">
+            <img src="https://www.image2url.com/r2/default/images/1784112907446-0463de99-8cb2-4889-82b8-3e0c5207bc0d.jpg" alt="Taleem Lexicon" />
+            <div>
+              <div class="eyebrow">Phase 7 analytics</div>
+              <h1>Your Learning Dashboard</h1>
+            </div>
+          </div>
+          <p id="heroCopy">Live stats, session history, and word mastery insights for the signed-in learner.</p>
+        </div>
+        <div class="hero-actions">
+          <a class="btn btn-secondary" href="/student-learn-v3.html">Back to Study</a>
+          <button class="btn btn-primary" id="downloadBtn" type="button">Download CSV</button>
+          <button class="btn btn-secondary" id="refreshBtn" type="button">Refresh</button>
+        </div>
+      </div>
+
+      <div class="overview" id="overviewGrid">
+        <div class="stat-card">
+          <div class="book-card">
+            <div class="book-shell">
+              <div class="book-page">
+                <div class="book-page-header"><span class="book-page-label">Total XP</span></div>
+                <div class="book-page-number" id="totalXP">0</div>
+                <div class="book-page-note" id="xpNote">Loading…</div>
+              </div>
+              <div class="book-cover">
+                <span class="book-cover-label">XP</span>
+                <dotlottie-wc class="book-cover-icon" src="https://lottie.host/743c3b84-d122-49b6-83e6-6038fb27e9b7/AWGpmC6G36.lottie" autoplay loop></dotlottie-wc>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="book-card">
+            <div class="book-shell">
+              <div class="book-page">
+                <div class="book-page-header"><span class="book-page-label">Study Time</span></div>
+                <div class="book-page-number" id="studyTime">0m</div>
+                <div class="book-page-note" id="studyTimeNote">Total time in study sessions</div>
+              </div>
+              <div class="book-cover">
+                <span class="book-cover-label">Study</span>
+                <dotlottie-wc class="book-cover-icon" src="https://lottie.host/ecc050ee-d4c4-4eb4-8777-e4614927dabb/iysC7lZPO9.lottie" autoplay loop></dotlottie-wc>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="book-card">
+            <div class="book-shell">
+              <div class="book-page">
+                <div class="book-page-header"><span class="book-page-label">Words Learned</span></div>
+                <div class="book-page-number" id="wordsLearned">0</div>
+                <div class="book-page-note" id="wordsNote">Across all mastered words</div>
+              </div>
+              <div class="book-cover">
+                <span class="book-cover-label">Words</span>
+                <dotlottie-wc class="book-cover-icon" src="https://lottie.host/c0c7b76f-21d2-467a-bcd0-59a76a72ce85/NJD7rP3LR0.lottie" autoplay loop></dotlottie-wc>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="book-card">
+            <div class="book-shell">
+              <div class="book-page">
+                <div class="book-page-header"><span class="book-page-label">Current Streak</span></div>
+                <div class="book-page-number" id="currentStreak">0</div>
+                <div class="book-page-note" id="streakNote">Best streak: 0</div>
+              </div>
+              <div class="book-cover">
+                <span class="book-cover-label">Streak</span>
+                <dotlottie-wc class="book-cover-icon" src="https://lottie.host/08f99bf3-cfad-42ef-bfb1-c9fdc9e19f48/f4z9qj4z3q.lottie" autoplay loop></dotlottie-wc>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="book-card">
+            <div class="book-shell">
+              <div class="book-page">
+                <div class="book-page-header"><span class="book-page-label">Accuracy</span></div>
+                <div class="book-page-number" id="accuracy">0%</div>
+                <div class="book-page-note" id="accuracyNote">Average session accuracy</div>
+              </div>
+              <div class="book-cover">
+                <span class="book-cover-label">Accuracy</span>
+                <dotlottie-wc class="book-cover-icon" src="https://lottie.host/ce9382e8-a4af-4341-a02b-c17c6ba1881e/xXpvFH3yMh.lottie" autoplay loop></dotlottie-wc>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="book-card">
+            <div class="book-shell">
+              <div class="book-page">
+                <div class="book-page-header"><span class="book-page-label">Favorite Mode</span></div>
+                <div class="book-page-number" id="favoriteMode">-</div>
+                <div class="book-page-note" id="favoriteModeNote">Most used study mode</div>
+              </div>
+              <div class="book-cover">
+                <span class="book-cover-label">Mode</span>
+                <dotlottie-wc class="book-cover-icon" src="https://lottie.host/643d1537-e1e4-42af-a021-45c91b60c1ba/7zAgwBChMt.lottie" autoplay loop></dotlottie-wc>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="book-card">
+            <div class="book-shell">
+              <div class="book-page">
+                <div class="book-page-header"><span class="book-page-label">Sessions</span></div>
+                <div class="book-page-number" id="sessionsCompleted">0</div>
+                <div class="book-page-note" id="sessionsNote">Recent completed lessons</div>
+              </div>
+              <div class="book-cover">
+                <span class="book-cover-label">Sessions</span>
+                <dotlottie-wc class="book-cover-icon" src="https://lottie.host/3a9cc653-36c5-483c-acdf-0a432a9146a1/uCRdxrFUn1.lottie" autoplay loop></dotlottie-wc>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="book-card">
+            <div class="book-shell">
+              <div class="book-page">
+                <div class="book-page-header"><span class="book-page-label">Retention</span></div>
+                <div class="book-page-number" id="retention">0%</div>
+                <div class="book-page-note" id="retentionNote">From the progress API</div>
+              </div>
+              <div class="book-cover">
+                <span class="book-cover-label">Memory</span>
+                <dotlottie-wc class="book-cover-icon" src="https://lottie.host/2b5906a2-8f75-4fde-8987-d5f7d9d5e539/kwVM4QNX3Y.lottie" autoplay loop></dotlottie-wc>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="grid">
+      <div class="mini-chart card">
+        <div class="section-title">
+          <div>
+            <h2>Study Pulse</h2>
+            <p id="studyPulseDesc">30-day session activity and accuracy trend.</p>
+          </div>
+          <div style="display:flex; gap:6px; align-items:center; flex-shrink:0;">
+            <button class="range-btn active" data-range="7" type="button">7d</button>
+            <button class="range-btn" data-range="30" type="button">30d</button>
+            <button class="range-btn" data-range="90" type="button">90d</button>
+          </div>
+        </div>
+        <div class="subgrid">
+          <div class="chart-panel">
+            <div class="chart-panel-head">
+              <strong>XP by day</strong>
+              <span>Last 30 days</span>
+            </div>
+            <canvas id="xpChart" class="chart-canvas"></canvas>
+            <div id="xpBars" aria-hidden="true"></div>
+          </div>
+          <div class="chart-panel">
+            <div class="chart-panel-head">
+              <strong>Accuracy by day</strong>
+              <span>Last 30 days</span>
+            </div>
+            <canvas id="accuracyChart" class="chart-canvas"></canvas>
+            <div id="accuracyBars" aria-hidden="true"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mini-chart card ring-card">
+        <div class="ring" id="modeRing">
+          <canvas id="modeChart" class="chart-canvas" style="position:absolute; inset:0; z-index:0;"></canvas>
+          <div class="ring-center">
+            <strong id="modeRingValue">0</strong>
+            <span>sessions</span>
+          </div>
+        </div>
+        <div>
+          <div class="section-title" style="margin-bottom: 10px;">
+            <div>
+              <h2>Mode Breakdown</h2>
+              <p>Which study modes you use most.</p>
+            </div>
+          </div>
+          <div class="legend" id="modeLegend"></div>
+          <div class="legend" id="skillGapLegend" style="margin-top: 12px;"></div>
+          <div class="footer-note" id="periodCompareNote"></div>
+          <div class="footer-note" id="bestTimeNote"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- EXERCISE DRILL-DOWN SECTION -->
+    <section style="margin-top: 28px;">
+      <div class="card" style="padding: 28px;">
+        <div class="section-title" style="margin-bottom: 20px;">
+          <div>
+            <h2>Exercise Performance Drill-Down</h2>
+            <p>Detailed breakdown of performance by exercise type and skill identification.</p>
+          </div>
+        </div>
+
+        <!-- Exercise Type Table -->
+        <div style="margin-bottom: 28px;">
+          <h3 style="font-size: 14px; font-weight: 700; color: var(--slate); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px;">Exercise Modes Performance</h3>
+          <div style="overflow-x: auto; border-radius: 12px; border: 1px solid var(--line);">
+            <table id="exerciseTypeTable" style="width: 100%; border-collapse: collapse; font-size: 13px;">
+              <thead>
+                <tr style="background: rgba(80, 200, 120, 0.08); border-bottom: 2px solid var(--line);">
+                  <th style="padding: 12px; text-align: left; font-weight: 700; color: var(--slate);">Mode</th>
+                  <th style="padding: 12px; text-align: center; font-weight: 700; color: var(--slate);">Sessions</th>
+                  <th style="padding: 12px; text-align: center; font-weight: 700; color: var(--slate);">Accuracy</th>
+                  <th style="padding: 12px; text-align: center; font-weight: 700; color: var(--slate);">XP Earned</th>
+                  <th style="padding: 12px; text-align: center; font-weight: 700; color: var(--slate);">Time Spent</th>
+                  <th style="padding: 12px; text-align: left; font-weight: 700; color: var(--slate);">Last Practiced</th>
+                </tr>
+              </thead>
+              <tbody id="exerciseTypeTableBody">
+                <tr><td colspan="6" style="padding: 20px; text-align: center; color: var(--muted);">Loading exercise data...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Skill Gaps & Recommendations -->
+        <div>
+          <h3 style="font-size: 14px; font-weight: 700; color: var(--slate); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px;">Skill Gaps & Recommendations</h3>
+          <div id="skillGapsContainer" style="display: grid; gap: 12px;">
+            <div style="padding: 16px; text-align: center; color: var(--muted); background: rgba(100,117,139,0.05); border-radius: 12px;">No skill gaps detected. Keep up the excellent work!</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="stage4-grid">
+      <div class="mini-chart card">
+        <div class="section-title">
+          <div>
+            <h2>Achievements</h2>
+            <p>Stage 4 badges based on streak, XP, and accuracy.</p>
+          </div>
+          <a href="/achievements.html" style="display:inline-flex; align-items:center; gap:6px; padding:8px 14px; border-radius:10px; background:rgba(80,200,120,.08); color:var(--emerald); text-decoration:none; font-weight:700; font-size:.875rem; border:1px solid rgba(80,200,120,.2); transition:all .2s ease; cursor:pointer;" onmouseover="this.style.background='rgba(80,200,120,.12)'; this.style.borderColor='rgba(80,200,120,.4)';" onmouseout="this.style.background='rgba(80,200,120,.08)'; this.style.borderColor='rgba(80,200,120,.2)';">View Full Page ↗</a>
+        </div>
+        <div class="mini-list" id="achievementsList">
+          <div class="empty">Loading achievements...</div>
+        </div>
+      </div>
+
+      <div class="mini-chart card">
+        <div class="section-title">
+          <div>
+            <h2>Leaderboard</h2>
+            <p>Top learners ranked by total XP.</p>
+          </div>
+          <a href="/leaderboard.html" style="display:inline-flex; align-items:center; gap:6px; padding:8px 14px; border-radius:10px; background:rgba(80,200,120,.08); color:var(--emerald); text-decoration:none; font-weight:700; font-size:.875rem; border:1px solid rgba(80,200,120,.2); transition:all .2s ease; cursor:pointer;" onmouseover="this.style.background='rgba(80,200,120,.12)'; this.style.borderColor='rgba(80,200,120,.4)';" onmouseout="this.style.background='rgba(80,200,120,.08)'; this.style.borderColor='rgba(80,200,120,.2)';">View Full Page ↗</a>
+        </div>
+        <div class="leaderboard-filters">
+          <select id="leaderboardScope" aria-label="Leaderboard scope">
+            <option value="global">Global</option>
+            <option value="creator">Creator group</option>
+            <option value="class">Class</option>
+          </select>
+          <select id="leaderboardPeriod" aria-label="Leaderboard period">
+            <option value="all">All time</option>
+            <option value="weekly">Weekly</option>
+            <option value="monthly">Monthly</option>
+          </select>
+          <input id="leaderboardClassCode" type="text" placeholder="Class code (for class scope)" />
+          <button class="btn btn-primary" id="applyLeaderboardFilters" type="button">Apply</button>
+        </div>
+        <div id="yourRankBanner" style="display:none; margin:10px 0 6px; padding:10px 14px; border-radius:10px; background:linear-gradient(135deg,rgba(80,200,120,.12),rgba(212,175,55,.1)); border:1px solid rgba(80,200,120,.2); font-size:.88rem;">
+          <span id="yourRankLeague" style="font-weight:800; margin-right:6px;"></span>
+          <span id="yourRankText" style="color:var(--neutral-600);"></span>
+        </div>
+        <p class="leaderboard-note" id="leaderboardMeta">Showing global all-time ranking.</p>
+        <div class="mini-list" id="leaderboardList">
+          <div class="empty">Loading leaderboard...</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-inner">
+        <div class="section-title">
+          <div>
+            <h2>Session History</h2>
+            <p>Filter recent sessions by mode or date range.</p>
+          </div>
+        </div>
+        <div class="filters">
+          <input id="sessionSearch" type="text" placeholder="Search sessions by mode or note..." />
+          <select id="modeFilter">
+            <option value="">All modes</option>
+            <option value="flashcards">Flashcards</option>
+            <option value="quiz">Quiz</option>
+            <option value="matching">Matching</option>
+            <option value="speaking">Speaking</option>
+            <option value="spelling">Spelling</option>
+            <option value="listening">Listening</option>
+          </select>
+          <input id="fromDate" type="date" />
+          <input id="toDate" type="date" />
+          <button class="btn btn-primary" id="clearSessionFilters" type="button">Clear Filters</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Mode</th>
+                <th>Date</th>
+                <th>XP</th>
+                <th>Accuracy</th>
+                <th>Duration</th>
+              </tr>
+            </thead>
+            <tbody id="sessionsBody">
+              <tr><td colspan="5" class="empty"><span class="loading"><span class="spinner"></span>Loading sessions…</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel" style="margin-top: 18px;">
+      <div class="panel-inner">
+        <div class="section-title">
+          <div>
+            <h2>Word Mastery Report</h2>
+            <p>Mastery levels derived from review history and difficulty.</p>
+          </div>
+        </div>
+        <div class="filters">
+          <input id="wordSearch" type="text" placeholder="Search words..." />
+          <select id="masteryFilter">
+            <option value="">All mastery levels</option>
+            <option value="0">New</option>
+            <option value="1">Learning</option>
+            <option value="2">Growing</option>
+            <option value="3">Strong</option>
+            <option value="4">Mastered</option>
+          </select>
+          <select id="sortBy">
+            <option value="mastery-desc">Sort by mastery</option>
+            <option value="word-asc">Word A-Z</option>
+            <option value="word-desc">Word Z-A</option>
+            <option value="accuracy-desc">Accuracy</option>
+            <option value="attempts-desc">Attempts</option>
+          </select>
+          <div></div>
+          <button class="btn btn-primary" id="clearWordFilters" type="button">Clear Filters</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Word</th>
+                <th>Mastery</th>
+                <th>Accuracy</th>
+                <th>Attempts</th>
+                <th>Last Review</th>
+                <th>Next Review</th>
+              </tr>
+            </thead>
+            <tbody id="wordsBody">
+              <tr><td colspan="6" class="empty"><span class="loading"><span class="spinner"></span>Loading words…</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script>
+    let progressData = null;
+    let statsData = null;
+    let historyData = null;
+    let drilldownData = null;
+    let achievementsData = null;
+    let leaderboardData = null;
+    let wordRows = [];
+    let sessions = [];
+    let modeCounts = {};
+    let historyRange = 30;
+    function chartColors() {
+      return ['#50C878', '#D4AF37', '#60a5fa', '#f97316', '#8b5cf6', '#14b8a6'];
+    }
+
+    function buildChartSeriesFromHistory(historyRows, metric) {
+      const rows = Array.isArray(historyRows) ? historyRows : [];
+      const metricKey = metric === 'accuracy' ? 'avgAccuracy' : 'xpEarned';
+      return rows.map((row, index) => {
+        const dateKey = String(row?.dateKey || row?.key || '');
+        const label = typeof row?.label === 'string' && row.label
+          ? row.label
+          : (dateKey ? dateKey.slice(5) : `Day ${index + 1}`);
+        const value = metric === 'accuracy'
+          ? Number(row?.avgAccuracy ?? row?.accuracy ?? row?.value ?? 0)
+          : Number(row?.xpEarned ?? row?.value ?? 0);
+        return { dateKey, label, value, [metricKey]: value };
+      });
+    }
+
+    function prepareCanvas(canvas) {
+      if (!canvas) return null;
+      const dpr = Math.max(window.devicePixelRatio || 1, 1);
+      const rect = canvas.getBoundingClientRect();
+      const width = Math.max(Math.round(rect.width), 1);
+      const height = Math.max(Math.round(rect.height), 1);
+      canvas.width = Math.round(width * dpr);
+      canvas.height = Math.round(height * dpr);
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return null;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.clearRect(0, 0, width, height);
+      return { ctx, width, height };
+    }
+
+    function drawLineChart(canvas, labels, values, color, fillColor) {
+      const prepared = prepareCanvas(canvas);
+      if (!prepared) return;
+      const { ctx, width, height } = prepared;
+      const pad = { top: 16, right: 16, bottom: 34, left: 42 };
+      const chartWidth = width - pad.left - pad.right;
+      const chartHeight = height - pad.top - pad.bottom;
+      const maxValue = Math.max(...values, 1);
+
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, width, height);
+
+      ctx.strokeStyle = 'rgba(15, 23, 42, 0.08)';
+      ctx.lineWidth = 1;
+      for (let i = 0; i <= 4; i += 1) {
+        const y = pad.top + (chartHeight / 4) * i;
+        ctx.beginPath();
+        ctx.moveTo(pad.left, y);
+        ctx.lineTo(width - pad.right, y);
+        ctx.stroke();
+      }
+
+      const points = values.map((value, index) => {
+        const x = pad.left + (labels.length === 1 ? chartWidth / 2 : (chartWidth * index) / (labels.length - 1));
+        const y = pad.top + chartHeight - (value / maxValue) * chartHeight;
+        return { x, y, value };
+      });
+
+      if (points.length) {
+        ctx.beginPath();
+        ctx.moveTo(points[0].x, pad.top + chartHeight);
+        points.forEach((point) => ctx.lineTo(point.x, point.y));
+        ctx.lineTo(points[points.length - 1].x, pad.top + chartHeight);
+        ctx.closePath();
+        ctx.fillStyle = fillColor;
+        ctx.fill();
+
+        ctx.beginPath();
+        points.forEach((point, index) => {
+          if (index === 0) ctx.moveTo(point.x, point.y);
+          else ctx.lineTo(point.x, point.y);
+        });
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 3;
+        ctx.stroke();
+
+        points.forEach((point) => {
+          ctx.beginPath();
+          ctx.arc(point.x, point.y, 3.5, 0, Math.PI * 2);
+          ctx.fillStyle = '#ffffff';
+          ctx.fill();
+          ctx.strokeStyle = color;
+          ctx.lineWidth = 2;
+          ctx.stroke();
+        });
+      }
+
+      ctx.fillStyle = '#64748b';
+      ctx.font = '11px Poppins, sans-serif';
+      ctx.textAlign = 'center';
+      labels.forEach((label, index) => {
+        if (index % Math.ceil(Math.max(labels.length / 8, 1)) !== 0 && index !== labels.length - 1) return;
+        const x = pad.left + (labels.length === 1 ? chartWidth / 2 : (chartWidth * index) / (labels.length - 1));
+        ctx.fillText(label, x, height - 12);
+      });
+
+      ctx.textAlign = 'right';
+      ctx.fillText(String(maxValue), pad.left - 8, pad.top + 4);
+      ctx.fillText('0', pad.left - 8, pad.top + chartHeight);
+    }
+
+    function drawBarChart(canvas, labels, values, color) {
+      const prepared = prepareCanvas(canvas);
+      if (!prepared) return;
+      const { ctx, width, height } = prepared;
+      const pad = { top: 16, right: 16, bottom: 34, left: 42 };
+      const chartWidth = width - pad.left - pad.right;
+      const chartHeight = height - pad.top - pad.bottom;
+      const maxValue = Math.max(...values, 1);
+      const barWidth = labels.length ? Math.max((chartWidth / labels.length) - 8, 6) : 0;
+
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, width, height);
+
+      ctx.strokeStyle = 'rgba(15, 23, 42, 0.08)';
+      ctx.lineWidth = 1;
+      for (let i = 0; i <= 4; i += 1) {
+        const y = pad.top + (chartHeight / 4) * i;
+        ctx.beginPath();
+        ctx.moveTo(pad.left, y);
+        ctx.lineTo(width - pad.right, y);
+        ctx.stroke();
+      }
+
+      labels.forEach((label, index) => {
+        const value = values[index] || 0;
+        const heightRatio = value / maxValue;
+        const barHeight = Math.max(6, chartHeight * heightRatio);
+        const x = pad.left + (chartWidth / labels.length) * index + 4;
+        const y = pad.top + chartHeight - barHeight;
+        const radius = 8;
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.moveTo(x + radius, y);
+        ctx.lineTo(x + barWidth - radius, y);
+        ctx.quadraticCurveTo(x + barWidth, y, x + barWidth, y + radius);
+        ctx.lineTo(x + barWidth, y + barHeight - radius);
+        ctx.quadraticCurveTo(x + barWidth, y + barHeight, x + barWidth - radius, y + barHeight);
+        ctx.lineTo(x + radius, y + barHeight);
+        ctx.quadraticCurveTo(x, y + barHeight, x, y + barHeight - radius);
+        ctx.lineTo(x, y + radius);
+        ctx.quadraticCurveTo(x, y, x + radius, y);
+        ctx.closePath();
+        ctx.fill();
+      });
+
+      ctx.fillStyle = '#64748b';
+      ctx.font = '11px Poppins, sans-serif';
+      ctx.textAlign = 'center';
+      labels.forEach((label, index) => {
+        if (index % Math.ceil(Math.max(labels.length / 8, 1)) !== 0 && index !== labels.length - 1) return;
+        const x = pad.left + (chartWidth / labels.length) * index + barWidth / 2 + 4;
+        ctx.fillText(label, x, height - 12);
+      });
+      ctx.textAlign = 'right';
+      ctx.fillText(String(maxValue), pad.left - 8, pad.top + 4);
+      ctx.fillText('0', pad.left - 8, pad.top + chartHeight);
+    }
+
+    function drawDoughnutChart(canvas, labels, values, colors) {
+      const prepared = prepareCanvas(canvas);
+      if (!prepared) return;
+      const { ctx, width, height } = prepared;
+      const total = values.reduce((sum, value) => sum + Number(value || 0), 0) || 1;
+      const centerX = width / 2;
+      const centerY = height / 2;
+      const outerRadius = Math.min(width, height) / 2 - 14;
+      const innerRadius = outerRadius * 0.62;
+
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, width, height);
+
+      let start = -Math.PI / 2;
+      values.forEach((value, index) => {
+        const slice = (value / total) * Math.PI * 2;
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, outerRadius, start, start + slice);
+        ctx.arc(centerX, centerY, innerRadius, start + slice, start, true);
+        ctx.closePath();
+        ctx.fillStyle = colors[index % colors.length];
+        ctx.fill();
+        start += slice;
+      });
+
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, innerRadius - 2, 0, Math.PI * 2);
+      ctx.fillStyle = '#ffffff';
+      ctx.fill();
+
+      ctx.fillStyle = '#0f172a';
+      ctx.font = '800 28px Poppins, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(String(values.reduce((sum, value) => sum + Number(value || 0), 0)), centerX, centerY + 8);
+      ctx.fillStyle = '#64748b';
+      ctx.font = '12px Poppins, sans-serif';
+      ctx.fillText('sessions', centerX, centerY + 28);
+
+      if (!labels.length) {
+        ctx.fillStyle = '#94a3b8';
+        ctx.font = '12px Poppins, sans-serif';
+        ctx.fillText('No sessions yet', centerX, centerY + 48);
+      }
+    }
+
+    function leaderboardScopeLabel(scope) {
+      const clean = String(scope || 'global').toLowerCase();
+      if (clean === 'creator') return 'creator group';
+      if (clean === 'class') return 'class';
+      return 'global';
+    }
+
+    function leaderboardPeriodLabel(period) {
+      const clean = String(period || 'all_time').toLowerCase();
+      if (clean === 'weekly') return 'weekly';
+      if (clean === 'monthly') return 'monthly';
+      if (clean === 'quarterly') return 'quarterly';
+      return 'all-time';
+    }
+
+    function leaderboardFilters() {
+      return {
+        scope: document.getElementById('leaderboardScope').value || 'global',
+        period: document.getElementById('leaderboardPeriod').value || 'all',
+        classCode: document.getElementById('leaderboardClassCode').value.trim().toUpperCase(),
+      };
+    }
+
+    function setLeaderboardScopeUiState() {
+      const scope = document.getElementById('leaderboardScope').value;
+      const classInput = document.getElementById('leaderboardClassCode');
+      const isClass = scope === 'class';
+      classInput.disabled = !isClass;
+      if (!isClass) classInput.value = '';
+    }
+
+    function buildLeaderboardPath() {
+      const filters = leaderboardFilters();
+      const params = new URLSearchParams();
+      params.set('limit', '10');
+      params.set('scope', filters.scope);
+      params.set('period', filters.period);
+      if (filters.scope === 'class' && filters.classCode) {
+        params.set('classCode', filters.classCode);
+      }
+      return `/progress/leaderboard?${params.toString()}`;
+    }
+
+    function formatSignedPercent(value) {
+      const n = Number(value || 0);
+      if (!Number.isFinite(n)) return '0%';
+      const rounded = Math.round(n * 100) / 100;
+      if (rounded > 0) return `+${rounded}%`;
+      return `${rounded}%`;
+    }
+
+    function buildModeMetrics(byType) {
+      const rows = Array.isArray(byType) ? byType : [];
+      return rows.reduce((acc, row) => {
+        const key = String(row.type || 'unknown').toLowerCase();
+        acc[key] = {
+          sessions: Number(row.sessions || 0),
+          accuracy: Number(row.avgAccuracy || 0),
+          xp: Number(row.totalXP || 0),
+        };
+        return acc;
+      }, {});
+    }
+
+    function summarizeComparison(comparison) {
+      const c = comparison || {};
+      const sessions = Number(c?.delta?.quizzesCompletedPct || 0);
+      const xp = Number(c?.delta?.xpEarnedPct || 0);
+      const accuracy = Number(c?.delta?.avgAccuracyPct || 0);
+      return `Vs previous period: Sessions ${formatSignedPercent(sessions)}, XP ${formatSignedPercent(xp)}, Accuracy ${formatSignedPercent(accuracy)}.`;
+    }
+
+    function renderExerciseBreakdown(byType) {
+      const tbody = document.getElementById('exerciseTypeTableBody');
+      const rows = Array.isArray(byType) ? byType : [];
+      
+      if (!rows.length) {
+        tbody.innerHTML = '<tr><td colspan="6" style="padding: 20px; text-align: center; color: var(--muted);">No exercise data yet. Start a session to see performance metrics.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = rows.map((row) => {
+        const type = row.type || 'unknown';
+        const sessions = Number(row.sessions || 0);
+        const accuracy = Number(row.avgAccuracy || 0);
+        const xp = Number(row.totalXP || 0);
+        const durationMin = Number(row.totalDurationMin || 0);
+        const lastPracticed = row.lastPracticedAt ? new Date(row.lastPracticedAt) : null;
+        const lastPracticedText = lastPracticed 
+          ? lastPracticed.toLocaleDateString() 
+          : 'Never';
+
+        // Determine accuracy color
+        let accuracyColor = 'var(--emerald)';
+        let accuracyBg = 'rgba(80, 200, 120, 0.1)';
+        if (accuracy < 60) {
+          accuracyColor = '#dc2626';
+          accuracyBg = 'rgba(220, 38, 38, 0.1)';
+        } else if (accuracy < 75) {
+          accuracyColor = '#f97316';
+          accuracyBg = 'rgba(249, 115, 22, 0.1)';
+        }
+
+        return `
+          <tr style="border-bottom: 1px solid var(--line); transition: background 0.2s ease;" onmouseover="this.style.background='rgba(80,200,120,0.05)'" onmouseout="this.style.background='transparent'">
+            <td style="padding: 12px; font-weight: 600; color: var(--ink);">${labelForMode(type)}</td>
+            <td style="padding: 12px; text-align: center; color: var(--slate);">${sessions}</td>
+            <td style="padding: 12px; text-align: center;">
+              <span style="display: inline-block; padding: 4px 8px; background: ${accuracyBg}; color: ${accuracyColor}; border-radius: 6px; font-weight: 600;">
+                ${accuracy.toFixed(1)}%
+              </span>
+            </td>
+            <td style="padding: 12px; text-align: center; color: var(--emerald); font-weight: 600;">+${xp.toFixed(0)}</td>
+            <td style="padding: 12px; text-align: center; color: var(--slate);">${durationMin.toFixed(0)}m</td>
+            <td style="padding: 12px; color: var(--muted); font-size: 12px;">${lastPracticedText}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function renderDetailedSkillGaps(gaps) {
+      const container = document.getElementById('skillGapsContainer');
+      const gapRows = Array.isArray(gaps) ? gaps : [];
+
+      if (!gapRows.length) {
+        container.innerHTML = '<div style="padding: 16px; text-align: center; color: var(--muted); background: rgba(80,200,120,0.08); border-radius: 12px; border: 1px solid rgba(80,200,120,0.2);">No skill gaps detected. Keep up the excellent work!</div>';
+        return;
+      }
+
+      const topGaps = gapRows.slice(0, 5);
+      
+      container.innerHTML = topGaps.map((gap) => {
+        let severityIcon = '⚠️';
+        let severityBg = 'rgba(249, 115, 22, 0.1)';
+        let severityColor = '#f97316';
+        let severityText = 'Medium';
+
+        if (gap.severity === 'high') {
+          severityIcon = '🔴';
+          severityBg = 'rgba(220, 38, 38, 0.1)';
+          severityColor = '#dc2626';
+          severityText = 'High Priority';
+        } else if (gap.severity === 'low') {
+          severityIcon = '🔵';
+          severityBg = 'rgba(59, 130, 246, 0.1)';
+          severityColor = '#3b82f6';
+          severityText = 'Low Priority';
+        }
+
+        return `
+          <div style="padding: 14px; background: ${severityBg}; border-left: 4px solid ${severityColor}; border-radius: 8px; transition: all 0.2s ease;" onmouseover="this.style.boxShadow='0 4px 12px rgba(15,23,42,0.08)'" onmouseout="this.style.boxShadow='none'">
+            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 8px;">
+              <div style="flex: 1;">
+                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                  <span style="font-size: 18px;">${severityIcon}</span>
+                  <strong style="color: var(--ink); font-size: 14px;">${labelForMode(gap.type)}</strong>
+                  <span style="font-size: 11px; font-weight: 600; padding: 2px 8px; background: ${severityColor}; color: white; border-radius: 4px;">${severityText}</span>
+                </div>
+                <p style="font-size: 12px; color: var(--slate); margin: 0;">${gap.reason}</p>
+              </div>
+              <div style="text-align: right; margin-left: 12px;">
+                <div style="font-size: 13px; font-weight: 700; color: ${severityColor};">${gap.avgAccuracy.toFixed(1)}%</div>
+                <div style="font-size: 11px; color: var(--muted);">${gap.sessions} session${gap.sessions === 1 ? '' : 's'}</div>
+              </div>
+            </div>
+            <div style="padding: 10px; background: rgba(255,255,255,0.6); border-radius: 6px; margin-top: 8px; border-left: 3px solid ${severityColor};">
+              <div style="font-size: 12px; color: var(--slate);">
+                <strong>Recommendation:</strong> ${gap.recommendation}
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderSkillGaps(gaps) {
+      const host = document.getElementById('skillGapLegend');
+      const rows = Array.isArray(gaps) ? gaps : [];
+      if (!rows.length) {
+        host.innerHTML = '<div class="empty" style="padding: 10px 0; text-align:left;">No active skill gaps for the selected window.</div>';
+        return;
+      }
+      host.innerHTML = rows.slice(0, 3).map((gap) => `
+        <div class="legend-item">
+          <div class="legend-left">
+            <span class="swatch" style="background:#f97316"></span>
+            <span class="legend-name">${labelForMode(gap.type)}</span>
+          </div>
+          <span class="legend-value">${Math.round(Number(gap.avgAccuracy || 0))}% acc · ${Math.round(Number(gap.sessions || 0))} session${Math.round(Number(gap.sessions || 0)) === 1 ? '' : 's'}</span>
+        </div>
+      `).join('');
+    }
+
+    function requireAnalyticsAccess() {
+      const user = getUser();
+      if (!user) {
+        window.location.replace('/login.html');
+        return null;
+      }
+      return user;
+    }
+
+    function clamp(value, min, max) {
+      return Math.max(min, Math.min(max, value));
+    }
+
+    function formatMinutes(seconds) {
+      const total = Math.max(Number(seconds) || 0, 0);
+      if (!total) return '0m';
+      const hours = Math.floor(total / 3600);
+      const minutes = Math.round((total % 3600) / 60);
+      if (!hours) return `${minutes}m`;
+      return `${hours}h ${minutes}m`;
+    }
+
+    function formatDate(value) {
+      if (!value) return '-';
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return '-';
+      return date.toLocaleString();
+    }
+
+    function isSeedAccount(user) {
+      const email = String(user?.email || '').toLowerCase();
+      return ['student@test.local', 'creator@test.local', 'admin@test.local'].includes(email);
+    }
+
+    function setEmptyAnalyticsState(message) {
+      const emptyDash = '-';
+      document.getElementById('totalXP').textContent = emptyDash;
+      document.getElementById('studyTime').textContent = emptyDash;
+      document.getElementById('wordsLearned').textContent = emptyDash;
+      document.getElementById('currentStreak').textContent = emptyDash;
+      document.getElementById('accuracy').textContent = emptyDash;
+      document.getElementById('favoriteMode').textContent = emptyDash;
+      document.getElementById('sessionsCompleted').textContent = emptyDash;
+      document.getElementById('retention').textContent = emptyDash;
+
+      // ── Enhanced Stat Card Notes ──────────────────────────────
+      document.getElementById('xpNote').innerHTML = `<span style="font-size:12px;line-height:1.4;">Earn XP by completing study sessions. Bonus multipliers apply for different modes (flashcards, quiz, spelling, etc.).</span>`;
+      document.getElementById('studyTimeNote').innerHTML = `<span style="font-size:12px;line-height:1.4;">Study time accumulates across all learning modes. Set a goal and track your consistency!</span>`;
+      document.getElementById('wordsNote').innerHTML = `<span style="font-size:12px;line-height:1.4;">Track every word you master. Progress is recorded after each study session completes.</span>`;
+      document.getElementById('streakNote').innerHTML = `<span style="font-size:12px;line-height:1.4;">Build your streak by studying on consecutive days. Streaks reset after missing a day. Aim for milestones at 3, 7, 14, 30, 60 days!</span>`;
+      document.getElementById('accuracyNote').innerHTML = `<span style="font-size:12px;line-height:1.4;">Your accuracy reflects answer correctness. Higher accuracy unlocks achievements and builds confidence.</span>`;
+      document.getElementById('favoriteModeNote').innerHTML = `<span style="font-size:12px;line-height:1.4;">Try different study modes: Flashcards (spaced repetition), Quiz (multiple-choice), Spelling, Matching, etc.</span>`;
+      document.getElementById('sessionsNote').innerHTML = `<span style="font-size:12px;line-height:1.4;">Each completed session counts. Track your progress and celebrate milestones!</span>`;
+      document.getElementById('retentionNote').innerHTML = `<span style="font-size:12px;line-height:1.4;">Retention improves as you review words repeatedly using spaced repetition.</span>`;
+      document.getElementById('heroCopy').innerHTML = `
+        <div style="margin-bottom:16px;"><strong style="font-size:16px;color:var(--slate);">Welcome to Your Learning Journey</strong></div>
+        <div style="margin-bottom:14px;color:var(--muted);line-height:1.6;">Your analytics dashboard is empty because you haven't recorded any study sessions yet. Start learning to see progress tracking, statistics, and achievements appear here.</div>
+        <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
+          <a href="/quiz-ultra.html" class="empty-state-cta" style="background:linear-gradient(135deg,#50C878,#2d7a5c);">Try Quiz</a>
+          <a href="/flashcards-ultra.html" class="empty-state-cta" style="background:linear-gradient(135deg,#f59e0b,#d97706);">Try Flashcards</a>
+          <a href="/spelling-ultra.html" class="empty-state-cta" style="background:linear-gradient(135deg,#8b5cf6,#6d28d9);">Try Spelling</a>
+        </div>
+      `;
+
+      // ── Chart empty states with tips ────────────────────────
+      document.getElementById('xpBars').innerHTML = `
+        <div class="empty-state-card" style="padding:28px; text-align:center;">
+          <dotlottie-wc src="https://lottie.host/edd7b597-9615-497c-b232-f37616b81d68/y18kQkE05i.lottie" style="width: 92px; height: 92px; display:block; margin:0 auto 18px;" autoplay loop></dotlottie-wc>
+          <h3 class="empty-state-title">XP Trend Ready</h3>
+          <p class="empty-state-desc">Complete a study session to populate your daily XP curve. This chart updates automatically after each activity.</p>
+          <div class="empty-state-tips" style="margin-top: 18px;">
+            <div class="tip-item" style="display:flex;align-items:center;gap:12px;">
+              <dotlottie-wc src="https://lottie.host/3199ba95-4ac6-4e78-998d-65c00c07678d/NIgyrBLhX7.lottie" style="width: 18px; height: 18px; flex-shrink: 0;" autoplay loop></dotlottie-wc>
+              <div><strong>Pro Tip:</strong> Quiz mode earns 1.2× XP multiplier. Spelling earns 1.3× for extra boost!</div>
+            </div>
+          </div>
+        </div>
+      `;
+
+      document.getElementById('accuracyBars').innerHTML = `
+        <div class="empty-state-card" style="padding:28px; text-align:center;">
+          <dotlottie-wc src="https://lottie.host/5c99fd6f-249d-4f07-8f15-9fce91abf021/Aj88kmHm7Y.lottie" style="width: 92px; height: 92px; display:block; margin:0 auto 18px;" autoplay loop></dotlottie-wc>
+          <h3 class="empty-state-title">Accuracy Insights Locked</h3>
+          <p class="empty-state-desc">Your accuracy will display after completing quizzes or reviews. Track how well you're mastering vocabulary.</p>
+          <div class="empty-state-tips" style="margin-top: 18px;">
+            <div class="tip-item" style="display:flex;align-items:center;gap:12px;">
+              <dotlottie-wc src="https://lottie.host/3199ba95-4ac6-4e78-998d-65c00c07678d/NIgyrBLhX7.lottie" style="width: 18px; height: 18px; flex-shrink: 0;" autoplay loop></dotlottie-wc>
+              <div><strong>Unlock Achievement:</strong> Reach 85% accuracy across 10+ sessions to earn "Precision Pro"!</div>
+            </div>
+          </div>
+        </div>
+      `;
+
+      document.getElementById('modeLegend').innerHTML = `
+        <div class="empty-state-card" style="padding:20px;text-align:left;">
+          <div style="text-align:center;margin-bottom:14px;">
+            <h3 class="empty-state-title" style="text-align:center;">Explore Study Modes</h3>
+          </div>
+          <div class="empty-state-tips">
+            <div class="tip-item" style="display:flex;align-items:center;gap:12px;">
+              <dotlottie-wc src="https://lottie.host/b7979b97-9c98-4201-95d8-62e86cbd5bf1/zjSpTWHQ0M.lottie" style="width: 24px; height: 24px; flex-shrink: 0;" autoplay loop></dotlottie-wc>
+              <div><strong>Flashcards:</strong> Spaced repetition for long-term retention. Perfect for beginners.</div>
+            </div>
+            <div class="tip-item" style="display:flex;align-items:center;gap:12px;">
+              <dotlottie-wc src="https://lottie.host/fdabb5f3-80ba-455c-9130-1c9f21afcb9e/IMBe4nzCWh.lottie" style="width: 24px; height: 24px; flex-shrink: 0;" autoplay loop></dotlottie-wc>
+              <div><strong>Quiz:</strong> Multiple-choice questions. Great for practicing under pressure (1.2× XP).</div>
+            </div>
+            <div class="tip-item" style="display:flex;align-items:center;gap:12px;">
+              <dotlottie-wc src="https://lottie.host/1420b393-93ab-4929-b7fc-f0a7003de1d1/9v9nNfRXJf.lottie" style="width: 24px; height: 24px; flex-shrink: 0;" autoplay loop></dotlottie-wc>
+              <div><strong>Spelling:</strong> Type answers. Builds muscle memory (1.3× XP - highest multiplier!).</div>
+            </div>
+            <div class="tip-item" style="display:flex;align-items:center;gap:12px;">
+              <dotlottie-wc src="https://lottie.host/9b22f08c-2b5c-419a-9fa2-1504f120b109/FeFYzeurB0.lottie" style="width: 24px; height: 24px; flex-shrink: 0;" autoplay loop></dotlottie-wc>
+              <div><strong>Matching:</strong> Drag to match words & definitions. Fun visual learning (1.1× XP).</div>
+            </div>
+          </div>
+        </div>
+      `;
+
+      document.getElementById('skillGapLegend').innerHTML = `
+        <div style="padding:10px 0;text-align:left;font-size:12px;color:var(--muted); display:flex; align-items:center; gap:12px;">
+          <dotlottie-wc src="https://lottie.host/b0344ca2-387d-4e48-abe3-c7a6bf19055f/CznIVXHlwD.lottie" style="width: 19px; height: 19px; flex-shrink: 0;" autoplay loop></dotlottie-wc>
+          <div><strong>Skill gaps</strong> appear after you've completed sessions. We'll identify areas needing practice and suggest focused learning paths.</div>
+        </div>
+      `;
+
+      document.getElementById('periodCompareNote').innerHTML = `
+        <div style="font-size:12px;color:var(--muted);line-height:1.5; display:flex; align-items:center; gap:12px;">
+          <dotlottie-wc src="https://lottie.host/a95e54ce-6caf-4548-8b90-e5a17a7f38e0/BGp6I1Tnpc.lottie" style="width: 19px; height: 19px; flex-shrink: 0;" autoplay loop></dotlottie-wc>
+          <div><strong>Period Comparison:</strong> Unlocks after 2+ days of activity. Compare this week vs last week, this month vs last month to track improvement!</div>
+        </div>
+      `;
+
+      document.getElementById('bestTimeNote').innerHTML = `
+        <div style="font-size:12px;color:var(--muted);line-height:1.5; display:flex; align-items:center; gap:12px;">
+          <dotlottie-wc src="https://lottie.host/183e64a1-b997-46f0-aaac-80a8e228d90d/s2MbFZ0JRr.lottie" style="width: 19px; height: 19px; flex-shrink: 0;" autoplay loop></dotlottie-wc>
+          <div><strong>Best Time to Study:</strong> Based on your session history, we'll find your peak learning hours.</div>
+        </div>
+      `;
+
+      document.getElementById('modeRingValue').textContent = '0';
+      document.getElementById('modeRing').style.background = 'conic-gradient(#dbeafe 0deg 360deg)';
+
+      // ── Table empty states ────────────────────────────────────
+      document.getElementById('sessionsBody').innerHTML = `
+        <tr>
+          <td colspan="5" style="padding:40px;text-align:center;color:var(--muted);">
+            <strong style="font-size:13px;color:var(--slate);display:block;margin-bottom:6px;">No Sessions Yet</strong>
+            <div style="font-size:12px;line-height:1.4;margin-bottom:14px;">Start your first study session to see detailed breakdowns of your learning activity here.</div>
+            <a href="/student-learn-v3.html" style="display:inline-block;padding:8px 12px;background:linear-gradient(135deg,#50C878,#2d7a5c);color:white;text-decoration:none;border-radius:8px;font-weight:600;font-size:12px;">Begin Learning</a>
+          </td>
+        </tr>
+      `;
+
+      document.getElementById('wordsBody').innerHTML = `
+        <tr>
+          <td colspan="6" style="padding:40px;text-align:center;color:var(--muted);">
+            <dotlottie-wc src="https://lottie.host/76d54f9e-7d7f-49ab-a34b-e0e2ac435a52/gOWvqJ2yJe.lottie" style="width: 75px;height: 75px; display:block; margin:0 auto 10px;" autoplay loop></dotlottie-wc>
+            <strong style="font-size:13px;color:var(--slate);display:block;margin-bottom:6px;">No Words Reviewed Yet</strong>
+            <div style="font-size:12px;line-height:1.4;margin-bottom:14px;">Every word you study will be tracked here. Master new vocabulary and watch your collection grow!</div>
+            <a href="/flashcards-ultra.html" style="display:inline-block;padding:8px 12px;background:linear-gradient(135deg,#f59e0b,#d97706);color:white;text-decoration:none;border-radius:8px;font-weight:600;font-size:12px;">Learn Words Now</a>
+          </td>
+        </tr>
+      `;
+
+      // ── Achievement & Leaderboard empty states ──────────────
+      document.getElementById('achievementsList').innerHTML = `
+        <div class="empty-state-card" style="padding:24px;">
+          <dotlottie-wc src="https://lottie.host/866f7fca-08dc-4fdc-b937-66682501f558/gHfcPtGQE3.lottie" style="width: 150px;height: 150px; display:block; margin:0 auto 18px;" autoplay loop></dotlottie-wc>
+          <h3 class="empty-state-title">Achievements Waiting to Unlock</h3>
+          <p class="empty-state-desc">Complete learning activities to earn badges and milestones. Visit the Achievements page to see all 9 available badges!</p>
+          <div class="empty-state-tips">
+            <div class="tip-item" style="border-left-color:#f59e0b;display:flex;align-items:flex-start;gap:12px;">
+              <dotlottie-wc src="https://lottie.host/ebd9fa9a-11f5-4e4a-a850-a2962778bfff/wNQgz9lu8v.lottie" style="width:18px;height:18px;flex-shrink:0;" autoplay loop></dotlottie-wc>
+              <div><strong>Consistency Start:</strong> Build a 3-day streak to earn your first milestone!</div>
+            </div>
+            <div class="tip-item" style="border-left-color:#8b5cf6;display:flex;align-items:flex-start;gap:12px;">
+              <dotlottie-wc src="https://lottie.host/0219ea9a-df28-47c1-8007-9338b11b5d02/oROTzS0Z6w.lottie" style="width:18px;height:18px;flex-shrink:0;" autoplay loop></dotlottie-wc>
+              <div><strong>XP Builder:</strong> Earn 500 XP across study sessions.</div>
+            </div>
+          </div>
+          <a href="/achievements.html" class="empty-state-cta">View All Achievements →</a>
+        </div>
+      `;
+
+      document.getElementById('leaderboardList').innerHTML = `
+        <div class="empty-state-card" style="padding:24px;">
+          <dotlottie-wc src="https://lottie.host/63896ba3-bd85-4429-a83d-41477a119887/8Snrh5ka7S.lottie" style="width: 150px;height: 150px; display:block; margin:0 auto 18px;" autoplay loop></dotlottie-wc>
+          <h3 class="empty-state-title">Leaderboard appears after activity</h3>
+          <p class="empty-state-desc">Complete study sessions to join the global leaderboard! Compete with other learners and climb the ranks.</p>
+          <div class="empty-state-tips">
+            <div class="tip-item" style="border-left-color:#50C878;">
+              <dotlottie-wc src="https://lottie.host/9d465a27-7f9d-4fa0-abca-3f7fed6778eb/xHKaRqMxtl.lottie" style="width: 38px;height: 38px; flex-shrink: 0;" autoplay loop></dotlottie-wc>
+              <div><strong>League System:</strong> Bronze → Silver → Gold → Platinum → Sapphire as you earn XP!</div>
+            </div>
+            <div class="tip-item" style="border-left-color:#f5c842;">
+              <dotlottie-wc src="https://lottie.host/b32c4bd8-dfe4-454d-a1de-b58dd9b25216/I9VhLQLy9v.lottie" style="width: 38px;height: 38px; flex-shrink: 0;" autoplay loop></dotlottie-wc>
+              <div><strong>Track Ranks:</strong> Filter by weekly, monthly, or all-time rankings.</div>
+            </div>
+          </div>
+          <a href="/leaderboard.html" class="empty-state-cta">Visit Leaderboard →</a>
+        </div>
+      `;
+
+      document.getElementById('leaderboardMeta').innerHTML = `
+        <span style="font-size:12px;color:var(--muted);">Complete your first session to appear on leaderboards.</span>
+      `;
+    }
+
+    function renderAchievements() {
+      const host = document.getElementById('achievementsList');
+      const unlocked = Array.isArray(achievementsData?.unlocked) ? achievementsData.unlocked : [];
+      const inProgress = Array.isArray(achievementsData?.inProgress) ? achievementsData.inProgress : [];
+      const rows = [...unlocked.slice(0, 2), ...inProgress.slice(0, 3)];
+      if (!rows.length) {
+        host.innerHTML = '<div class="empty">No achievement data available yet.</div>';
+        return;
+      }
+      // Title-specific Lottie overrides (same mapping as achievements page)
+      const titleLotties = {
+        'First Step': 'https://lottie.host/7b756349-a9b3-4af2-8dd7-0e2f2f1c4877/7CDxNwYfQT.lottie',
+        'Consistency Start': 'https://lottie.host/ebd9fa9a-11f5-4e4a-a850-a2962778bfff/wNQgz9lu8v.lottie',
+        'Week Warrior': 'https://lottie.host/ae612df4-a438-4d0f-9f8c-804371e03e93/jikebYV3pR.lottie',
+        'XP Builder': 'https://lottie.host/0219ea9a-df28-47c1-8007-9338b11b5d02/oROTzS0Z6w.lottie',
+        'XP Master': 'https://lottie.host/a2d9d8dc-6888-4485-acbf-02ef3067fe38/SzGN0qrp7V.lottie',
+        'Practice Habit': 'https://lottie.host/4c51a529-a4de-4016-a003-0af4b0c8b16d/HgXipqUrja.lottie',
+        'Word Collector': 'https://lottie.host/6ada84c5-e5a7-4e7e-b2a2-e76dcec863fe/DKKtVJzwHo.lottie',
+        'Precision Pro': 'https://lottie.host/78198e37-6bc4-4b7d-bf90-841e4168bbd3/snrhemd1fc.lottie',
+        'Lexicon Builder': 'https://lottie.host/a44acf19-47da-4e97-97bf-d8bf140bc3a3/TAyz5c6fjs.lottie'
+      };
+
+      host.innerHTML = rows.map((item) => {
+        const unlockedState = !!item.unlocked;
+        const title = String(item.title || '').trim();
+        const lottieUrl = titleLotties[title];
+        const iconHtml = lottieUrl
+          ? `<dotlottie-wc src="${lottieUrl}" autoplay loop style="width:42px;height:42px;display:inline-block;margin-right:10px;vertical-align:middle;"></dotlottie-wc>`
+          : '';
+        return `
+          <div class="mini-row">
+            <div class="mini-row-left" style="display:flex;align-items:center;gap:10px;">
+              ${iconHtml}
+              <div>
+                <div class="mini-row-title">${esc(item.title || 'Achievement')}</div>
+                <div class="mini-row-note">${esc(item.description || '')}</div>
+              </div>
+            </div>
+            <div class="mini-row-value">${unlockedState ? 'Unlocked' : `${Math.round(Number(item.progressPct || 0))}%`}</div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // ── League Tiers ──────────────────────────────────────────────
+    // Bronze < 500 · Silver < 1500 · Gold < 4000 · Platinum < 10000 · Sapphire ≥ 10000
+    const LEAGUE_TIERS = [
+      { name: 'Sapphire',  icon: '💎', min: 10000, color: '#38bdf8' },
+      { name: 'Platinum',  icon: '👑', min: 4000,  color: '#e2e8f0' },
+      { name: 'Gold',      icon: '⭐', min: 1500,  color: '#f5c842' },
+      { name: 'Silver',    icon: '✨', min: 500,   color: '#94a3b8' },
+      { name: 'Bronze',    icon: '🔶', min: 0,     color: '#cd7f32' },
+    ];
+    function getLeagueTier(xp) {
+      return LEAGUE_TIERS.find((t) => xp >= t.min) || LEAGUE_TIERS[LEAGUE_TIERS.length - 1];
+    }
+    if (typeof window !== 'undefined') {
+      window.LEAGUE_TIERS = LEAGUE_TIERS;
+      window.getLeagueTier = getLeagueTier;
+    }
+
+    function renderLeaderboard() {
+      const host = document.getElementById('leaderboardList');
+      const metaHost = document.getElementById('leaderboardMeta');
+      const rows = Array.isArray(leaderboardData?.leaderboard) ? leaderboardData.leaderboard : [];
+      const scopeLabel = leaderboardScopeLabel(leaderboardData?.scope);
+      const periodLabel = leaderboardPeriodLabel(leaderboardData?.period);
+      const classCode = String(leaderboardData?.classCodeApplied || '').trim();
+      const creatorCode = String(leaderboardData?.creatorCodeApplied || '').trim();
+      const codeSuffix = classCode
+        ? ` (${classCode})`
+        : creatorCode
+          ? ` (${creatorCode})`
+          : '';
+      metaHost.textContent = `Showing ${scopeLabel}${codeSuffix} ${periodLabel} ranking.`;
+
+      // ── Your rank banner ─────────────────────────────────────────
+      const yourRankBanner = document.getElementById('yourRankBanner');
+      const yourRankLeague = document.getElementById('yourRankLeague');
+      const yourRankText   = document.getElementById('yourRankText');
+      const cur = leaderboardData?.currentUserRank;
+      if (yourRankBanner && cur) {
+        const league = getLeagueTier(Number(cur.totalXP || 0));
+        yourRankLeague.textContent = `${league.icon} ${league.name}`;
+        yourRankLeague.style.color = league.color;
+        const total = Number(leaderboardData?.totalRankedUsers || 0);
+        yourRankText.textContent = `Your position: #${Number(cur.rank || '?')}${total ? ' of ' + total : ''} · ${Math.round(Number(cur.totalXP || 0)).toLocaleString()} XP`;
+        yourRankBanner.style.display = 'block';
+      } else if (yourRankBanner) {
+        yourRankBanner.style.display = 'none';
+      }
+
+      if (!rows.length) {
+        host.innerHTML = '<div class="empty">No ranked learners yet.</div>';
+        return;
+      }
+      const xpLabel = periodLabel === 'all-time' ? 'XP' : `${periodLabel} XP`;
+      const medals = ['\uD83E\uDD47', '\uD83E\uDD48', '\uD83E\uDD49'];
+      host.innerHTML = rows.slice(0, 5).map((row) => {
+        const rankNum = Number(row.rank || 0);
+        const medal = rankNum <= 3 ? medals[rankNum - 1] + ' ' : '';
+        const league = getLeagueTier(Number(row.totalXP || 0));
+        return `
+        <div class="mini-row">
+          <div class="mini-row-left">
+            <div class="mini-row-title">${medal}#${rankNum} ${esc(row.name || 'Learner')} <span style="font-size:.75rem;color:${league.color};font-weight:700">${league.icon} ${league.name}</span></div>
+            <div class="mini-row-note">Streak ${Number(row.streak || 0)} day${Number(row.streak || 0) === 1 ? '' : 's'} · ${Math.round(Number(row.avgAccuracy || 0))}% accuracy</div>
+          </div>
+          <div class="mini-row-value">${Math.round(Number(row.totalXP || 0)).toLocaleString()} ${xpLabel}</div>
+        </div>`;
+      }).join('');
+    }
+
+    async function loadLeaderboard() {
+      document.getElementById('leaderboardList').innerHTML = '<div class="empty">Loading leaderboard...</div>';
+      try {
+        leaderboardData = await api.get(buildLeaderboardPath());
+        renderLeaderboard();
+      } catch (err) {
+        document.getElementById('leaderboardList').innerHTML = `<div class="empty">${esc(err.message || 'Failed to load leaderboard')}</div>`;
+      }
+    }
+
+    function dayKey(date) {
+      return date.toISOString().slice(0, 10);
+    }
+
+    function labelForMode(mode) {
+      const clean = String(mode || '').toLowerCase();
+      return {
+        flashcards: 'Flashcards',
+        quiz: 'Quiz',
+        matching: 'Matching',
+        speaking: 'Speaking',
+        spelling: 'Spelling',
+        listening: 'Listening',
+        flashcard: 'Flashcards',
+        learn: 'Learn',
+        match: 'Match',
+        write: 'Write',
+        live: 'Live',
+      }[clean] || (clean ? clean.charAt(0).toUpperCase() + clean.slice(1) : 'Unknown');
+    }
+
+    function colorForMode(mode) {
+      const palette = ['#50C878', '#D4AF37', '#60a5fa', '#f97316', '#8b5cf6', '#14b8a6'];
+      const keys = Object.keys(modeCounts);
+      const idx = Math.max(0, keys.indexOf(mode));
+      return palette[idx % palette.length];
+    }
+
+    function masteryInfo(word) {
+      const attempts = Number(word.timesReviewed || 0);
+      const correct = Number(word.timesCorrect || 0);
+      const accuracy = attempts ? Math.round((correct / attempts) * 100) : 0;
+      const difficulty = Number(word.difficulty || 3);
+      const score = clamp(Math.round((accuracy * 0.75) + ((6 - difficulty) * 8) + Math.min(attempts, 10) * 1.5), 0, 100);
+      const tier = score >= 85 ? 4 : score >= 70 ? 3 : score >= 45 ? 2 : score > 0 ? 1 : 0;
+      const label = ['New', 'Learning', 'Growing', 'Strong', 'Mastered'][tier];
+      const nextReview = word.nextReviewAt
+        ? new Date(word.nextReviewAt)
+        : new Date((word.lastReviewedAt || word.updatedAt || word.createdAt || Date.now()));
+      if (!word.nextReviewAt) {
+        nextReview.setDate(nextReview.getDate() + Math.max(1, 2 + tier * 2));
+      }
+      return { attempts, accuracy, score, tier, label, nextReview };
+    }
+
+    function buildSeries(collection, valueKey, aggregate = 'sum') {
+      const days = [];
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      for (let i = 29; i >= 0; i -= 1) {
+        const d = new Date(today);
+        d.setDate(d.getDate() - i);
+        days.push({ key: dayKey(d), label: d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }), value: 0, accuracyCount: 0 });
+      }
+      const bucket = new Map(days.map((entry) => [entry.key, entry]));
+      collection.forEach((item) => {
+        const date = new Date(item.date || item.createdAt || item.lastActivityDate || Date.now());
+        if (Number.isNaN(date.getTime())) return;
+        const key = dayKey(date);
+        const entry = bucket.get(key);
+        if (!entry) return;
+        if (valueKey === 'accuracy') {
+          entry.value += Number(item.accuracy || 0);
+          entry.accuracyCount += 1;
+        } else {
+          entry.value += Number(item[valueKey] || 0);
+        }
+      });
+      return days.map((entry) => {
+        if (valueKey === 'accuracy') {
+          return { ...entry, value: entry.accuracyCount ? Math.round(entry.value / entry.accuracyCount) : 0 };
+        }
+        return entry;
+      });
+    }
+
+    function destroyCharts() {
+      if (xpChart) {
+        xpChart.destroy();
+        xpChart = null;
+      }
+      if (accuracyChart) {
+        accuracyChart.destroy();
+        accuracyChart = null;
+      }
+      if (modeChart) {
+        modeChart.destroy();
+        modeChart = null;
+      }
+    }
+
+    function chartColors() {
+      return ['#50C878', '#D4AF37', '#60a5fa', '#f97316', '#8b5cf6', '#14b8a6'];
+    }
+
+    function pctDelta(current, previous) {
+      const curr = Number(current || 0);
+      const prev = Number(previous || 0);
+      if (prev <= 0 && curr <= 0) return 0;
+      if (prev <= 0 && curr > 0) return 100;
+      return Math.round(((curr - prev) / prev) * 100);
+    }
+
+    function renderXpTrendInsights(xpSeries) {
+      const host = document.getElementById('xpBars');
+      if (!host) return;
+
+      const rows = Array.isArray(xpSeries) ? xpSeries : [];
+      const values = rows.map((item) => Math.max(0, Number(item?.value || item?.xpEarned || 0)));
+      const totalWindowXp = values.reduce((sum, value) => sum + value, 0);
+      const activeDays = values.filter((value) => value > 0).length;
+      const avgActiveDay = activeDays ? Math.round(totalWindowXp / activeDays) : 0;
+
+      let bestDayIndex = -1;
+      let bestDayXp = 0;
+      values.forEach((value, index) => {
+        if (value > bestDayXp) {
+          bestDayXp = value;
+          bestDayIndex = index;
+        }
+      });
+
+      const bestDayLabel = bestDayIndex >= 0 && rows[bestDayIndex]?.label
+        ? rows[bestDayIndex].label
+        : 'No activity yet';
+
+      const recent7 = values.slice(-7).reduce((sum, value) => sum + value, 0);
+      const prev7 = values.slice(-14, -7).reduce((sum, value) => sum + value, 0);
+      const change7d = pctDelta(recent7, prev7);
+      const changeColor = change7d > 0 ? '#16a34a' : change7d < 0 ? '#dc2626' : 'var(--muted)';
+      const changeSymbol = change7d > 0 ? '+' : '';
+
+      if (!totalWindowXp) {
+        host.innerHTML = `
+          <div class="empty-state-card" style="padding:16px 18px; margin-top:10px;">
+            <div style="font-size:12px; color:var(--muted); line-height:1.45;">
+              No XP recorded for the selected period yet. Start a session to generate your first trend point.
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      host.innerHTML = `
+        <div style="margin-top:10px; display:grid; grid-template-columns:repeat(auto-fit,minmax(120px,1fr)); gap:8px;">
+          <div style="padding:10px; border:1px solid var(--line); border-radius:10px; background:rgba(80,200,120,.06);">
+            <div style="font-size:11px; color:var(--muted);">Total XP</div>
+            <div style="font-size:16px; font-weight:800; color:var(--emerald);">${Math.round(totalWindowXp).toLocaleString()}</div>
+          </div>
+          <div style="padding:10px; border:1px solid var(--line); border-radius:10px; background:rgba(100,116,139,.06);">
+            <div style="font-size:11px; color:var(--muted);">Active Days</div>
+            <div style="font-size:16px; font-weight:800; color:var(--ink);">${activeDays}</div>
+          </div>
+          <div style="padding:10px; border:1px solid var(--line); border-radius:10px; background:rgba(212,175,55,.1);">
+            <div style="font-size:11px; color:var(--muted);">Best Day</div>
+            <div style="font-size:15px; font-weight:800; color:var(--slate);">${bestDayLabel}</div>
+            <div style="font-size:11px; color:var(--muted);">${Math.round(bestDayXp)} XP</div>
+          </div>
+          <div style="padding:10px; border:1px solid var(--line); border-radius:10px; background:rgba(59,130,246,.08);">
+            <div style="font-size:11px; color:var(--muted);">7d Momentum</div>
+            <div style="font-size:16px; font-weight:800; color:${changeColor};">${changeSymbol}${change7d}%</div>
+            <div style="font-size:11px; color:var(--muted);">Avg active day: ${avgActiveDay} XP</div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderAccuracyTrendInsights(accuracySeries) {
+      const host = document.getElementById('accuracyBars');
+      if (!host) return;
+
+      const rows = Array.isArray(accuracySeries) ? accuracySeries : [];
+      const values = rows.map((item) => Math.max(0, Number(item?.value || item?.avgAccuracy || 0))).filter((v) => v > 0);
+
+      if (!values.length) {
+        host.innerHTML = `
+          <div class="empty-state-card" style="padding:16px 18px; margin-top:10px;">
+            <div style="font-size:12px; color:var(--muted); line-height:1.45;">
+              Accuracy trend will appear after you complete quizzes, spelling, or review sessions.
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      const latest = values[values.length - 1];
+      const avg = Math.round(values.reduce((sum, value) => sum + value, 0) / values.length);
+      const best = Math.round(Math.max(...values));
+
+      host.innerHTML = `
+        <div style="margin-top:10px; display:grid; grid-template-columns:repeat(auto-fit,minmax(120px,1fr)); gap:8px;">
+          <div style="padding:10px; border:1px solid var(--line); border-radius:10px; background:rgba(212,175,55,.1);">
+            <div style="font-size:11px; color:var(--muted);">Latest</div>
+            <div style="font-size:16px; font-weight:800; color:var(--slate);">${Math.round(latest)}%</div>
+          </div>
+          <div style="padding:10px; border:1px solid var(--line); border-radius:10px; background:rgba(80,200,120,.08);">
+            <div style="font-size:11px; color:var(--muted);">Average</div>
+            <div style="font-size:16px; font-weight:800; color:var(--emerald);">${avg}%</div>
+          </div>
+          <div style="padding:10px; border:1px solid var(--line); border-radius:10px; background:rgba(59,130,246,.08);">
+            <div style="font-size:11px; color:var(--muted);">Best</div>
+            <div style="font-size:16px; font-weight:800; color:#3b82f6;">${best}%</div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderCharts() {
+      const xpCanvas = document.getElementById('xpChart');
+      const accuracyCanvas = document.getElementById('accuracyChart');
+      const modeCanvas = document.getElementById('modeChart');
+      const historySeries = Array.isArray(historyData?.series) ? historyData.series : [];
+      const xpSeries = historySeries.length
+        ? buildChartSeriesFromHistory(historySeries, 'xp')
+        : buildSeries(sessions, 'xp');
+      const accuracySeries = historySeries.length
+        ? buildChartSeriesFromHistory(historySeries, 'accuracy')
+        : buildSeries(sessions, 'accuracy', 'average');
+      const labels = xpSeries.map((item) => item.label);
+      const xpValues = xpSeries.map((item) => Number(item.value || item.xpEarned || 0));
+      const accuracyValues = accuracySeries.map((item) => Number(item.value || item.avgAccuracy || 0));
+      const modeEntries = Object.entries(modeCounts).sort((a, b) => b[1] - a[1]);
+      const modeLabels = modeEntries.map(([mode]) => labelForMode(mode));
+      const modeValues = modeEntries.map(([, count]) => Number(count || 0));
+      const colors = chartColors();
+
+      if (!xpCanvas || !accuracyCanvas || !modeCanvas) return;
+
+      drawLineChart(xpCanvas, labels, xpValues, '#50C878', 'rgba(80, 200, 120, 0.16)');
+      drawBarChart(accuracyCanvas, labels, accuracyValues, 'rgba(212, 175, 55, 0.88)');
+      drawDoughnutChart(modeCanvas, modeLabels, modeValues.length ? modeValues : [1], modeValues.length ? colors : ['rgba(148, 163, 184, 0.35)']);
+      renderXpTrendInsights(xpSeries);
+      renderAccuracyTrendInsights(accuracySeries);
+
+      const totalSessions = modeValues.reduce((sum, value) => sum + value, 0);
+      const legend = document.getElementById('modeLegend');
+      const ringValue = document.getElementById('modeRingValue');
+      ringValue.textContent = String(totalSessions);
+      if (!modeEntries.length) {
+        legend.innerHTML = '<div class="empty">No completed sessions yet.</div>';
+      } else {
+        legend.innerHTML = modeEntries.map(([mode, count], index) => {
+          const color = colors[index % colors.length];
+          const pct = totalSessions ? Math.round((count / totalSessions) * 100) : 0;
+          const modeMetric = buildModeMetrics(drilldownData?.byType)[mode] || {};
+          const accuracy = Math.round(Number(modeMetric.accuracy || 0));
+          const xp = Math.round(Number(modeMetric.xp || 0));
+          return `
+            <div class="legend-item">
+              <div class="legend-left">
+                <span class="swatch" style="background:${color}"></span>
+                <span class="legend-name">${labelForMode(mode)}</span>
+              </div>
+              <span class="legend-value">${count} session${count === 1 ? '' : 's'} · ${pct}% · ${accuracy}% acc · ${xp} XP</span>
+            </div>
+          `;
+        }).join('');
+      }
+    }
+
+    function updateOverview() {
+      const progress = progressData || {};
+      const stats = statsData || {};
+      const totalStudyTime = Number(progress.totalStudyTime || stats.totalStudyTime || 0);
+      const sessionsCompleted = Number(stats.sessionCount || progress.completedLessons?.length || 0);
+      const streak = Number(stats.streak || progress.streak || 0);
+      const longest = Number(stats.longestStreak || progress.longestStreak || streak || 0);
+      const accuracy = Number(stats.avgAccuracy || progress.accuracy || 0);
+      const wordsLearned = Number(stats.wordsLearned || progress.wordsLearned || 0);
+      const retention = wordRows.length
+        ? Math.round(wordRows.reduce((sum, word) => sum + masteryInfo(word).score, 0) / wordRows.length)
+        : Number(progress.averageRetention || stats.averageRetention || 0);
+
+      document.getElementById('totalXP').textContent = Number(stats.totalXP || progress.totalXP || 0).toLocaleString();
+      document.getElementById('studyTime').textContent = formatMinutes(totalStudyTime);
+      document.getElementById('wordsLearned').textContent = wordsLearned.toLocaleString();
+      document.getElementById('currentStreak').textContent = streak.toLocaleString();
+      document.getElementById('accuracy').textContent = `${accuracy}%`;
+      document.getElementById('favoriteMode').textContent = Object.entries(modeCounts).sort((a, b) => b[1] - a[1])[0]?.[0] ? labelForMode(Object.entries(modeCounts).sort((a, b) => b[1] - a[1])[0][0]) : '-';
+      document.getElementById('sessionsCompleted').textContent = sessionsCompleted.toLocaleString();
+      document.getElementById('retention').textContent = `${retention}%`;
+
+      document.getElementById('xpNote').textContent = `Last activity: ${formatDate(stats.lastActivityDate || progress.lastActivityDate)}`;
+      document.getElementById('studyTimeNote').textContent = `Longest streak: ${longest} day${longest === 1 ? '' : 's'}`;
+      document.getElementById('wordsNote').textContent = `${Number(progress.wordsLearned || stats.wordsLearned || 0)} words learned overall`;
+      document.getElementById('streakNote').textContent = `Best streak: ${longest}`;
+      document.getElementById('accuracyNote').textContent = `From ${sessionsCompleted} completed session${sessionsCompleted === 1 ? '' : 's'}`;
+      document.getElementById('favoriteModeNote').textContent = sessionsCompleted ? 'Most frequent session type' : 'No sessions yet';
+      document.getElementById('sessionsNote').textContent = `${sessionsCompleted} completed session${sessionsCompleted === 1 ? '' : 's'}`;
+      document.getElementById('retentionNote').textContent = `Average mastery score across your vocabulary`;
+      document.getElementById('heroCopy').textContent = sessionsCompleted || wordsLearned || totalStudyTime
+        ? `Hi ${getUser().name}, here is your live analytics snapshot with ${sessionsCompleted} sessions and ${wordsLearned} learned words.`
+        : 'No live learning activity has been recorded for this account yet.';
+
+      document.getElementById('periodCompareNote').textContent = summarizeComparison(historyData?.comparison);
+    }
+
+    function filteredSessions() {
+      const mode = document.getElementById('modeFilter').value;
+      const search = document.getElementById('sessionSearch').value.trim().toLowerCase();
+      const from = document.getElementById('fromDate').value;
+      const to = document.getElementById('toDate').value;
+      return sessions.filter((session) => {
+        const modeMatch = mode ? String(session.type || '').toLowerCase() === mode : true;
+        const haystack = `${session.type || ''} ${session.xp || ''} ${session.accuracy || ''}`.toLowerCase();
+        const searchMatch = search ? haystack.includes(search) : true;
+        const sessionDate = session.date ? new Date(session.date) : null;
+        const fromMatch = from ? sessionDate && sessionDate >= new Date(`${from}T00:00:00`) : true;
+        const toMatch = to ? sessionDate && sessionDate <= new Date(`${to}T23:59:59`) : true;
+        return modeMatch && searchMatch && fromMatch && toMatch;
+      });
+    }
+
+    function renderSessions() {
+      const rows = filteredSessions();
+      const tbody = document.getElementById('sessionsBody');
+      if (!rows.length) {
+        tbody.innerHTML = '<tr><td colspan="5" class="empty">No sessions match the selected filters.</td></tr>';
+        return;
+      }
+      tbody.innerHTML = rows.map((session) => {
+        const accuracy = Number(session.accuracy || 0);
+        const pillClass = accuracy >= 85 ? 'mastered' : accuracy >= 70 ? 'strong' : accuracy >= 50 ? 'growing' : 'learning';
+        return `
+          <tr>
+            <td>${labelForMode(session.type)}</td>
+            <td>${formatDate(session.date)}</td>
+            <td>${Number(session.xp || 0).toLocaleString()} XP</td>
+            <td><span class="pill ${pillClass}">${accuracy}%</span></td>
+            <td>${formatMinutes(session.duration || 0)}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function filteredWords() {
+      const search = document.getElementById('wordSearch').value.trim().toLowerCase();
+      const masteryFilter = document.getElementById('masteryFilter').value;
+      const sortBy = document.getElementById('sortBy').value;
+      const rows = wordRows.map((word) => ({ ...word, _meta: masteryInfo(word) }));
+      const filtered = rows.filter((word) => {
+        const matchesSearch = search ? `${word.word || ''} ${word.definition || ''}`.toLowerCase().includes(search) : true;
+        const matchesMastery = masteryFilter !== '' ? String(word._meta.tier) === String(masteryFilter) : true;
+        return matchesSearch && matchesMastery;
+      });
+      filtered.sort((a, b) => {
+        if (sortBy === 'word-asc') return String(a.word || '').localeCompare(String(b.word || ''));
+        if (sortBy === 'word-desc') return String(b.word || '').localeCompare(String(a.word || ''));
+        if (sortBy === 'accuracy-desc') return b._meta.accuracy - a._meta.accuracy;
+        if (sortBy === 'attempts-desc') return b._meta.attempts - a._meta.attempts;
+        return b._meta.score - a._meta.score;
+      });
+      return filtered;
+    }
+
+    function renderWords() {
+      const tbody = document.getElementById('wordsBody');
+      const rows = filteredWords();
+      if (!rows.length) {
+        tbody.innerHTML = '<tr><td colspan="6" class="empty">No words match the selected filters.</td></tr>';
+        return;
+      }
+      tbody.innerHTML = rows.map((word) => {
+        const meta = word._meta;
+        const lastReview = word.lastReviewedAt || word.updatedAt || word.createdAt;
+        return `
+          <tr>
+            <td>
+              <strong>${esc(word.word || '-')}</strong><br />
+              <span class="muted">${esc(word.definition || '-')}</span>
+            </td>
+            <td><span class="pill ${['new', 'learning', 'growing', 'strong', 'mastered'][meta.tier]}">${meta.label}</span></td>
+            <td>${meta.accuracy}%</td>
+            <td>${meta.attempts}</td>
+            <td>${formatDate(lastReview)}</td>
+            <td>${formatDate(word.nextReviewAt || meta.nextReview)}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function updateCharts() {
+      const historySeries = Array.isArray(historyData?.series) ? historyData.series : [];
+      const xpSeries = historySeries.length
+        ? buildChartSeriesFromHistory(historySeries, 'xp')
+        : buildSeries(sessions, 'xp');
+      const accuracySeries = historySeries.length
+        ? buildChartSeriesFromHistory(historySeries, 'accuracy')
+        : buildSeries(sessions, 'accuracy', 'average');
+      renderCharts();
+      renderSkillGaps(drilldownData?.skillGaps);
+      renderExerciseBreakdown(drilldownData?.byType);
+      renderDetailedSkillGaps(drilldownData?.skillGaps);
+
+      const studyTimeByMode = Object.entries(modeCounts).map(([mode, count]) => ({ mode, count }));
+      const bestTimeHour = sessions.length
+        ? sessions.reduce((acc, session) => {
+            const hour = new Date(session.date || Date.now()).getHours();
+            acc[hour] = (acc[hour] || 0) + 1;
+            return acc;
+          }, {})
+        : {};
+      const bestHourEntry = Object.entries(bestTimeHour).sort((a, b) => b[1] - a[1])[0];
+      document.getElementById('bestTimeNote').textContent = bestHourEntry
+        ? `Best time to study appears to be around ${bestHourEntry[0].padStart(2, '0')}:00 based on your recent sessions.`
+        : 'Best time to study will appear once session data exists.';
+      if (!studyTimeByMode.length) {
+        document.getElementById('modeRingValue').textContent = '0';
+      }
+    }
+
+    function rebuildState() {
+      sessions = Array.isArray(progressData?.completedLessons) ? progressData.completedLessons.map((item) => ({
+        type: item.type || 'session',
+        date: item.date,
+        xp: Number(item.xp || 0),
+        accuracy: Number(item.accuracy || 0),
+        duration: Number(item.duration || 0),
+        note: item.note || '',
+      })) : [];
+      const fallbackModeCounts = sessions.reduce((acc, session) => {
+        const mode = String(session.type || 'unknown').toLowerCase();
+        acc[mode] = (acc[mode] || 0) + 1;
+        return acc;
+      }, {});
+      modeCounts = (Array.isArray(drilldownData?.byType) && drilldownData.byType.length)
+        ? drilldownData.byType.reduce((acc, row) => {
+            const mode = String(row.type || 'unknown').toLowerCase();
+            acc[mode] = Number(row.sessions || 0);
+            return acc;
+          }, {})
+        : fallbackModeCounts;
+      updateOverview();
+      updateCharts();
+      renderAchievements();
+      renderLeaderboard();
+      renderSessions();
+      renderWords();
+    }
+
+    async function loadAnalytics() {
+      const user = requireAnalyticsAccess();
+      if (!user) return;
+      try {
+        document.getElementById('sessionsBody').innerHTML = '<tr><td colspan="5" class="empty"><span class="loading"><span class="spinner"></span>Loading sessions…</span></td></tr>';
+        document.getElementById('wordsBody').innerHTML = '<tr><td colspan="6" class="empty"><span class="loading"><span class="spinner"></span>Loading words…</span></td></tr>';
+        document.getElementById('achievementsList').innerHTML = '<div class="empty">Loading achievements...</div>';
+        document.getElementById('leaderboardList').innerHTML = '<div class="empty">Loading leaderboard...</div>';
+        const [progress, stats, words, history, drilldown, achievements] = await Promise.all([
+          api.get('/progress'),
+          api.get('/progress/stats'),
+          api.get('/words?limit=200&skip=0'),
+          api.get(`/progress/history?range=${historyRange}`),
+          api.get(`/progress/drilldown?days=${historyRange}`),
+          api.get('/progress/achievements'),
+        ]);
+        progressData = progress || {};
+        statsData = stats || {};
+        historyData = history || {};
+        drilldownData = drilldown || {};
+        achievementsData = achievements || {};
+        wordRows = Array.isArray(words.words) ? words.words : [];
+        document.title = 'Statistics - Taleem Lexicon';
+        
+        // Check if user has zero history (brand new or seed account)
+        // Both stats AND progress must indicate zero total activity
+        const totalXP = Number(stats?.totalXP || 0) + Number(progress?.totalXP || 0);
+        const totalLessons = Number(stats?.lessonsCompleted || 0) + Number(progress?.lessonsCompleted || 0);
+        const hasNoActivity = totalXP === 0 && totalLessons === 0;
+        
+        if (hasNoActivity) {
+          progressData = {};
+          statsData = {};
+          historyData = {};
+          drilldownData = {};
+          achievementsData = {};
+          leaderboardData = {};
+          wordRows = [];
+          sessions = [];
+          modeCounts = {};
+          setEmptyAnalyticsState('Live analytics will appear after real study activity is saved.');
+        } else {
+          rebuildState();
+          await loadLeaderboard();
+        }
+      } catch (err) {
+        document.getElementById('sessionsBody').innerHTML = `<tr><td colspan="5" class="empty">${esc(err.message || 'Failed to load analytics')}</td></tr>`;
+        document.getElementById('wordsBody').innerHTML = `<tr><td colspan="6" class="empty">${esc(err.message || 'Failed to load analytics')}</td></tr>`;
+        document.getElementById('achievementsList').innerHTML = `<div class="empty">${esc(err.message || 'Failed to load achievements')}</div>`;
+        document.getElementById('leaderboardList').innerHTML = `<div class="empty">${esc(err.message || 'Failed to load leaderboard')}</div>`;
+      }
+    }
+
+    function downloadReport() {
+      const visibleSessions = filteredSessions();
+      const visibleWords = filteredWords();
+      const rows = [
+        ['Taleem Lexicon Analytics'],
+        ['Generated', new Date().toLocaleString()],
+        [''],
+        ['Summary'],
+        ['Total XP', statsData?.totalXP || progressData?.totalXP || 0],
+        ['Study Time (minutes)', Math.round((Number(progressData?.totalStudyTime || statsData?.totalStudyTime || 0)) / 60)],
+        ['Words Learned', statsData?.wordsLearned || progressData?.wordsLearned || 0],
+        ['Current Streak', statsData?.streak || progressData?.streak || 0],
+        ['Longest Streak', statsData?.longestStreak || progressData?.longestStreak || progressData?.streak || 0],
+        ['Average Accuracy', statsData?.avgAccuracy || progressData?.accuracy || 0],
+        [''],
+        ['Session History'],
+        ['Mode', 'Date', 'XP', 'Accuracy', 'Duration'],
+        ...visibleSessions.map((session) => [
+          labelForMode(session.type),
+          formatDate(session.date),
+          session.xp || 0,
+          session.accuracy || 0,
+          formatMinutes(session.duration || 0),
+        ]),
+        [''],
+        ['Word Mastery'],
+        ['Word', 'Mastery', 'Accuracy', 'Attempts', 'Last Review', 'Next Review'],
+        ...visibleWords.map((word) => {
+          const meta = masteryInfo(word);
+          return [
+            word.word || '-',
+            meta.label,
+            `${meta.accuracy}%`,
+            meta.attempts,
+            formatDate(word.lastReviewedAt || word.updatedAt || word.createdAt),
+            formatDate(word.nextReviewAt || meta.nextReview),
+          ];
+        }),
+      ];
+
+      const csv = rows.map((row) => row.map((cell) => `"${String(cell ?? '').replace(/"/g, '""')}"`).join(',')).join('\n');
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `taleem-lexicon-analytics-${new Date().toISOString().slice(0, 10)}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    async function loadHistoryRange(range) {
+      historyRange = range;
+      document.querySelectorAll('.range-btn').forEach((btn) => {
+        btn.classList.toggle('active', Number(btn.dataset.range) === range);
+      });
+      const desc = document.getElementById('studyPulseDesc');
+      if (desc) desc.textContent = `${range}-day session activity and accuracy trend.`;
+      try {
+        const [history, drilldown] = await Promise.all([
+          api.get(`/progress/history?range=${range}`),
+          api.get(`/progress/drilldown?days=${range}`),
+        ]);
+        historyData = history || {};
+        drilldownData = drilldown || {};
+        updateOverview();
+        updateCharts();
+      } catch (err) {
+        console.error('Failed to reload history:', err);
+      }
+    }
+
+    function wireFilters() {
+      const rerender = () => {
+        renderSessions();
+        renderWords();
+      };
+      document.getElementById('sessionSearch').addEventListener('input', rerender);
+      document.getElementById('modeFilter').addEventListener('change', rerender);
+      document.getElementById('fromDate').addEventListener('change', rerender);
+      document.getElementById('toDate').addEventListener('change', rerender);
+      document.getElementById('wordSearch').addEventListener('input', renderWords);
+      document.getElementById('masteryFilter').addEventListener('change', renderWords);
+      document.getElementById('sortBy').addEventListener('change', renderWords);
+      document.getElementById('clearSessionFilters').addEventListener('click', () => {
+        document.getElementById('sessionSearch').value = '';
+        document.getElementById('modeFilter').value = '';
+        document.getElementById('fromDate').value = '';
+        document.getElementById('toDate').value = '';
+        renderSessions();
+      });
+      document.getElementById('clearWordFilters').addEventListener('click', () => {
+        document.getElementById('wordSearch').value = '';
+        document.getElementById('masteryFilter').value = '';
+        document.getElementById('sortBy').value = 'mastery-desc';
+        renderWords();
+      });
+      document.getElementById('refreshBtn').addEventListener('click', loadAnalytics);
+      document.getElementById('downloadBtn').addEventListener('click', downloadReport);
+
+      document.getElementById('leaderboardScope').addEventListener('change', () => {
+        setLeaderboardScopeUiState();
+      });
+      document.getElementById('applyLeaderboardFilters').addEventListener('click', loadLeaderboard);
+      document.getElementById('leaderboardPeriod').addEventListener('change', loadLeaderboard);
+      document.querySelectorAll('.range-btn').forEach((btn) => {
+        btn.addEventListener('click', () => loadHistoryRange(Number(btn.dataset.range)));
+      });
+    }
+
+    setLeaderboardScopeUiState();
+    wireFilters();
+    loadAnalytics();
+  </script>
+</body>
+</html>

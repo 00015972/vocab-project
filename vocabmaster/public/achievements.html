@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Achievements - VocabMaster</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.9.4/dist/dotlottie-wc.js" type="module"></script>
+  <style>
+    :root {
+      --emerald: #50C878;
+      --emerald-dark: #2d7a5c;
+      --gold: #D4AF37;
+      --ink: #0f172a;
+      --slate: #334155;
+      --muted: #64748b;
+      --line: rgba(15, 23, 42, 0.12);
+      --panel: rgba(255, 255, 255, 0.86);
+      --panel-strong: #ffffff;
+      --shadow: 0 18px 50px rgba(15, 23, 42, 0.10);
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100vh; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      color: var(--ink);
+      background-image: url('https://images.alphacoders.com/750/thumb-1920-750975.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      /* fallback */
+      background-color: #ffffff;
+    }
+
+    .shell {
+      max-width: 1340px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    /* ── Header / Nav ──────────────────────────────────────── */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 28px;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .logo {
+      font-size: 20px;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--emerald), var(--gold));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      cursor: pointer;
+    }
+
+    .back-btn {
+      padding: 10px 14px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: white;
+      color: var(--ink);
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .back-btn:hover {
+      background: var(--panel);
+      border-color: rgba(80, 200, 120, 0.24);
+    }
+
+    .header-stat {
+      font-size: 14px;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    .header-stat strong {
+      color: var(--ink);
+      font-weight: 700;
+    }
+
+    /* ── Hero ──────────────────────────────────────────────── */
+    .hero {
+      background: rgba(255,255,255,0.06); /* slight glass tint */
+      color: white;
+      border-radius: 28px; /* restore rounded corners */
+      padding: 26px;
+      box-shadow: var(--shadow); /* restore shadow */
+      border: 1px solid rgba(255,255,255,0.12); /* subtle border */
+      backdrop-filter: blur(6px);
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 28px;
+      min-height: 320px;
+      z-index: 1;
+    }
+
+    .hero::before,
+    .hero::after {
+      display: none !important; /* keep decorative aura removed */
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero h1 {
+      margin: 0 0 8px;
+      font-size: clamp(28px, 3.5vw, 40px);
+      line-height: 1.1;
+      letter-spacing: -0.04em;
+      font-family: 'Pacifico', cursive; /* handwriting style */
+    }
+
+    .hero p {
+      margin: 0 0 20px;
+      max-width: 480px;
+      color: rgba(255, 255, 255, 0.88);
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    .hero-stats {
+      display: flex;
+      gap: 28px;
+      flex-wrap: wrap;
+    }
+
+    .hero-stat-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .hero-stat-num {
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: -0.05em;
+    }
+
+    .hero-stat-label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-weight: 600;
+      opacity: 0.88;
+    }
+
+    /* ── Tab Navigation ────────────────────────────────────── */
+    .tabs {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 18px;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 12px;
+    }
+
+    .tab-btn {
+      padding: 10px 16px;
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -14px;
+    }
+
+    .tab-btn:hover {
+      color: var(--slate);
+    }
+
+    .tab-btn.active {
+      color: var(--emerald);
+      border-bottom-color: var(--emerald);
+    }
+
+    /* ── Achievement Grid ──────────────────────────────────── */
+    .achievement-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 16px;
+      margin-top: 18px;
+    }
+
+    .achievement-card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 18px;
+      transition: all 0.2s ease;
+      cursor: default;
+    }
+
+    .achievement-card:hover {
+      border-color: rgba(80, 200, 120, 0.24);
+      box-shadow: 0 8px 20px rgba(80, 200, 120, 0.08);
+    }
+
+    .achievement-card.locked {
+      opacity: 0.72;
+    }
+
+    .achievement-icon {
+      font-size: 40px;
+      line-height: 1;
+      margin-bottom: 12px;
+      display: block;
+    }
+
+    .achievement-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--ink);
+      margin: 0 0 4px;
+    }
+
+    .achievement-desc {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.4;
+      margin: 0 0 12px;
+    }
+
+    .achievement-progress {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .progress-bar {
+      flex: 1;
+      height: 6px;
+      background: rgba(80, 200, 120, 0.12);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--emerald), var(--gold));
+      border-radius: 3px;
+      transition: width 0.3s ease;
+    }
+
+    .progress-text {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--muted);
+      white-space: nowrap;
+      min-width: 32px;
+      text-align: right;
+    }
+
+    .achievement-unlock-badge {
+      display: inline-block;
+      padding: 4px 8px;
+      background: linear-gradient(135deg, rgba(80, 200, 120, 0.16), rgba(212, 175, 55, 0.1));
+      border: 1px solid rgba(80, 200, 120, 0.24);
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--emerald-dark);
+      margin-top: 10px;
+    }
+
+    .empty {
+      text-align: center;
+      padding: 48px 24px;
+      color: var(--muted);
+    }
+
+    .empty-icon {
+      font-size: 48px;
+      margin-bottom: 12px;
+    }
+
+    .empty-text {
+      font-size: 14px;
+      margin: 0;
+    }
+
+    @media (max-width: 1180px) {
+      .achievement-grid {
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      }
+    }
+
+    @media (max-width: 760px) {
+      .shell { padding: 14px; }
+      .hero { padding: 18px; border-radius: 22px; }
+      .hero h1 { font-size: 26px; }
+      .hero-stats { gap: 16px; }
+      .achievement-grid {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      }
+      .header { flex-direction: column; align-items: flex-start; gap: 14px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <!-- Header -->
+    <div class="header">
+      <div class="header-left">
+          <div class="logo" onclick="window.location.href='/student-learn-v3.html'"></div>
+          <button class="back-btn" onclick="window.history.back()">← Back</button>
+        </div>
+      <div class="header-stat">
+        <strong id="progressStat">1</strong> of <strong id="totalStat">9</strong> unlocked
+      </div>
+    </div>
+
+    <!-- Hero -->
+    <section class="hero">
+      <div class="hero-content">
+        <h1><dotlottie-wc src="https://lottie.host/1a7cb4c2-653c-4ec5-936c-945b8dd5fc11/hRtNZJGZlX.lottie" autoplay loop style="width:108px;height:108px;display:inline-block;vertical-align:middle;margin-right:2px;transform:translateY(4px);"></dotlottie-wc> Your Achievements</h1>
+        <p>Unlock badges by reaching milestones in your learning journey. Each achievement brings you closer to mastery.</p>
+        <div class="hero-stats">
+          <div class="hero-stat-item">
+            <div class="hero-stat-num" id="heroUnlocked">1</div>
+            <div class="hero-stat-label">Unlocked</div>
+          </div>
+          <div class="hero-stat-item">
+            <div class="hero-stat-num" id="heroProgress">11%</div>
+            <div class="hero-stat-label">Progress</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="all">All Achievements</button>
+      <button class="tab-btn" data-tab="unlocked">Unlocked</button>
+      <button class="tab-btn" data-tab="in-progress">In Progress</button>
+    </div>
+
+    <!-- Content -->
+    <div id="achievementContent">
+      <div class="empty">
+        <div class="empty-icon">⏳</div>
+        <p class="empty-text">Loading achievements...</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script>
+    let achievementsData = null;
+    let currentTab = 'all';
+
+    // ── Init ───────────────────────────────────────────────────
+    async function init() {
+      if (!requireAuth()) return;
+      await loadAchievements();
+    }
+
+    // ── Load Achievements ──────────────────────────────────────
+    async function loadAchievements() {
+      try {
+        achievementsData = await api.get('/progress/achievements');
+        updateHero();
+        renderTab('all');
+        setupTabs();
+      } catch (err) {
+        console.error('Failed to load achievements:', err);
+        document.getElementById('achievementContent').innerHTML = 
+          `<div class="empty"><div class="empty-icon">❌</div><p class="empty-text">${esc(err.message || 'Failed to load achievements')}</p></div>`;
+      }
+    }
+
+    // ── Update Hero Stats ──────────────────────────────────────
+    function updateHero() {
+      const total = Number(achievementsData?.total || 0);
+      const unlocked = Number(achievementsData?.unlockedCount || 0);
+      const pct = Math.round(Number(achievementsData?.completionPct || 0));
+
+      document.getElementById('heroUnlocked').textContent = unlocked;
+      document.getElementById('heroProgress').textContent = pct + '%';
+      document.getElementById('progressStat').textContent = unlocked;
+      document.getElementById('totalStat').textContent = total;
+    }
+
+    // ── Setup Tab Navigation ────────────────────────────────────
+    function setupTabs() {
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          currentTab = btn.dataset.tab;
+          renderTab(currentTab);
+        });
+      });
+    }
+
+    // ── Render Tab Content ──────────────────────────────────────
+    function renderTab(tab) {
+      const host = document.getElementById('achievementContent');
+      let items = [];
+
+      if (tab === 'all') {
+        items = Array.isArray(achievementsData?.all) ? achievementsData.all : [];
+      } else if (tab === 'unlocked') {
+        items = Array.isArray(achievementsData?.unlocked) ? achievementsData.unlocked : [];
+      } else if (tab === 'in-progress') {
+        items = Array.isArray(achievementsData?.inProgress) ? achievementsData.inProgress : [];
+      }
+
+      if (!items.length) {
+        host.innerHTML = `<div class="empty"><div class="empty-icon">${tab === 'unlocked' ? '🔓' : '📌'}</div><p class="empty-text">No ${tab} achievements yet.</p></div>`;
+        return;
+      }
+
+      const icons = {
+        sessions: '📚',
+        streak: '🔥',
+        xp: '⚡',
+        words: '📖',
+        lessons: '🏆',
+        accuracy_weighted: '🎯',
+      };
+
+      // Title-specific Lottie overrides (keyed by exact achievement title)
+      const titleLotties = {
+        'First Step': 'https://lottie.host/7b756349-a9b3-4af2-8dd7-0e2f2f1c4877/7CDxNwYfQT.lottie',
+        'Consistency Start': 'https://lottie.host/ebd9fa9a-11f5-4e4a-a850-a2962778bfff/wNQgz9lu8v.lottie',
+        'Week Warrior': 'https://lottie.host/ae612df4-a438-4d0f-9f8c-804371e03e93/jikebYV3pR.lottie',
+        'XP Builder': 'https://lottie.host/0219ea9a-df28-47c1-8007-9338b11b5d02/oROTzS0Z6w.lottie',
+        'XP Master': 'https://lottie.host/a2d9d8dc-6888-4485-acbf-02ef3067fe38/SzGN0qrp7V.lottie',
+        'Practice Habit': 'https://lottie.host/4c51a529-a4de-4016-a003-0af4b0c8b16d/HgXipqUrja.lottie',
+        'Word Collector': 'https://lottie.host/6ada84c5-e5a7-4e7e-b2a2-e76dcec863fe/DKKtVJzwHo.lottie',
+        'Precision Pro': 'https://lottie.host/78198e37-6bc4-4b7d-bf90-841e4168bbd3/snrhemd1fc.lottie',
+        'Lexicon Builder': 'https://lottie.host/a44acf19-47da-4e97-97bf-d8bf140bc3a3/TAyz5c6fjs.lottie',
+        'First Step (book)': 'https://lottie.host/7b756349-a9b3-4af2-8dd7-0e2f2f1c4877/7CDxNwYfQT.lottie'
+      };
+
+      host.innerHTML = `<div class="achievement-grid">${items.map((item) => {
+        const icon = icons[item.category] || '✨';
+        const pct = Math.round(Number(item.progressPct || 0));
+        const unlocked = Boolean(item.unlocked);
+        // choose Lottie by exact title match first, fallback to category icon
+        const title = String(item.title || '').trim();
+        const lottieUrl = titleLotties[title];
+        const iconHtml = lottieUrl
+          ? `<dotlottie-wc src="${lottieUrl}" autoplay loop style="width:96px;height:96px;display:block;margin:0 auto 12px"></dotlottie-wc>`
+          : `<span class=\"achievement-icon\">${icon}</span>`;
+        return `
+          <div class="achievement-card${unlocked ? '' : ' locked'}">
+            ${iconHtml}
+            <h3 class="achievement-title">${esc(item.title || 'Achievement')}</h3>
+            <p class="achievement-desc">${esc(item.description || '')}</p>
+            ${unlocked 
+              ? '<div class="achievement-unlock-badge">✓ Unlocked</div>'
+              : `<div class="achievement-progress">
+                  <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+                  <div class="progress-text">${pct}%</div>
+                </div>`
+            }
+          </div>
+        `;
+      }).join('')}</div>`;
+    }
+
+    // ── Helper ────────────────────────────────────────────────
+    function esc(str) {
+      const div = document.createElement('div');
+      div.textContent = String(str || '');
+      return div.innerHTML;
+    }
+
+    // ── Start ─────────────────────────────────────────────────
+    window.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>

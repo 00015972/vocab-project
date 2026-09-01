@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="refresh" content="0; url=/spelling-ultra.html" />
+  <title>Spelling Challenge — VocabMaster</title>
+  <link rel="stylesheet" href="/css/main.css" />
+  <style>
+    :root {
+      --primary: #6c63ff;
+      --primary-light: #a78bfa;
+      --success: #10b981;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --bg: #0f1117;
+      --bg-secondary: #1a1d27;
+      --text: #e2e8f0;
+      --text-muted: #94a3b8;
+      --border: #2e3250;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    .spelling-container {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: linear-gradient(135deg, rgba(108, 99, 255, 0.1), rgba(167, 139, 250, 0.05));
+    }
+
+    .top-bar {
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .logo {
+      font-size: 18px;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      cursor: pointer;
+    }
+
+    .session-info {
+      display: flex;
+      gap: 24px;
+      align-items: center;
+      font-size: 14px;
+    }
+
+    .session-stat {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .session-stat-value {
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .content {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+
+    .spelling-game {
+      width: 100%;
+      max-width: 600px;
+    }
+
+    .game-title {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      text-align: center;
+    }
+
+    .game-subtitle {
+      color: var(--text-muted);
+      font-size: 14px;
+      margin-bottom: 32px;
+      text-align: center;
+    }
+
+    .progress-bar {
+      height: 6px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 3px;
+      overflow: hidden;
+      margin-bottom: 32px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary), var(--primary-light));
+      width: 0%;
+      transition: width 0.3s;
+    }
+
+    .word-prompt {
+      background: var(--bg-secondary);
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      padding: 32px;
+      margin-bottom: 24px;
+      text-align: center;
+    }
+
+    .word-definition {
+      color: var(--text-muted);
+      font-size: 14px;
+      margin-bottom: 16px;
+    }
+
+    .word-pronunciation {
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      margin: 16px 0;
+      color: var(--primary);
+    }
+
+    .pronunciation-hint {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 8px;
+    }
+
+    .audio-button {
+      background: rgba(108, 99, 255, 0.1);
+      border: 1px solid var(--primary);
+      color: var(--primary);
+      padding: 10px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      margin-top: 12px;
+      transition: all 0.2s;
+    }
+
+    .audio-button:hover {
+      background: rgba(108, 99, 255, 0.2);
+    }
+
+    .spelling-input {
+      width: 100%;
+      padding: 14px;
+      background: var(--bg);
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-size: 18px;
+      font-weight: 500;
+      margin-bottom: 16px;
+      font-family: inherit;
+      text-align: center;
+      letter-spacing: 1px;
+      transition: all 0.2s;
+    }
+
+    .spelling-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      background: rgba(108, 99, 255, 0.05);
+    }
+
+    .spelling-input.correct {
+      border-color: var(--success);
+      background: rgba(16, 185, 129, 0.1);
+    }
+
+    .spelling-input.incorrect {
+      border-color: var(--danger);
+      background: rgba(239, 68, 68, 0.1);
+    }
+
+    .feedback {
+      padding: 12px;
+      border-radius: 6px;
+      margin-bottom: 16px;
+      font-size: 14px;
+      font-weight: 600;
+      text-align: center;
+      display: none;
+    }
+
+    .feedback.show {
+      display: block;
+    }
+
+    .feedback-correct {
+      background: rgba(16, 185, 129, 0.1);
+      color: #86efac;
+      border: 1px solid var(--success);
+    }
+
+    .feedback-incorrect {
+      background: rgba(239, 68, 68, 0.1);
+      color: #fca5a5;
+      border: 1px solid var(--danger);
+    }
+
+    .actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 11px 16px;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      background: #7c73ff;
+    }
+
+    .btn-secondary {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .session-summary {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 32px;
+      text-align: center;
+      display: none;
+    }
+
+    .session-summary.show {
+      display: block;
+    }
+
+    .summary-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+    }
+
+    .summary-title {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .summary-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 16px;
+      margin: 24px 0;
+    }
+
+    .stat-box {
+      background: rgba(108, 99, 255, 0.05);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+    }
+
+    .stat-value {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      color: var(--text-muted);
+    }
+
+    .spinner {
+      width: 20px;
+      height: 20px;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .summary-stats {
+        grid-template-columns: 1fr;
+      }
+
+      .word-pronunciation {
+        font-size: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="spelling-container">
+  <div class="top-bar">
+    <div class="logo" onclick="location.href='/student-learn.html'" style="cursor: pointer;">VocabMaster</div>
+    <div class="session-info">
+      <div class="session-stat">
+        <span>⏱️</span>
+        <span id="sessionTimer">0:00</span>
+      </div>
+      <div class="session-stat">
+        <span>✓</span>
+        <span id="correctCount" class="session-stat-value">0</span>/<span id="totalCount">0</span>
+      </div>
+      <div class="session-stat">
+        <span>⭐</span>
+        <span id="xpCount" class="session-stat-value">0</span> XP
+      </div>
+    </div>
+  </div>
+
+  <div class="content">
+    <div class="spelling-game">
+      <div id="loadingState" class="loading">
+        <div class="spinner"></div>
+        <span>Loading words...</span>
+      </div>
+
+      <div id="gameState" style="display: none;">
+        <div class="game-title">Spelling Challenge 🔤</div>
+        <div class="game-subtitle">Listen and spell the word correctly</div>
+
+        <div class="progress-bar">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+
+        <div class="word-prompt">
+          <div class="word-definition" id="wordDefinition">Definition will appear here</div>
+          <button class="audio-button" id="pronounceBtn" onclick="pronounceWord()">🔊 Pronounce Word</button>
+          <div class="pronunciation-hint">Tap the button to hear the word pronunciation</div>
+        </div>
+
+        <div class="feedback" id="feedbackBox"></div>
+
+        <input type="text" id="spellingInput" class="spelling-input" placeholder="Type the word here..." autocorrect="off" spellcheck="false" />
+
+        <div class="actions">
+          <button class="btn btn-secondary" onclick="skipWord()">Skip</button>
+          <button class="btn btn-primary" id="submitBtn" onclick="checkSpelling()">Check Answer</button>
+        </div>
+      </div>
+
+      <div class="session-summary" id="summaryState">
+        <div class="summary-icon" id="summaryIcon">🎉</div>
+        <div class="summary-title" id="summaryTitle">Session Complete!</div>
+        <div class="summary-stats">
+          <div class="stat-box">
+            <div class="stat-value" id="finalScore">0%</div>
+            <div class="stat-label">Accuracy</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-value" id="finalTime">0:00</div>
+            <div class="stat-label">Time</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-value" id="finalXP">0</div>
+            <div class="stat-label">XP</div>
+          </div>
+        </div>
+        <div class="actions">
+          <button class="btn btn-secondary" onclick="location.href='/student-learn.html'">Back to Learn</button>
+          <button class="btn btn-primary" onclick="location.reload()">Try Again</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="/js/api.js"></script>
+<script>
+redirectIfAuth();
+checkStudentRole();
+
+let vocabulary = [];
+let currentWordIndex = 0;
+let currentWord = null;
+let correctCount = 0;
+let sessionXP = 0;
+let startTime = Date.now();
+let timerInterval;
+let answered = false;
+
+const gameState = document.getElementById('gameState');
+const loadingState = document.getElementById('loadingState');
+const summaryState = document.getElementById('summaryState');
+const spellingInput = document.getElementById('spellingInput');
+const feedbackBox = document.getElementById('feedbackBox');
+
+async function initGame() {
+  try {
+    const response = await api.get('/words');
+    vocabulary = response.words || [];
+
+    if (vocabulary.length < 3) {
+      loadingState.innerHTML = '<div style="color: var(--danger); text-align: center;">Need at least 3 words to play.</div>';
+      return;
+    }
+
+    // Shuffle and limit to 10 words
+    vocabulary = vocabulary.sort(() => Math.random() - 0.5).slice(0, Math.min(10, vocabulary.length));
+    document.getElementById('totalCount').textContent = vocabulary.length;
+
+    loadingState.style.display = 'none';
+    gameState.style.display = 'block';
+
+    startTimer();
+    nextWord();
+  } catch (err) {
+    console.error('Init error:', err);
+    loadingState.innerHTML = '<div style="color: var(--danger);">Failed to load words.</div>';
+  }
+}
+
+function nextWord() {
+  if (currentWordIndex >= vocabulary.length) {
+    endSession();
+    return;
+  }
+
+  currentWord = vocabulary[currentWordIndex];
+  currentWordIndex++;
+
+  document.getElementById('wordDefinition').textContent = currentWord.definition;
+  spellingInput.value = '';
+  spellingInput.className = 'spelling-input';
+  feedbackBox.className = 'feedback';
+  answered = false;
+  document.getElementById('submitBtn').disabled = false;
+  spellingInput.focus();
+
+  updateProgress();
+}
+
+function pronounceWord() {
+  if (!currentWord) return;
+
+  if ('speechSynthesis' in window) {
+    const utterance = new SpeechSynthesisUtterance(currentWord.word);
+    utterance.rate = 0.8;
+    speechSynthesis.speak(utterance);
+  }
+}
+
+function checkSpelling() {
+  if (answered) {
+    nextWord();
+    return;
+  }
+
+  const userInput = spellingInput.value.trim().toLowerCase();
+  const correctSpelling = currentWord.word.toLowerCase();
+
+  const isCorrect = userInput === correctSpelling;
+
+  if (isCorrect) {
+    correctCount++;
+    sessionXP += 40;
+    spellingInput.className = 'spelling-input correct';
+    feedbackBox.className = 'feedback show feedback-correct';
+    feedbackBox.textContent = '✓ Correct! Great job!';
+  } else {
+    spellingInput.className = 'spelling-input incorrect';
+    feedbackBox.className = 'feedback show feedback-incorrect';
+    feedbackBox.textContent = `✗ Incorrect. The correct spelling is: ${currentWord.word}`;
+  }
+
+  answered = true;
+  document.getElementById('submitBtn').textContent = 'Next Word';
+  document.getElementById('correctCount').textContent = correctCount;
+  document.getElementById('xpCount').textContent = sessionXP;
+
+  spellingInput.disabled = true;
+
+  updateProgress();
+}
+
+function skipWord() {
+  answered = true;
+  spellingInput.className = 'spelling-input';
+  feedbackBox.className = 'feedback show feedback-incorrect';
+  feedbackBox.textContent = `Skipped. The word was: ${currentWord.word}`;
+  document.getElementById('submitBtn').textContent = 'Next Word';
+  spellingInput.disabled = true;
+  updateProgress();
+}
+
+function updateProgress() {
+  const progress = (currentWordIndex / vocabulary.length) * 100;
+  document.getElementById('progressFill').style.width = progress + '%';
+}
+
+function startTimer() {
+  timerInterval = setInterval(() => {
+    const elapsed = Math.floor((Date.now() - startTime) / 1000);
+    const mins = Math.floor(elapsed / 60);
+    const secs = elapsed % 60;
+    document.getElementById('sessionTimer').textContent = `${mins}:${secs.toString().padStart(2, '0')}`;
+  }, 1000);
+}
+
+function endSession() {
+  clearInterval(timerInterval);
+  const elapsed = Math.floor((Date.now() - startTime) / 1000);
+  const accuracy = Math.round((correctCount / vocabulary.length) * 100);
+
+  document.getElementById('finalScore').textContent = accuracy + '%';
+  document.getElementById('finalTime').textContent = `${Math.floor(elapsed / 60)}:${(elapsed % 60).toString().padStart(2, '0')}`;
+  document.getElementById('finalXP').textContent = sessionXP;
+
+  if (accuracy === 100) {
+    document.getElementById('summaryIcon').textContent = '🏆';
+    document.getElementById('summaryTitle').textContent = 'Perfect Score! 🌟';
+  } else if (accuracy >= 80) {
+    document.getElementById('summaryIcon').textContent = '👏';
+    document.getElementById('summaryTitle').textContent = 'Excellent Work!';
+  } else if (accuracy >= 60) {
+    document.getElementById('summaryIcon').textContent = '👍';
+    document.getElementById('summaryTitle').textContent = 'Good Job!';
+  } else {
+    document.getElementById('summaryIcon').textContent = '💪';
+    document.getElementById('summaryTitle').textContent = 'Keep Practicing!';
+  }
+
+  // Update stats
+  const stats = JSON.parse(localStorage.getItem('userStats') || '{}');
+  stats.points = (stats.points || 0) + sessionXP;
+  localStorage.setItem('userStats', JSON.stringify(stats));
+
+  gameState.style.display = 'none';
+  summaryState.classList.add('show');
+}
+
+function checkStudentRole() {
+  const user = getUser();
+  if (!user || user.role !== 'student') {
+    location.href = '/login.html?role=student';
+  }
+}
+
+initGame();
+</script>
+</body>
+</html>

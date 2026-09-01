@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Learn & Practice — VocabMaster</title>
+  <link rel="stylesheet" href="/css/main.css" />
+  <style>
+    :root {
+      --primary: #6c63ff;
+      --primary-light: #a78bfa;
+      --success: #10b981;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --bg: #0f1117;
+      --bg-secondary: #1a1d27;
+      --text: #e2e8f0;
+      --text-muted: #94a3b8;
+      --border: #2e3250;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      overflow-x: hidden;
+    }
+
+    .student-container {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* HEADER */
+    .top-bar {
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .logo {
+      font-size: 20px;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      cursor: pointer;
+      letter-spacing: -0.5px;
+    }
+
+    .top-bar-right {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .gamification-display {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .gamification-stat {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      padding: 6px 12px;
+      background: rgba(108, 99, 255, 0.1);
+      border-radius: 6px;
+    }
+
+    .profile-button {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      border: none;
+      cursor: pointer;
+      font-weight: 700;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+
+    .profile-button:hover {
+      transform: scale(1.05);
+    }
+
+    /* MAIN CONTENT */
+    .content {
+      flex: 1;
+      padding: 32px 24px;
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .welcome-section {
+      margin-bottom: 40px;
+    }
+
+    .welcome-title {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      letter-spacing: -0.5px;
+    }
+
+    .welcome-subtitle {
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+
+    /* VOCABULARY LIBRARY */
+    .vocab-section {
+      margin-bottom: 40px;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .section-title {
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .section-action {
+      font-size: 12px;
+      color: var(--primary);
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+
+    .section-action:hover {
+      color: var(--primary-light);
+    }
+
+    .search-box {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 10px 14px;
+      margin-bottom: 16px;
+    }
+
+    .search-box input {
+      flex: 1;
+      background: none;
+      border: none;
+      color: var(--text);
+      font-size: 14px;
+    }
+
+    .search-box input::placeholder {
+      color: var(--text-muted);
+    }
+
+    .vocab-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 12px;
+    }
+
+    .vocab-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+    }
+
+    .vocab-card:hover {
+      border-color: var(--primary);
+      background: rgba(108, 99, 255, 0.05);
+      transform: translateY(-2px);
+    }
+
+    .vocab-word {
+      font-weight: 600;
+      font-size: 14px;
+      margin-bottom: 6px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .vocab-definition {
+      font-size: 11px;
+      color: var(--text-muted);
+      line-height: 1.4;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .vocab-badge {
+      display: inline-block;
+      font-size: 10px;
+      padding: 3px 6px;
+      border-radius: 3px;
+      margin-top: 6px;
+      font-weight: 600;
+    }
+
+    .badge-new {
+      background: rgba(59, 130, 246, 0.2);
+      color: #93c5fd;
+    }
+
+    .badge-learning {
+      background: rgba(245, 158, 11, 0.2);
+      color: #fbbf24;
+    }
+
+    .badge-learned {
+      background: rgba(16, 185, 129, 0.2);
+      color: #86efac;
+    }
+
+    /* LEARNING MODES */
+    .modes-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 16px;
+    }
+
+    .mode-card {
+      background: linear-gradient(135deg, var(--bg-secondary), rgba(108, 99, 255, 0.05));
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .mode-card:hover {
+      border-color: var(--primary);
+      background: linear-gradient(135deg, rgba(108, 99, 255, 0.1), rgba(108, 99, 255, 0.05));
+      transform: translateY(-4px);
+      box-shadow: 0 12px 24px rgba(108, 99, 255, 0.2);
+    }
+
+    .mode-icon {
+      font-size: 32px;
+    }
+
+    .mode-name {
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    .mode-description {
+      font-size: 11px;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    /* PROFILE MODAL */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      animation: fadeIn 0.2s;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    .modal-content {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      width: 90%;
+      max-width: 400px;
+      padding: 32px;
+      max-height: 80vh;
+      overflow-y: auto;
+      animation: slideUp 0.3s ease-out;
+    }
+
+    @keyframes slideUp {
+      from {
+        transform: translateY(20px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .modal-header {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 20px;
+      transition: color 0.2s;
+    }
+
+    .modal-close:hover {
+      color: var(--text);
+    }
+
+    .profile-section {
+      margin-bottom: 20px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .profile-section:last-child {
+      border-bottom: none;
+    }
+
+    .profile-label {
+      font-size: 12px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+
+    .profile-value {
+      font-size: 14px;
+      color: var(--text);
+    }
+
+    .btn {
+      padding: 11px 16px;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #7c73ff;
+    }
+
+    .btn-danger {
+      background: rgba(239, 68, 68, 0.1);
+      color: #fca5a5;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .btn-danger:hover {
+      background: rgba(239, 68, 68, 0.2);
+    }
+
+    .loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      padding: 40px;
+      color: var(--text-muted);
+    }
+
+    .spinner {
+      width: 20px;
+      height: 20px;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .no-data {
+      text-align: center;
+      padding: 40px;
+      color: var(--text-muted);
+    }
+
+    @media (max-width: 768px) {
+      .top-bar {
+        flex-direction: column;
+        gap: 12px;
+        align-items: flex-start;
+      }
+
+      .top-bar-right {
+        width: 100%;
+        justify-content: space-between;
+      }
+
+      .content {
+        padding: 16px;
+      }
+
+      .modes-grid {
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      }
+
+      .vocab-grid {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="student-container">
+  <!-- TOP BAR -->
+  <div class="top-bar">
+    <div class="logo" onclick="location.href='/student-learn.html'">VocabMaster</div>
+    <div class="top-bar-right">
+      <div class="gamification-display">
+        <div class="gamification-stat">
+          <span>🔥</span>
+          <span id="streakDisplay">0</span>
+          <span style="color: var(--text-muted); font-size: 12px;">day</span>
+        </div>
+        <div class="gamification-stat">
+          <span>⭐</span>
+          <span id="pointsDisplay">0</span>
+          <span style="color: var(--text-muted); font-size: 12px;">XP</span>
+        </div>
+      </div>
+      <button class="profile-button" id="profileBtn" title="Profile">👤</button>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="content">
+    <div class="welcome-section">
+      <div class="welcome-title">Welcome back! 👋</div>
+      <div class="welcome-subtitle" id="welcomeSubtitle">Ready to master more vocabulary? Choose a learning mode below.</div>
+    </div>
+
+    <!-- VOCABULARY SECTION -->
+    <div class="vocab-section">
+      <div class="section-header">
+        <div class="section-title">Your Vocabulary</div>
+        <div class="section-action" onclick="expandVocab()">View all →</div>
+      </div>
+
+      <div class="search-box">
+        <span>🔍</span>
+        <input type="text" id="searchInput" placeholder="Search words..." />
+      </div>
+
+      <div id="vocabLoading" class="loading">
+        <div class="spinner"></div>
+        <span>Loading vocabulary...</span>
+      </div>
+
+      <div id="vocabGrid" class="vocab-grid" style="display: none;"></div>
+      <div id="noVocab" class="no-data" style="display: none;">
+        No vocabulary found. Ask your teacher for a class code!
+      </div>
+    </div>
+
+    <!-- LEARNING MODES -->
+    <div class="vocab-section">
+      <div class="section-title">Learning Modes</div>
+      <div class="modes-grid">
+        <div class="mode-card" onclick="location.href='/flashcards.html'">
+          <div class="mode-icon">🎴</div>
+          <div class="mode-name">Flashcards</div>
+          <div class="mode-description">Review with spaced repetition</div>
+        </div>
+        <div class="mode-card" onclick="location.href='/quiz.html'">
+          <div class="mode-icon">❓</div>
+          <div class="mode-name">Quiz</div>
+          <div class="mode-description">Multiple-choice questions</div>
+        </div>
+        <div class="mode-card" onclick="location.href='/matching.html'">
+          <div class="mode-icon">🔗</div>
+          <div class="mode-name">Matching</div>
+          <div class="mode-description">Match words to definitions</div>
+        </div>
+        <div class="mode-card" onclick="location.href='/spelling.html'">
+          <div class="mode-icon">🔤</div>
+          <div class="mode-name">Spelling</div>
+          <div class="mode-description">Practice spelling words</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PROFILE MODAL -->
+<div id="profileModal" class="modal" onclick="if(event.target === this) closeProfile()">
+  <div class="modal-content">
+    <div class="modal-header">
+      <span>Your Profile</span>
+      <button class="modal-close" onclick="closeProfile()">✕</button>
+    </div>
+
+    <div class="profile-section">
+      <div class="profile-label">Name</div>
+      <div class="profile-value" id="profileName">-</div>
+    </div>
+
+    <div class="profile-section">
+      <div class="profile-label">Email</div>
+      <div class="profile-value" id="profileEmail">-</div>
+    </div>
+
+    <div class="profile-section">
+      <div class="profile-label">Class Code</div>
+      <div class="profile-value" id="profileCode">-</div>
+    </div>
+
+    <div class="profile-section">
+      <div class="profile-label">Total XP</div>
+      <div class="profile-value" id="profileXP">0</div>
+    </div>
+
+    <div class="profile-section">
+      <div class="profile-label">Current Streak</div>
+      <div class="profile-value" id="profileStreak">0</div>
+    </div>
+
+    <div class="profile-section">
+      <button class="btn btn-primary" onclick="location.href='/statistics-ultra.html'">📊 View Statistics</button>
+    </div>
+
+    <div class="profile-section">
+      <button class="btn btn-danger" onclick="logout()">🚪 Logout</button>
+    </div>
+  </div>
+</div>
+
+<script src="/js/api.js"></script>
+<script>
+redirectIfAuth();
+checkStudentRole();
+
+let allVocabulary = [];
+
+async function initPage() {
+  try {
+    const user = getUser();
+    document.getElementById('profileName').textContent = user.name;
+    document.getElementById('profileEmail').textContent = user.email;
+    document.getElementById('profileCode').textContent = user.linkedCreatorCode || 'Not linked';
+
+    // Load vocabulary
+    const response = await api.get('/words?limit=100');
+    allVocabulary = response.words || [];
+
+    if (allVocabulary.length === 0) {
+      document.getElementById('vocabLoading').style.display = 'none';
+      document.getElementById('noVocab').style.display = 'block';
+      return;
+    }
+
+    renderVocab(allVocabulary.slice(0, 20));
+    document.getElementById('vocabLoading').style.display = 'none';
+    document.getElementById('vocabGrid').style.display = 'grid';
+
+    // Load stats
+    updateStats();
+
+    // Setup search
+    document.getElementById('searchInput').addEventListener('input', (e) => {
+      const query = e.target.value.toLowerCase();
+      const filtered = allVocabulary.filter(
+        w => w.word.toLowerCase().includes(query) || w.definition.toLowerCase().includes(query)
+      );
+      renderVocab(filtered.slice(0, 20));
+    });
+
+  } catch (err) {
+    console.error('Init error:', err);
+    document.getElementById('vocabLoading').innerHTML = '<div style="color: var(--danger);">Failed to load vocabulary</div>';
+  }
+}
+
+function renderVocab(words) {
+  const grid = document.getElementById('vocabGrid');
+  if (words.length === 0) {
+    grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: var(--text-muted);">No words found</div>';
+    return;
+  }
+
+  const progress = JSON.parse(localStorage.getItem('studentProgress') || '{}');
+
+  grid.innerHTML = words.map(word => {
+    const p = progress[word._id] || { status: 'new', mastery: 0 };
+    const badgeClass = `badge-${p.status || 'new'}`;
+    const badgeText = (p.status || 'new').charAt(0).toUpperCase() + (p.status || 'new').slice(1);
+
+    return `
+      <div class="vocab-card">
+        <div class="vocab-word">${esc(word.word)}</div>
+        <div class="vocab-definition">${esc(word.definition)}</div>
+        <div class="vocab-badge ${badgeClass}">${badgeText}</div>
+      </div>
+    `;
+  }).join('');
+}
+
+function updateStats() {
+  const stats = JSON.parse(localStorage.getItem('userStats') || '{}');
+  document.getElementById('streakDisplay').textContent = stats.streak || 0;
+  document.getElementById('pointsDisplay').textContent = stats.points || 0;
+  document.getElementById('profileXP').textContent = stats.points || 0;
+  document.getElementById('profileStreak').textContent = stats.streak || 0;
+}
+
+function expandVocab() {
+  renderVocab(allVocabulary);
+}
+
+document.getElementById('profileBtn').addEventListener('click', () => {
+  document.getElementById('profileModal').classList.add('active');
+});
+
+function closeProfile() {
+  document.getElementById('profileModal').classList.remove('active');
+}
+
+function logout() {
+  if (confirm('Are you sure you want to logout?')) {
+    clearAuth();
+    location.href = '/login.html?role=student';
+  }
+}
+
+function checkStudentRole() {
+  const user = getUser();
+  if (!user || user.role !== 'student') {
+    location.href = '/login.html?role=student';
+  }
+}
+
+function esc(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+initPage();
+</script>
+</body>
+</html>

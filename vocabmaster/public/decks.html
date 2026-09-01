@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Taleem Lexicon - Decks</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --gold: #d4af37;
+      --emerald: #50c878;
+      --dark: #1a1a1a;
+      --muted: #64748b;
+      --surface: #ffffff;
+      --border: #e2e8f0;
+      --bg: #f8fafc;
+    }
+    * { box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+    body { margin: 0; background: linear-gradient(180deg, #f8fafc, #eef6f1); color: var(--dark); }
+    .shell { max-width: 1100px; margin: 0 auto; padding: 32px 20px 48px; }
+    .hidden { display: none !important; }
+    .gate {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .gate-card {
+      width: 100%;
+      max-width: 640px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 28px;
+      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+      text-align: center;
+    }
+    .gate-card h1 { margin: 0 0 12px; font-size: 30px; }
+    .gate-card p { margin: 0 0 20px; color: var(--muted); line-height: 1.6; }
+    .gate-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    .topbar { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; margin-bottom: 24px; }
+    .brand { display: flex; align-items: center; gap: 12px; }
+    .brand img { width: 42px; height: 42px; border-radius: 50%; }
+    .brand-name { font-size: 24px; font-weight: 800; }
+    .brand-subtitle { color: var(--muted); font-size: 14px; }
+    .nav { display: flex; gap: 10px; flex-wrap: wrap; }
+    .nav a, .nav button {
+      border: 1px solid var(--border); background: var(--surface); color: var(--dark); text-decoration: none;
+      padding: 10px 14px; border-radius: 12px; font-weight: 700; cursor: pointer;
+    }
+    .creator-dashboard-btn {
+      --green: #1BFD9C;
+      font-size: 15px;
+      padding: 0.7em 2.7em;
+      letter-spacing: 0.06em;
+      position: relative;
+      font-family: inherit;
+      border-radius: 0.6em;
+      overflow: hidden;
+      transition: all 0.3s;
+      line-height: 1.4em;
+      border: 2px solid var(--green);
+      background: linear-gradient(to right, rgba(27, 253, 156, 0.1) 1%, transparent 40%,transparent 60% , rgba(27, 253, 156, 0.1) 100%);
+      color: var(--green);
+      box-shadow: inset 0 0 10px rgba(27, 253, 156, 0.4), 0 0 9px 3px rgba(27, 253, 156, 0.1);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .creator-dashboard-btn:hover {
+      color: #82ffc9;
+      box-shadow: inset 0 0 10px rgba(27, 253, 156, 0.6), 0 0 9px 3px rgba(27, 253, 156, 0.2);
+    }
+    .creator-dashboard-btn:before {
+      content: "";
+      position: absolute;
+      left: -4em;
+      width: 4em;
+      height: 100%;
+      top: 0;
+      transition: transform .4s ease-in-out;
+      background: linear-gradient(to right, transparent 1%, rgba(27, 253, 156, 0.1) 40%,rgba(27, 253, 156, 0.1) 60% , transparent 100%);
+    }
+    .creator-dashboard-btn:hover:before {
+      transform: translateX(15em);
+    }
+    .hero { background: var(--surface); border: 1px solid var(--border); border-radius: 22px; padding: 24px; margin-bottom: 22px; box-shadow: 0 10px 30px rgba(15, 23, 42, 0.05); }
+    .hero h1 { margin: 0 0 8px; font-size: 34px; }
+    .hero p { margin: 0; color: var(--muted); line-height: 1.6; }
+    .layout { display: grid; grid-template-columns: 360px 1fr; gap: 20px; }
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 20px; box-shadow: 0 10px 30px rgba(15, 23, 42, 0.05); }
+    .card h2 { margin: 0 0 8px; font-size: 21px; }
+    .card p { margin: 0 0 18px; color: var(--muted); }
+    .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 18px; }
+    .stat { background: #f8fafc; border: 1px solid var(--border); border-radius: 14px; padding: 14px; }
+    .stat-label { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .08em; }
+    .stat-value { font-size: 28px; font-weight: 800; margin-top: 8px; }
+    .form-group { margin-bottom: 14px; }
+    label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 6px; }
+    input, textarea, select {
+      width: 100%; border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; font: inherit; background: #fff;
+    }
+    textarea { resize: vertical; min-height: 96px; }
+    .btn-primary {
+      width: 100%; border: 0; border-radius: 14px; padding: 13px 16px; font-weight: 800; cursor: pointer; color: white;
+      background: linear-gradient(135deg, var(--emerald), #2d7a5c); box-shadow: 0 14px 28px rgba(80, 200, 120, 0.22);
+    }
+    .deck-list { display: grid; gap: 14px; }
+    .deck-item { border: 1px solid var(--border); border-radius: 16px; padding: 16px; background: #fcfffd; }
+    .deck-item-head { display: flex; justify-content: space-between; gap: 10px; align-items: flex-start; }
+    .deck-name { font-size: 18px; font-weight: 700; }
+    .deck-desc { color: var(--muted); font-size: 14px; line-height: 1.55; margin-top: 8px; }
+    .chips { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+    .chip { padding: 6px 10px; border-radius: 999px; font-size: 12px; font-weight: 700; background: #eef2ff; color: #4338ca; }
+    .chip.public { background: #ecfdf5; color: #047857; }
+    .deck-actions { margin-top: 14px; display: flex; gap: 10px; }
+    .mini-btn { border: 1px solid var(--border); background: #fff; border-radius: 10px; padding: 9px 12px; font-weight: 700; cursor: pointer; }
+    .empty { border: 1px dashed var(--border); border-radius: 16px; padding: 30px 18px; text-align: center; color: var(--muted); }
+    .message { display: none; margin-bottom: 14px; padding: 12px 14px; border-radius: 12px; font-weight: 600; }
+    .message.show { display: block; }
+    .message.success { background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; }
+    .message.error { background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; }
+    @media (max-width: 900px) {
+      .layout { grid-template-columns: 1fr; }
+      .stats { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div id="creatorGate" class="gate hidden">
+    <div class="gate-card">
+      <h1>Creator Access Required</h1>
+      <p>This deck page is a separate creator tool. Sign in with a creator account to create and manage decks.</p>
+      <div class="gate-actions">
+        <a class="creator-dashboard-btn" href="creator-portal.html">Open Creator Dashboard</a>
+        <a class="nav" style="text-decoration:none" href="/login-ultra.html"><span style="display:inline-block;border:1px solid var(--border);background:var(--surface);color:var(--dark);padding:10px 14px;border-radius:12px;font-weight:700;">Sign In</span></a>
+      </div>
+    </div>
+  </div>
+
+  <div id="deckApp" class="shell hidden">
+    <div class="topbar">
+      <div class="brand">
+        <img src="https://www.image2url.com/r2/default/images/1784112907446-0463de99-8cb2-4889-82b8-3e0c5207bc0d.jpg" alt="Taleem Lexicon" />
+        <div>
+          <div class="brand-name">Taleem Lexicon</div>
+          <div class="brand-subtitle">Simple deck creation</div>
+        </div>
+      </div>
+      <div class="nav">
+        <a href="/creator-dashboard-new.html">Creator Dashboard</a>
+        <a href="/resource-manager.html">Vocabulary</a>
+        <button type="button" onclick="logout()">Logout</button>
+      </div>
+    </div>
+
+    <section class="hero">
+      <h1>Decks</h1>
+      <p>Create simple decks first. Each deck groups words by topic or difficulty so you can organize study sets before we add more advanced tools.</p>
+    </section>
+
+    <div id="pageMessage" class="message"></div>
+
+    <div class="layout">
+      <section class="card">
+        <h2>Create Deck</h2>
+        <p>Add a simple deck with name, difficulty, topic, and description.</p>
+
+        <form id="deckForm" onsubmit="handleCreateDeck(event)">
+          <div class="form-group">
+            <label for="deckName">Deck Name</label>
+            <input id="deckName" required placeholder="e.g. Advanced Adjectives" />
+          </div>
+
+          <div class="form-group">
+            <label for="deckDifficulty">Difficulty</label>
+            <select id="deckDifficulty">
+              <option value="beginner">Beginner</option>
+              <option value="intermediate" selected>Intermediate</option>
+              <option value="advanced">Advanced</option>
+              <option value="expert">Expert</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="deckTopic">Topic</label>
+            <input id="deckTopic" placeholder="e.g. IELTS, Business, Nature" />
+          </div>
+
+          <div class="form-group">
+            <label for="deckDescription">Description</label>
+            <textarea id="deckDescription" placeholder="What kind of words belong in this deck?"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="deckTags">Tags</label>
+            <input id="deckTags" placeholder="exam, speaking, common" />
+          </div>
+
+          <div class="form-group">
+            <label for="deckVisibility">Visibility</label>
+            <select id="deckVisibility">
+              <option value="private" selected>Private</option>
+              <option value="public">Public</option>
+            </select>
+          </div>
+
+          <button class="btn-primary" type="submit">Create Deck</button>
+        </form>
+      </section>
+
+      <section class="card">
+        <h2>Your Decks</h2>
+        <p>These are the decks already created for your account.</p>
+
+        <div class="stats">
+          <div class="stat">
+            <div class="stat-label">Decks</div>
+            <div class="stat-value" id="deckCount">0</div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">Public</div>
+            <div class="stat-value" id="publicCount">0</div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">Topics</div>
+            <div class="stat-value" id="topicCount">0</div>
+          </div>
+        </div>
+
+        <div id="deckList" class="deck-list"></div>
+      </section>
+    </div>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script>
+    let decks = [];
+
+    function showMessage(message, type) {
+      const box = document.getElementById('pageMessage');
+      box.textContent = message;
+      box.className = 'message show ' + (type || 'success');
+      clearTimeout(showMessage.timer);
+      showMessage.timer = setTimeout(function () {
+        box.className = 'message';
+      }, 3200);
+    }
+
+    function escapeHtml(value) {
+      return String(value || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    async function initializePage() {
+      const token = getToken();
+      if (!token) {
+        document.getElementById('creatorGate').classList.remove('hidden');
+        return;
+      }
+      const user = getUser();
+      if (!user || (user.role !== 'creator' && user.role !== 'admin')) {
+        document.getElementById('creatorGate').classList.remove('hidden');
+        return;
+      }
+      document.getElementById('deckApp').classList.remove('hidden');
+      await loadDecks();
+    }
+
+    async function loadDecks() {
+      try {
+        const response = await api.get('/decks?limit=200');
+        decks = Array.isArray(response && response.decks) ? response.decks : [];
+        renderDecks();
+      } catch (error) {
+        showMessage(error.message || 'Failed to load decks.', 'error');
+      }
+    }
+
+    function renderDecks() {
+      const list = document.getElementById('deckList');
+      document.getElementById('deckCount').textContent = String(decks.length);
+      document.getElementById('publicCount').textContent = String(decks.filter(function (deck) { return !!deck.isPublic; }).length);
+      document.getElementById('topicCount').textContent = String(new Set(decks.map(function (deck) { return String(deck.topic || '').trim(); }).filter(Boolean)).size);
+
+      if (!decks.length) {
+        list.innerHTML = '<div class="empty">No decks yet. Create your first one using the form.</div>';
+        return;
+      }
+
+      list.innerHTML = decks.map(function (deck) {
+        return '' +
+          '<article class="deck-item">' +
+            '<div class="deck-item-head">' +
+              '<div>' +
+                '<div class="deck-name">' + escapeHtml(deck.name) + '</div>' +
+                '<div class="deck-desc">' + escapeHtml(deck.description || 'No description yet.') + '</div>' +
+              '</div>' +
+              '<div style="font-weight:800; color:#0f766e;">' + Number(deck.wordCount || 0) + '</div>' +
+            '</div>' +
+            '<div class="chips">' +
+              '<span class="chip">' + escapeHtml(deck.difficulty || 'intermediate') + '</span>' +
+              (deck.topic ? '<span class="chip">' + escapeHtml(deck.topic) + '</span>' : '') +
+              (deck.isPublic ? '<span class="chip public">Public</span>' : '<span class="chip">Private</span>') +
+            '</div>' +
+            '<div class="deck-actions">' +
+              '<button class="mini-btn" onclick="openDeckManager()">Open manager</button>' +
+            '</div>' +
+          '</article>';
+      }).join('');
+    }
+
+    async function handleCreateDeck(event) {
+      event.preventDefault();
+      const payload = {
+        name: document.getElementById('deckName').value.trim(),
+        difficulty: document.getElementById('deckDifficulty').value,
+        topic: document.getElementById('deckTopic').value.trim(),
+        description: document.getElementById('deckDescription').value.trim(),
+        tags: document.getElementById('deckTags').value.split(',').map(function (tag) { return tag.trim(); }).filter(Boolean),
+        isPublic: document.getElementById('deckVisibility').value === 'public'
+      };
+
+      try {
+        await api.post('/decks', payload);
+        document.getElementById('deckForm').reset();
+        document.getElementById('deckDifficulty').value = 'intermediate';
+        document.getElementById('deckVisibility').value = 'private';
+        showMessage('Deck created successfully.', 'success');
+        await loadDecks();
+      } catch (error) {
+        showMessage(error.message || 'Failed to create deck.', 'error');
+      }
+    }
+
+    function openDeckManager() {
+      window.location.href = '/deck-manager.html';
+    }
+
+    function logout() {
+      clearAuth();
+      window.location.href = '/login-ultra.html';
+    }
+
+    initializePage();
+  </script>
+</body>
+</html>

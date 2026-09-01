@@ -1,0 +1,1629 @@
+{
+  "users": [
+    {
+      "_id": "msvl3i5txkejh2fp",
+      "name": "tok",
+      "email": "tak12@gmail.com",
+      "passwordHash": "$2a$12$tVPr0g2wNTHY0wphhJS/AemhI80ps50fJ2XfBKrkNBWDdjrRombwG",
+      "isVerified": true,
+      "isActive": true,
+      "role": "student",
+      "createdAt": "2026-08-16T09:10:02.417Z"
+    },
+    {
+      "_id": "msvl77lc6y6e95hp",
+      "name": "Demo Creator",
+      "email": "creator@test.local",
+      "passwordHash": "$2a$10$lJyV..6f1JQjqT8ypanSbe9.R072Cw.WropQ0hDe/50u3nYy37rZi",
+      "isVerified": true,
+      "isActive": true,
+      "role": "creator",
+      "creatorCode": "DEMO01",
+      "isSeedAccount": true,
+      "createdAt": "2026-08-16T09:12:55.591Z"
+    },
+    {
+      "_id": "msvl77s9l13y4xis",
+      "name": "Demo Student",
+      "email": "student@test.local",
+      "passwordHash": "$2a$10$3U2GnDIKkdhH0rCKJkA81uJ.a1BouBghS8hVMqAI2n3s5xgkgWZLi",
+      "isVerified": true,
+      "isActive": true,
+      "role": "student",
+      "linkedCreatorCode": "DEMO01",
+      "isSeedAccount": true,
+      "createdAt": "2026-08-16T09:12:55.889Z"
+    },
+    {
+      "_id": "msvl780hi8760iae",
+      "name": "Demo Admin",
+      "email": "admin@test.local",
+      "passwordHash": "$2a$10$XeD7O9dbNcLfH7saJtsmxeRlVeP/vPw5sebho5EFKOSKLohvUrIwe",
+      "isVerified": true,
+      "isActive": true,
+      "role": "admin",
+      "isSeedAccount": true,
+      "createdAt": "2026-08-16T09:12:56.052Z"
+    },
+    {
+      "_id": "msvlasj4s6cs402c",
+      "name": "pp",
+      "email": "pp@gmail.com",
+      "passwordHash": "$2a$12$xpKNPvVPTpmE.YaeeHFhPeY09kitiPHmJLJj4oMctrU2VZOnuawBS",
+      "isVerified": true,
+      "isActive": true,
+      "role": "student",
+      "createdAt": "2026-08-16T09:15:42.448Z"
+    },
+    {
+      "_id": "mt6thj7k6yq47zw8",
+      "name": "tohir29",
+      "email": "t29@gmail.com",
+      "passwordHash": "$2a$12$kENL/p3Zk1IhTlgh.z1UBONEgmNBXT50m28bb5hrPwh11ZBT4p.T6",
+      "isVerified": true,
+      "isActive": true,
+      "role": "student",
+      "createdAt": "2026-08-24T05:50:21.824Z"
+    }
+  ],
+  "words": [
+    {
+      "_id": "msvl7850mxzgpixb",
+      "userId": "msvl77lc6y6e95hp",
+      "word": "Serendipity",
+      "definition": "A lucky discovery made by chance.",
+      "partOfSpeech": "noun",
+      "example": "Finding that old note was pure serendipity.",
+      "notes": "",
+      "tags": [
+        "demo",
+        "test"
+      ],
+      "difficulty": 3,
+      "timesReviewed": 2,
+      "timesCorrect": 2,
+      "createdAt": "2026-08-16T09:12:56.052Z",
+      "deckId": "mt6wav10jbgxsd8n",
+      "imageUrl": "/generated/img_1787555459398_oqtw5c.jpg",
+      "domain": "deck"
+    },
+    {
+      "_id": "msvl7850zk6tnves",
+      "userId": "msvl77lc6y6e95hp",
+      "word": "Pragmatic",
+      "definition": "Focused on practical results instead of theory.",
+      "partOfSpeech": "adjective",
+      "example": "She took a pragmatic approach to learning.",
+      "notes": "",
+      "tags": [
+        "demo",
+        "test"
+      ],
+      "difficulty": 2,
+      "timesReviewed": 1,
+      "timesCorrect": 1,
+      "createdAt": "2026-08-16T09:12:56.052Z",
+      "deckId": "mt6wav10jbgxsd8n",
+      "imageUrl": "/generated/img_1787555460757_otcgu4.jpg",
+      "domain": "deck"
+    },
+    {
+      "_id": "msvl7850bl3f38yr",
+      "userId": "msvl77lc6y6e95hp",
+      "word": "Eloquent",
+      "definition": "Expressing ideas clearly and persuasively.",
+      "partOfSpeech": "adjective",
+      "example": "His eloquent speech won everyone over.",
+      "notes": "",
+      "tags": [
+        "demo",
+        "test"
+      ],
+      "difficulty": 4,
+      "timesReviewed": 3,
+      "timesCorrect": 2,
+      "createdAt": "2026-08-16T09:12:56.052Z",
+      "deckId": "mt6wav10jbgxsd8n",
+      "imageUrl": "/generated/img_1787555461969_qv2jip.jpg",
+      "domain": "deck"
+    },
+    {
+      "_id": "msvl785046t8zj3z",
+      "userId": "msvl77lc6y6e95hp",
+      "word": "Resilient",
+      "definition": "Able to recover quickly from difficulty.",
+      "partOfSpeech": "adjective",
+      "example": "The resilient team kept improving after setbacks.",
+      "notes": "",
+      "tags": [
+        "demo",
+        "test"
+      ],
+      "difficulty": 3,
+      "timesReviewed": 2,
+      "timesCorrect": 2,
+      "createdAt": "2026-08-16T09:12:56.052Z",
+      "deckId": "mt6wav10jbgxsd8n",
+      "imageUrl": "/generated/img_1787555463206_c9zixl.jpg",
+      "domain": "deck"
+    },
+    {
+      "_id": "mt6u9qkgqulhcobp",
+      "userId": "msvl77lc6y6e95hp",
+      "word": "Deckscope",
+      "definition": "A test word for student deck visibility.",
+      "imageUrl": "/generated/img_1787555464338_011fwg.jpg",
+      "partOfSpeech": "noun",
+      "example": "",
+      "notes": "",
+      "tags": [],
+      "deckId": "mt6wav10jbgxsd8n",
+      "difficulty": 3,
+      "domain": "deck",
+      "targetScoreRange": "500-600",
+      "learningStatus": "locked",
+      "adaptiveMetrics": {
+        "attempts": 0,
+        "correct": 0,
+        "incorrect": 0,
+        "consecutiveCorrectAcrossSessions": 0,
+        "averageLatencyMs": 0,
+        "lastLatencyMs": 0,
+        "abilityDelta": 0,
+        "dueAt": null,
+        "masteredAt": null,
+        "masteryStatus": "locked",
+        "masteryUpdatedAt": null,
+        "masteryRecentAccuracy": 0,
+        "masterySessionCount": 0,
+        "masteryQualifyingSessions": 0,
+        "masteryDistinctDays": 0,
+        "masterySpreadDays": 0,
+        "masteryHistory": [],
+        "lastAttemptAt": null
+      },
+      "timesReviewed": 0,
+      "timesCorrect": 0,
+      "lastReviewedAt": null,
+      "nextReviewAt": null,
+      "createdAt": "2026-08-24T06:12:17.728Z"
+    },
+    {
+      "_id": "mt71q55zymlastvd",
+      "userId": "msvl77lc6y6e95hp",
+      "word": "seated",
+      "definition": "In a sitting position; having taken a seat.",
+      "imageUrl": "/generated/img_1787565020268_cyoe2e.jpg",
+      "partOfSpeech": "adjective",
+      "example": "The audience was seated before the performance began.",
+      "notes": "",
+      "tags": [],
+      "deckId": null,
+      "difficulty": 3,
+      "domain": "general",
+      "targetScoreRange": "500-600",
+      "learningStatus": "locked",
+      "adaptiveMetrics": {
+        "attempts": 0,
+        "correct": 0,
+        "incorrect": 0,
+        "consecutiveCorrectAcrossSessions": 0,
+        "averageLatencyMs": 0,
+        "lastLatencyMs": 0,
+        "abilityDelta": 0,
+        "dueAt": null,
+        "masteredAt": null,
+        "masteryStatus": "locked",
+        "masteryUpdatedAt": null,
+        "masteryRecentAccuracy": 0,
+        "masterySessionCount": 0,
+        "masteryQualifyingSessions": 0,
+        "masteryDistinctDays": 0,
+        "masterySpreadDays": 0,
+        "masteryHistory": [],
+        "lastAttemptAt": null
+      },
+      "timesReviewed": 0,
+      "timesCorrect": 0,
+      "lastReviewedAt": null,
+      "nextReviewAt": null,
+      "createdAt": "2026-08-24T09:41:00.455Z"
+    },
+    {
+      "_id": "mt71q561why89fbn",
+      "userId": "msvl77lc6y6e95hp",
+      "word": "perch",
+      "definition": "To sit or rest on a high or narrow place, often with a sense of balance.",
+      "imageUrl": "/generated/img_1787565015082_ilg4yz.jpg",
+      "partOfSpeech": "verb",
+      "example": "She perched on the edge of the balcony to watch the parade.",
+      "notes": "",
+      "tags": [],
+      "deckId": null,
+      "difficulty": 3,
+      "domain": "general",
+      "targetScoreRange": "500-600",
+      "learningStatus": "locked",
+      "adaptiveMetrics": {
+        "attempts": 0,
+        "correct": 0,
+        "incorrect": 0,
+        "consecutiveCorrectAcrossSessions": 0,
+        "averageLatencyMs": 0,
+        "lastLatencyMs": 0,
+        "abilityDelta": 0,
+        "dueAt": null,
+        "masteredAt": null,
+        "masteryStatus": "locked",
+        "masteryUpdatedAt": null,
+        "masteryRecentAccuracy": 0,
+        "masterySessionCount": 0,
+        "masteryQualifyingSessions": 0,
+        "masteryDistinctDays": 0,
+        "masterySpreadDays": 0,
+        "masteryHistory": [],
+        "lastAttemptAt": null
+      },
+      "timesReviewed": 0,
+      "timesCorrect": 0,
+      "lastReviewedAt": null,
+      "nextReviewAt": null,
+      "createdAt": "2026-08-24T09:41:00.457Z"
+    },
+    {
+      "_id": "mt71q563n9ag14yl",
+      "userId": "msvl77lc6y6e95hp",
+      "word": "posture",
+      "definition": "The position in which someone holds their body while standing or sitting, reflecting health and confidence.",
+      "imageUrl": "/generated/img_1787565008695_c68gnq.jpg",
+      "partOfSpeech": "noun",
+      "example": "Good posture can prevent back pain.",
+      "notes": "",
+      "tags": [],
+      "deckId": null,
+      "difficulty": 3,
+      "domain": "general",
+      "targetScoreRange": "500-600",
+      "learningStatus": "locked",
+      "adaptiveMetrics": {
+        "attempts": 0,
+        "correct": 0,
+        "incorrect": 0,
+        "consecutiveCorrectAcrossSessions": 0,
+        "averageLatencyMs": 0,
+        "lastLatencyMs": 0,
+        "abilityDelta": 0,
+        "dueAt": null,
+        "masteredAt": null,
+        "masteryStatus": "locked",
+        "masteryUpdatedAt": null,
+        "masteryRecentAccuracy": 0,
+        "masterySessionCount": 0,
+        "masteryQualifyingSessions": 0,
+        "masteryDistinctDays": 0,
+        "masterySpreadDays": 0,
+        "masteryHistory": [],
+        "lastAttemptAt": null
+      },
+      "timesReviewed": 0,
+      "timesCorrect": 0,
+      "lastReviewedAt": null,
+      "nextReviewAt": null,
+      "createdAt": "2026-08-24T09:41:00.459Z"
+    },
+    {
+      "_id": "mt71q5654eqq3zuy",
+      "userId": "msvl77lc6y6e95hp",
+      "word": "rest",
+      "definition": "To pause from activity and relax, often to regain energy.",
+      "imageUrl": "/generated/img_1787565004295_skl3d9.jpg",
+      "partOfSpeech": "verb",
+      "example": "After the long hike, he took a rest in the shade.",
+      "notes": "",
+      "tags": [],
+      "deckId": null,
+      "difficulty": 3,
+      "domain": "general",
+      "targetScoreRange": "500-600",
+      "learningStatus": "locked",
+      "adaptiveMetrics": {
+        "attempts": 0,
+        "correct": 0,
+        "incorrect": 0,
+        "consecutiveCorrectAcrossSessions": 0,
+        "averageLatencyMs": 0,
+        "lastLatencyMs": 0,
+        "abilityDelta": 0,
+        "dueAt": null,
+        "masteredAt": null,
+        "masteryStatus": "locked",
+        "masteryUpdatedAt": null,
+        "masteryRecentAccuracy": 0,
+        "masterySessionCount": 0,
+        "masteryQualifyingSessions": 0,
+        "masteryDistinctDays": 0,
+        "masterySpreadDays": 0,
+        "masteryHistory": [],
+        "lastAttemptAt": null
+      },
+      "timesReviewed": 0,
+      "timesCorrect": 0,
+      "lastReviewedAt": null,
+      "nextReviewAt": null,
+      "createdAt": "2026-08-24T09:41:00.461Z"
+    },
+    {
+      "_id": "mt71q566clj5inzu",
+      "userId": "msvl77lc6y6e95hp",
+      "word": "settle",
+      "definition": "To become fixed in a position or to resolve a dispute.",
+      "imageUrl": "/generated/img_1787564997412_z2t977.jpg",
+      "partOfSpeech": "verb",
+      "example": "The children settled into their seats as the teacher entered.",
+      "notes": "",
+      "tags": [],
+      "deckId": null,
+      "difficulty": 3,
+      "domain": "general",
+      "targetScoreRange": "500-600",
+      "learningStatus": "locked",
+      "adaptiveMetrics": {
+        "attempts": 0,
+        "correct": 0,
+        "incorrect": 0,
+        "consecutiveCorrectAcrossSessions": 0,
+        "averageLatencyMs": 0,
+        "lastLatencyMs": 0,
+        "abilityDelta": 0,
+        "dueAt": null,
+        "masteredAt": null,
+        "masteryStatus": "locked",
+        "masteryUpdatedAt": null,
+        "masteryRecentAccuracy": 0,
+        "masterySessionCount": 0,
+        "masteryQualifyingSessions": 0,
+        "masteryDistinctDays": 0,
+        "masterySpreadDays": 0,
+        "masteryHistory": [],
+        "lastAttemptAt": null
+      },
+      "timesReviewed": 0,
+      "timesCorrect": 0,
+      "lastReviewedAt": null,
+      "nextReviewAt": null,
+      "createdAt": "2026-08-24T09:41:00.462Z"
+    },
+    {
+      "_id": "mt71q5681typa3nc",
+      "userId": "msvl77lc6y6e95hp",
+      "word": "occupy",
+      "definition": "To take up space, time, or a position, or to hold a role.",
+      "imageUrl": "/generated/img_1787564993008_gbeqo8.jpg",
+      "partOfSpeech": "verb",
+      "example": "The new museum will occupy the old warehouse.",
+      "notes": "",
+      "tags": [],
+      "deckId": null,
+      "difficulty": 3,
+      "domain": "general",
+      "targetScoreRange": "500-600",
+      "learningStatus": "locked",
+      "adaptiveMetrics": {
+        "attempts": 0,
+        "correct": 0,
+        "incorrect": 0,
+        "consecutiveCorrectAcrossSessions": 0,
+        "averageLatencyMs": 0,
+        "lastLatencyMs": 0,
+        "abilityDelta": 0,
+        "dueAt": null,
+        "masteredAt": null,
+        "masteryStatus": "locked",
+        "masteryUpdatedAt": null,
+        "masteryRecentAccuracy": 0,
+        "masterySessionCount": 0,
+        "masteryQualifyingSessions": 0,
+        "masteryDistinctDays": 0,
+        "masterySpreadDays": 0,
+        "masteryHistory": [],
+        "lastAttemptAt": null
+      },
+      "timesReviewed": 0,
+      "timesCorrect": 0,
+      "lastReviewedAt": null,
+      "nextReviewAt": null,
+      "createdAt": "2026-08-24T09:41:00.464Z"
+    },
+    {
+      "_id": "mt71q569y13h35jn",
+      "userId": "msvl77lc6y6e95hp",
+      "word": "arrange",
+      "definition": "To organize or put in order, often to prepare for an event.",
+      "imageUrl": "/generated/img_1787564986049_0jbjre.jpg",
+      "partOfSpeech": "verb",
+      "example": "She arranged the chairs in a semicircle for the workshop.",
+      "notes": "",
+      "tags": [],
+      "deckId": null,
+      "difficulty": 3,
+      "domain": "general",
+      "targetScoreRange": "500-600",
+      "learningStatus": "locked",
+      "adaptiveMetrics": {
+        "attempts": 0,
+        "correct": 0,
+        "incorrect": 0,
+        "consecutiveCorrectAcrossSessions": 0,
+        "averageLatencyMs": 0,
+        "lastLatencyMs": 0,
+        "abilityDelta": 0,
+        "dueAt": null,
+        "masteredAt": null,
+        "masteryStatus": "locked",
+        "masteryUpdatedAt": null,
+        "masteryRecentAccuracy": 0,
+        "masterySessionCount": 0,
+        "masteryQualifyingSessions": 0,
+        "masteryDistinctDays": 0,
+        "masterySpreadDays": 0,
+        "masteryHistory": [],
+        "lastAttemptAt": null
+      },
+      "timesReviewed": 0,
+      "timesCorrect": 0,
+      "lastReviewedAt": null,
+      "nextReviewAt": null,
+      "createdAt": "2026-08-24T09:41:00.465Z"
+    },
+    {
+      "_id": "mt71q56a2b1gd84g",
+      "userId": "msvl77lc6y6e95hp",
+      "word": "bench",
+      "definition": "A long seat for multiple people, usually found in parks, schools, or sports venues.",
+      "imageUrl": "/generated/img_1787564981496_9n5eki.jpg",
+      "partOfSpeech": "noun",
+      "example": "They sat on the bench in the park.",
+      "notes": "",
+      "tags": [],
+      "deckId": null,
+      "difficulty": 3,
+      "domain": "general",
+      "targetScoreRange": "500-600",
+      "learningStatus": "locked",
+      "adaptiveMetrics": {
+        "attempts": 0,
+        "correct": 0,
+        "incorrect": 0,
+        "consecutiveCorrectAcrossSessions": 0,
+        "averageLatencyMs": 0,
+        "lastLatencyMs": 0,
+        "abilityDelta": 0,
+        "dueAt": null,
+        "masteredAt": null,
+        "masteryStatus": "locked",
+        "masteryUpdatedAt": null,
+        "masteryRecentAccuracy": 0,
+        "masterySessionCount": 0,
+        "masteryQualifyingSessions": 0,
+        "masteryDistinctDays": 0,
+        "masterySpreadDays": 0,
+        "masteryHistory": [],
+        "lastAttemptAt": null
+      },
+      "timesReviewed": 0,
+      "timesCorrect": 0,
+      "lastReviewedAt": null,
+      "nextReviewAt": null,
+      "createdAt": "2026-08-24T09:41:00.466Z"
+    },
+    {
+      "_id": "mt71q56bh2g0o5mf",
+      "userId": "msvl77lc6y6e95hp",
+      "word": "chair",
+      "definition": "A seat with a back and legs, designed for one person to sit comfortably.",
+      "imageUrl": "/generated/img_1787564975742_vg5rc7.jpg",
+      "partOfSpeech": "noun",
+      "example": "She sat in the chair at the conference.",
+      "notes": "",
+      "tags": [],
+      "deckId": null,
+      "difficulty": 3,
+      "domain": "general",
+      "targetScoreRange": "500-600",
+      "learningStatus": "locked",
+      "adaptiveMetrics": {
+        "attempts": 0,
+        "correct": 0,
+        "incorrect": 0,
+        "consecutiveCorrectAcrossSessions": 0,
+        "averageLatencyMs": 0,
+        "lastLatencyMs": 0,
+        "abilityDelta": 0,
+        "dueAt": null,
+        "masteredAt": null,
+        "masteryStatus": "locked",
+        "masteryUpdatedAt": null,
+        "masteryRecentAccuracy": 0,
+        "masterySessionCount": 0,
+        "masteryQualifyingSessions": 0,
+        "masteryDistinctDays": 0,
+        "masterySpreadDays": 0,
+        "masteryHistory": [],
+        "lastAttemptAt": null
+      },
+      "timesReviewed": 0,
+      "timesCorrect": 0,
+      "lastReviewedAt": null,
+      "nextReviewAt": null,
+      "createdAt": "2026-08-24T09:41:00.467Z"
+    },
+    {
+      "_id": "mt71q56ciuz82hb9",
+      "userId": "msvl77lc6y6e95hp",
+      "word": "position",
+      "definition": "A particular place or arrangement of something, often used to describe where someone sits or stands.",
+      "imageUrl": "/generated/img_1787564970114_8hbf07.jpg",
+      "partOfSpeech": "noun",
+      "example": "She found a comfortable position on the sofa.",
+      "notes": "",
+      "tags": [],
+      "deckId": null,
+      "difficulty": 3,
+      "domain": "general",
+      "targetScoreRange": "500-600",
+      "learningStatus": "locked",
+      "adaptiveMetrics": {
+        "attempts": 0,
+        "correct": 0,
+        "incorrect": 0,
+        "consecutiveCorrectAcrossSessions": 0,
+        "averageLatencyMs": 0,
+        "lastLatencyMs": 0,
+        "abilityDelta": 0,
+        "dueAt": null,
+        "masteredAt": null,
+        "masteryStatus": "locked",
+        "masteryUpdatedAt": null,
+        "masteryRecentAccuracy": 0,
+        "masterySessionCount": 0,
+        "masteryQualifyingSessions": 0,
+        "masteryDistinctDays": 0,
+        "masterySpreadDays": 0,
+        "masteryHistory": [],
+        "lastAttemptAt": null
+      },
+      "timesReviewed": 0,
+      "timesCorrect": 0,
+      "lastReviewedAt": null,
+      "nextReviewAt": null,
+      "createdAt": "2026-08-24T09:41:00.468Z"
+    }
+  ],
+  "decks": [
+    {
+      "_id": "mt6wav10jbgxsd8n",
+      "creatorId": "msvl77lc6y6e95hp",
+      "name": "SAT",
+      "description": "for concreting your vocab base",
+      "isPublic": true,
+      "isFeatured": false,
+      "tags": [],
+      "difficulty": "intermediate",
+      "language": "English",
+      "topic": "",
+      "coverImage": "",
+      "downloads": 0,
+      "forks": [],
+      "createdAt": "2026-08-24T07:09:09.396Z",
+      "updatedAt": "2026-08-24T07:09:09.396Z"
+    }
+  ],
+  "progress": [
+    {
+      "userId": "msvl77s9l13y4xis",
+      "totalXP": 606,
+      "streak": 1,
+      "longestStreak": 6,
+      "lessonsCompleted": 7,
+      "wordsLearned": 40,
+      "accuracy": 63.86,
+      "totalStudyTime": 3986,
+      "adaptiveProfile": {
+        "targetLevel": "A1",
+        "abilityScore": 28,
+        "difficultyBand": {
+          "min": 1,
+          "max": 2
+        },
+        "diagnostic": {
+          "completedAt": "2026-08-24T10:51:03.099Z",
+          "attempts": 28,
+          "correct": 13,
+          "accuracy": 46.43,
+          "averageLatencyMs": 6239,
+          "sessionToken": null
+        },
+        "behaviorSignals": {
+          "baselineLatencyMs": 4591,
+          "confidenceScore": 0.6649,
+          "fastGuessRate": 0,
+          "slowStruggleRate": 0.0571,
+          "recentBehaviors": [
+            "confident_correct",
+            "confident_correct",
+            "steady_correct",
+            "confident_correct",
+            "steady_correct",
+            "steady_correct",
+            "slow_but_correct",
+            "slow_but_correct",
+            "slow_but_correct",
+            "slow_but_correct",
+            "slow_struggle_wrong",
+            "slow_but_correct"
+          ],
+          "updatedAt": "2026-08-24T10:12:30.648Z"
+        },
+        "masteryGates": {
+          "flashcards": {
+            "unlocked": true,
+            "reason": "Available by default.",
+            "requiredSubSkills": [],
+            "subSkills": {},
+            "lastUnlockedAt": null,
+            "lastLockedAt": null,
+            "transitionCount": 0,
+            "transitionHistory": []
+          },
+          "matching": {
+            "unlocked": false,
+            "reason": "Improve confidence or accuracy to unlock.",
+            "requiredSubSkills": [],
+            "subSkills": {},
+            "lastUnlockedAt": null,
+            "lastLockedAt": null,
+            "transitionCount": 0,
+            "transitionHistory": []
+          },
+          "quiz": {
+            "unlocked": false,
+            "reason": "Improve confidence or accuracy to unlock.",
+            "requiredSubSkills": [],
+            "subSkills": {},
+            "lastUnlockedAt": null,
+            "lastLockedAt": null,
+            "transitionCount": 0,
+            "transitionHistory": []
+          },
+          "spelling": {
+            "unlocked": false,
+            "reason": "Improve confidence or accuracy to unlock.",
+            "requiredSubSkills": [],
+            "subSkills": {},
+            "lastUnlockedAt": null,
+            "lastLockedAt": null,
+            "transitionCount": 0,
+            "transitionHistory": []
+          }
+        },
+        "remediation": {
+          "active": false,
+          "reason": "",
+          "focusModes": [],
+          "recommendedWordIds": [],
+          "updatedAt": null
+        }
+      },
+      "completedLessons": [
+        {
+          "type": "flashcards",
+          "date": "2026-08-16T09:12:56.052Z",
+          "xp": 50,
+          "accuracy": 90,
+          "duration": 1200
+        },
+        {
+          "type": "quiz",
+          "date": "2026-08-16T09:12:56.052Z",
+          "xp": 80,
+          "accuracy": 85,
+          "duration": 900
+        },
+        {
+          "type": "matching",
+          "date": "2026-08-16T09:12:56.052Z",
+          "xp": 120,
+          "accuracy": 86,
+          "duration": 1500
+        },
+        {
+          "type": "flashcards",
+          "date": "2026-08-24T09:59:27.265Z",
+          "xp": 206,
+          "accuracy": 100,
+          "duration": 23
+        },
+        {
+          "type": "quiz",
+          "date": "2026-08-24T10:12:30.648Z",
+          "xp": 150,
+          "accuracy": 86,
+          "duration": 83
+        },
+        {
+          "type": "matching",
+          "date": "2026-08-24T10:48:40.782Z",
+          "xp": 0,
+          "accuracy": 0,
+          "duration": 140
+        },
+        {
+          "type": "spelling",
+          "date": "2026-08-24T10:51:03.098Z",
+          "xp": 0,
+          "accuracy": 0,
+          "duration": 140
+        }
+      ],
+      "dailyHistory": [
+        {
+          "dateKey": "2026-08-24",
+          "xpEarned": 356,
+          "wordsLearned": 28,
+          "quizzesCompleted": 1,
+          "avgAccuracy": 46.5,
+          "studyMinutes": 6.42,
+          "sessionsCompleted": 4
+        }
+      ],
+      "adaptiveQueue": {
+        "generatedAt": "2026-08-24T09:59:04.433Z",
+        "targetWords": 7,
+        "dueReviewCount": 0,
+        "remediationCount": 0,
+        "mix": {
+          "totalRequested": 7,
+          "targetCounts": {
+            "current": 6,
+            "stretch": 1,
+            "review": 0
+          },
+          "counts": {
+            "current": 0,
+            "stretch": 7,
+            "review": 0
+          },
+          "ratios": {
+            "current": 0.7,
+            "stretch": 0.2,
+            "review": 0.1
+          }
+        },
+        "queuePreview": [
+          {
+            "wordId": "mt71q569y13h35jn",
+            "word": "arrange",
+            "difficulty": 3,
+            "source": "new",
+            "position": 0
+          },
+          {
+            "wordId": "mt71q56bh2g0o5mf",
+            "word": "chair",
+            "difficulty": 3,
+            "source": "new",
+            "position": 1
+          },
+          {
+            "wordId": "mt71q56ciuz82hb9",
+            "word": "position",
+            "difficulty": 3,
+            "source": "new",
+            "position": 2
+          },
+          {
+            "wordId": "mt71q566clj5inzu",
+            "word": "settle",
+            "difficulty": 3,
+            "source": "new",
+            "position": 3
+          },
+          {
+            "wordId": "mt71q5654eqq3zuy",
+            "word": "rest",
+            "difficulty": 3,
+            "source": "new",
+            "position": 4
+          },
+          {
+            "wordId": "mt71q561why89fbn",
+            "word": "perch",
+            "difficulty": 3,
+            "source": "new",
+            "position": 5
+          },
+          {
+            "wordId": "mt71q563n9ag14yl",
+            "word": "posture",
+            "difficulty": 3,
+            "source": "new",
+            "position": 6
+          }
+        ],
+        "activeQueue": {
+          "planId": "c44dcdf78c63",
+          "queueId": "cbf47536de73e7d4",
+          "status": "active",
+          "version": 3,
+          "createdAt": "2026-08-24T09:59:04.433Z",
+          "expiresAt": "2026-08-24T15:59:04.433Z",
+          "completedAt": null,
+          "abandonedAt": null,
+          "settings": {
+            "minutes": 20,
+            "wordCount": 7,
+            "targetLevel": "C1",
+            "hearts": 5,
+            "difficultyBand": {
+              "min": 1,
+              "max": 2,
+              "label": "A1 Beginner",
+              "level": "A1"
+            }
+          },
+          "cursor": {
+            "nextIndex": 2,
+            "completedCount": 2
+          },
+          "modeProgress": {
+            "flashcards": 1,
+            "quiz": 1,
+            "matching": 0,
+            "spelling": 0
+          },
+          "items": [
+            {
+              "queueItemId": "4c7cf4cb580c",
+              "position": 0,
+              "wordId": "mt71q569y13h35jn",
+              "word": "arrange",
+              "definition": "To organize or put in order, often to prepare for an event.",
+              "hint": "She arranged the chairs in a semicircle for the workshop.",
+              "imageUrl": "/generated/img_1787564986049_0jbjre.jpg",
+              "difficulty": 3,
+              "source": "new",
+              "status": "correct",
+              "attempts": 1,
+              "correctAttempts": 1,
+              "latencyMsAvg": 10518,
+              "lastLatencyMs": 10518,
+              "behavior": "slow_but_correct",
+              "requeueCount": 0,
+              "lastMode": "flashcards",
+              "lastAttemptAt": "2026-08-24T09:59:14.979Z",
+              "learningStatus": "review"
+            },
+            {
+              "queueItemId": "31f338be899e",
+              "position": 1,
+              "wordId": "mt71q56bh2g0o5mf",
+              "word": "chair",
+              "definition": "A seat with a back and legs, designed for one person to sit comfortably.",
+              "hint": "She sat in the chair at the conference.",
+              "imageUrl": "/generated/img_1787564975742_vg5rc7.jpg",
+              "difficulty": 3,
+              "source": "new",
+              "status": "correct",
+              "attempts": 1,
+              "correctAttempts": 1,
+              "latencyMsAvg": 4706,
+              "lastLatencyMs": 4706,
+              "behavior": "slow_but_correct",
+              "requeueCount": 0,
+              "lastMode": "quiz",
+              "lastAttemptAt": "2026-08-24T10:11:11.906Z",
+              "learningStatus": "review"
+            },
+            {
+              "queueItemId": "0acf9c3a3385",
+              "position": 2,
+              "wordId": "mt71q56ciuz82hb9",
+              "word": "position",
+              "definition": "A particular place or arrangement of something, often used to describe where someone sits or stands.",
+              "hint": "She found a comfortable position on the sofa.",
+              "imageUrl": "/generated/img_1787564970114_8hbf07.jpg",
+              "difficulty": 3,
+              "source": "new",
+              "status": "pending",
+              "attempts": 0,
+              "correctAttempts": 0,
+              "latencyMsAvg": 0,
+              "lastLatencyMs": 0,
+              "behavior": null,
+              "requeueCount": 0,
+              "lastMode": null,
+              "lastAttemptAt": null
+            },
+            {
+              "queueItemId": "4184542d0963",
+              "position": 3,
+              "wordId": "mt71q569y13h35jn",
+              "word": "arrange",
+              "definition": "To organize or put in order, often to prepare for an event.",
+              "difficulty": 3,
+              "source": "new",
+              "status": "pending",
+              "attempts": 0,
+              "correctAttempts": 0,
+              "latencyMsAvg": 0,
+              "lastLatencyMs": 0,
+              "behavior": null,
+              "requeueCount": 1,
+              "lastMode": null,
+              "lastAttemptAt": null
+            },
+            {
+              "queueItemId": "57c32fd1950e",
+              "position": 4,
+              "wordId": "mt71q56bh2g0o5mf",
+              "word": "chair",
+              "definition": "A seat with a back and legs, designed for one person to sit comfortably.",
+              "difficulty": 3,
+              "source": "new",
+              "status": "pending",
+              "attempts": 0,
+              "correctAttempts": 0,
+              "latencyMsAvg": 0,
+              "lastLatencyMs": 0,
+              "behavior": null,
+              "requeueCount": 1,
+              "lastMode": null,
+              "lastAttemptAt": null
+            },
+            {
+              "queueItemId": "4c36f5e45f78",
+              "position": 5,
+              "wordId": "mt71q566clj5inzu",
+              "word": "settle",
+              "definition": "To become fixed in a position or to resolve a dispute.",
+              "hint": "The children settled into their seats as the teacher entered.",
+              "imageUrl": "/generated/img_1787564997412_z2t977.jpg",
+              "difficulty": 3,
+              "source": "new",
+              "status": "pending",
+              "attempts": 0,
+              "correctAttempts": 0,
+              "latencyMsAvg": 0,
+              "lastLatencyMs": 0,
+              "behavior": null,
+              "requeueCount": 0,
+              "lastMode": null,
+              "lastAttemptAt": null
+            },
+            {
+              "queueItemId": "cf411e8c2b9d",
+              "position": 6,
+              "wordId": "mt71q5654eqq3zuy",
+              "word": "rest",
+              "definition": "To pause from activity and relax, often to regain energy.",
+              "hint": "After the long hike, he took a rest in the shade.",
+              "imageUrl": "/generated/img_1787565004295_skl3d9.jpg",
+              "difficulty": 3,
+              "source": "new",
+              "status": "pending",
+              "attempts": 0,
+              "correctAttempts": 0,
+              "latencyMsAvg": 0,
+              "lastLatencyMs": 0,
+              "behavior": null,
+              "requeueCount": 0,
+              "lastMode": null,
+              "lastAttemptAt": null
+            },
+            {
+              "queueItemId": "1419b9f40ace",
+              "position": 7,
+              "wordId": "mt71q561why89fbn",
+              "word": "perch",
+              "definition": "To sit or rest on a high or narrow place, often with a sense of balance.",
+              "hint": "She perched on the edge of the balcony to watch the parade.",
+              "imageUrl": "/generated/img_1787565015082_ilg4yz.jpg",
+              "difficulty": 3,
+              "source": "new",
+              "status": "pending",
+              "attempts": 0,
+              "correctAttempts": 0,
+              "latencyMsAvg": 0,
+              "lastLatencyMs": 0,
+              "behavior": null,
+              "requeueCount": 0,
+              "lastMode": null,
+              "lastAttemptAt": null
+            },
+            {
+              "queueItemId": "dbe5a8e22c96",
+              "position": 8,
+              "wordId": "mt71q563n9ag14yl",
+              "word": "posture",
+              "definition": "The position in which someone holds their body while standing or sitting, reflecting health and confidence.",
+              "hint": "Good posture can prevent back pain.",
+              "imageUrl": "/generated/img_1787565008695_c68gnq.jpg",
+              "difficulty": 3,
+              "source": "new",
+              "status": "pending",
+              "attempts": 0,
+              "correctAttempts": 0,
+              "latencyMsAvg": 0,
+              "lastLatencyMs": 0,
+              "behavior": null,
+              "requeueCount": 0,
+              "lastMode": null,
+              "lastAttemptAt": null
+            }
+          ],
+          "attemptLedger": [
+            {
+              "idempotencyKey": "1787565554987-lmoj6cxh",
+              "queueItemId": "4c7cf4cb580c",
+              "mode": "flashcards",
+              "accepted": true,
+              "advancedToIndex": 1,
+              "version": 2,
+              "response": {
+                "accepted": true,
+                "advancedToIndex": 1,
+                "version": 2
+              },
+              "createdAt": "2026-08-24T09:59:14.980Z"
+            },
+            {
+              "idempotencyKey": "1787566271878-ingpamip",
+              "queueItemId": "31f338be899e",
+              "mode": "quiz",
+              "accepted": true,
+              "advancedToIndex": 2,
+              "version": 3,
+              "response": {
+                "accepted": true,
+                "advancedToIndex": 2,
+                "version": 3
+              },
+              "createdAt": "2026-08-24T10:11:11.908Z"
+            }
+          ]
+        }
+      },
+      "lastActivityDate": "2026-08-24T10:51:03.098Z"
+    },
+    {
+      "userId": "mt6thj7k6yq47zw8",
+      "totalXP": 478,
+      "streak": 1,
+      "longestStreak": 1,
+      "lessonsCompleted": 6,
+      "wordsLearned": 22,
+      "accuracy": 93.33,
+      "totalStudyTime": 497,
+      "adaptiveProfile": {
+        "targetLevel": "C1",
+        "abilityScore": 94,
+        "difficultyBand": {
+          "min": 4,
+          "max": 5
+        },
+        "diagnostic": {
+          "completedAt": "2026-08-24T07:16:05.784Z",
+          "attempts": 22,
+          "correct": 20,
+          "accuracy": 90.91,
+          "averageLatencyMs": 21851,
+          "sessionToken": null
+        },
+        "behaviorSignals": {
+          "baselineLatencyMs": 36264,
+          "confidenceScore": 0.6941,
+          "fastGuessRate": 0.08,
+          "slowStruggleRate": 0,
+          "recentBehaviors": [
+            "confident_correct",
+            "confident_correct",
+            "confident_correct",
+            "confident_correct",
+            "confident_correct",
+            "confident_correct",
+            "confident_correct",
+            "confident_correct",
+            "confident_correct",
+            "steady_wrong",
+            "slow_but_correct",
+            "fast_guess_wrong"
+          ],
+          "updatedAt": "2026-08-24T07:16:05.784Z"
+        },
+        "masteryGates": {
+          "flashcards": {
+            "unlocked": true,
+            "reason": "Available by default.",
+            "requiredSubSkills": [],
+            "subSkills": {},
+            "lastUnlockedAt": null,
+            "lastLockedAt": null,
+            "transitionCount": 0,
+            "transitionHistory": []
+          },
+          "matching": {
+            "unlocked": false,
+            "reason": "Improve confidence or accuracy to unlock.",
+            "requiredSubSkills": [],
+            "subSkills": {},
+            "lastUnlockedAt": null,
+            "lastLockedAt": null,
+            "transitionCount": 0,
+            "transitionHistory": []
+          },
+          "quiz": {
+            "unlocked": false,
+            "reason": "Improve confidence or accuracy to unlock.",
+            "requiredSubSkills": [],
+            "subSkills": {},
+            "lastUnlockedAt": null,
+            "lastLockedAt": null,
+            "transitionCount": 0,
+            "transitionHistory": []
+          },
+          "spelling": {
+            "unlocked": false,
+            "reason": "Improve confidence or accuracy to unlock.",
+            "requiredSubSkills": [],
+            "subSkills": {},
+            "lastUnlockedAt": null,
+            "lastLockedAt": null,
+            "transitionCount": 0,
+            "transitionHistory": []
+          }
+        },
+        "remediation": {
+          "active": false,
+          "reason": "",
+          "focusModes": [],
+          "recommendedWordIds": [],
+          "updatedAt": null
+        }
+      },
+      "completedLessons": [
+        {
+          "type": "flashcards",
+          "date": "2026-08-24T06:13:20.279Z",
+          "xp": 155,
+          "accuracy": 100,
+          "duration": 9
+        },
+        {
+          "type": "flashcards",
+          "date": "2026-08-24T06:44:19.064Z",
+          "xp": 14,
+          "accuracy": 100,
+          "duration": 5
+        },
+        {
+          "type": "quiz",
+          "date": "2026-08-24T06:47:34.069Z",
+          "xp": 24,
+          "accuracy": 100,
+          "duration": 192
+        },
+        {
+          "type": "flashcards",
+          "date": "2026-08-24T07:10:19.626Z",
+          "xp": 115,
+          "accuracy": 100,
+          "duration": 11
+        },
+        {
+          "type": "flashcards",
+          "date": "2026-08-24T07:11:42.826Z",
+          "xp": 110,
+          "accuracy": 100,
+          "duration": 20
+        },
+        {
+          "type": "quiz",
+          "date": "2026-08-24T07:16:05.784Z",
+          "xp": 60,
+          "accuracy": 60,
+          "duration": 260
+        }
+      ],
+      "dailyHistory": [
+        {
+          "dateKey": "2026-08-24",
+          "xpEarned": 478,
+          "wordsLearned": 22,
+          "quizzesCompleted": 2,
+          "avgAccuracy": 93.33,
+          "studyMinutes": 8.27,
+          "sessionsCompleted": 6
+        }
+      ],
+      "adaptiveQueue": {
+        "generatedAt": "2026-08-24T06:12:31.446Z",
+        "targetWords": 5,
+        "dueReviewCount": 4,
+        "remediationCount": 0,
+        "mix": {
+          "totalRequested": 5,
+          "targetCounts": {
+            "current": 4,
+            "stretch": 1,
+            "review": 0
+          },
+          "counts": {
+            "current": 0,
+            "stretch": 1,
+            "review": 4
+          },
+          "ratios": {
+            "current": 0.7,
+            "stretch": 0.2,
+            "review": 0.1
+          }
+        },
+        "queuePreview": [
+          {
+            "wordId": "msvl7850bl3f38yr",
+            "word": "Eloquent",
+            "difficulty": 4,
+            "source": "due_review",
+            "position": 0
+          },
+          {
+            "wordId": "msvl7850zk6tnves",
+            "word": "Pragmatic",
+            "difficulty": 2,
+            "source": "due_review",
+            "position": 1
+          },
+          {
+            "wordId": "mt6u9qkgqulhcobp",
+            "word": "Deckscope",
+            "difficulty": 3,
+            "source": "new",
+            "position": 2
+          },
+          {
+            "wordId": "msvl785046t8zj3z",
+            "word": "Resilient",
+            "difficulty": 3,
+            "source": "due_review",
+            "position": 3
+          },
+          {
+            "wordId": "msvl7850mxzgpixb",
+            "word": "Serendipity",
+            "difficulty": 3,
+            "source": "due_review",
+            "position": 4
+          }
+        ],
+        "activeQueue": {
+          "planId": "b9b5eabea540",
+          "queueId": "0d9b9f92e7c6878c",
+          "status": "active",
+          "version": 2,
+          "createdAt": "2026-08-24T06:12:31.446Z",
+          "expiresAt": "2026-08-24T12:12:31.446Z",
+          "completedAt": null,
+          "abandonedAt": null,
+          "settings": {
+            "minutes": 20,
+            "wordCount": 16,
+            "targetLevel": "AUTO",
+            "hearts": 5,
+            "difficultyBand": {
+              "min": 1,
+              "max": 2,
+              "label": "A1 Beginner",
+              "level": "A1"
+            }
+          },
+          "cursor": {
+            "nextIndex": 1,
+            "completedCount": 1
+          },
+          "modeProgress": {
+            "flashcards": 1,
+            "quiz": 0,
+            "matching": 0,
+            "spelling": 0
+          },
+          "items": [
+            {
+              "queueItemId": "1a7942318939",
+              "position": 0,
+              "wordId": "msvl7850bl3f38yr",
+              "word": "Eloquent",
+              "definition": "Expressing ideas clearly and persuasively.",
+              "hint": "His eloquent speech won everyone over.",
+              "imageUrl": "https://loremflickr.com/900/560/eloquent,clearly,persuasively",
+              "difficulty": 4,
+              "source": "due_review",
+              "status": "correct",
+              "attempts": 1,
+              "correctAttempts": 1,
+              "latencyMsAvg": 4900,
+              "lastLatencyMs": 4900,
+              "behavior": "slow_but_correct",
+              "requeueCount": 0,
+              "lastMode": "flashcards",
+              "lastAttemptAt": "2026-08-24T06:13:16.268Z",
+              "learningStatus": "review"
+            },
+            {
+              "queueItemId": "d1a20693e31f",
+              "position": 1,
+              "wordId": "msvl7850zk6tnves",
+              "word": "Pragmatic",
+              "definition": "Focused on practical results instead of theory.",
+              "hint": "She took a pragmatic approach to learning.",
+              "imageUrl": "https://loremflickr.com/900/560/pragmatic,instead,theory",
+              "difficulty": 2,
+              "source": "due_review",
+              "status": "pending",
+              "attempts": 0,
+              "correctAttempts": 0,
+              "latencyMsAvg": 0,
+              "lastLatencyMs": 0,
+              "behavior": null,
+              "requeueCount": 0,
+              "lastMode": null,
+              "lastAttemptAt": null
+            },
+            {
+              "queueItemId": "d3f3874d7d91",
+              "position": 2,
+              "wordId": "mt6u9qkgqulhcobp",
+              "word": "Deckscope",
+              "definition": "A test word for student deck visibility.",
+              "hint": "",
+              "imageUrl": "https://loremflickr.com/900/560/deckscope,deck,visibility",
+              "difficulty": 3,
+              "source": "new",
+              "status": "pending",
+              "attempts": 0,
+              "correctAttempts": 0,
+              "latencyMsAvg": 0,
+              "lastLatencyMs": 0,
+              "behavior": null,
+              "requeueCount": 0,
+              "lastMode": null,
+              "lastAttemptAt": null
+            },
+            {
+              "queueItemId": "1209b0cde105",
+              "position": 3,
+              "wordId": "msvl7850bl3f38yr",
+              "word": "Eloquent",
+              "definition": "Expressing ideas clearly and persuasively.",
+              "difficulty": 4,
+              "source": "due_review",
+              "status": "pending",
+              "attempts": 0,
+              "correctAttempts": 0,
+              "latencyMsAvg": 0,
+              "lastLatencyMs": 0,
+              "behavior": null,
+              "requeueCount": 1,
+              "lastMode": null,
+              "lastAttemptAt": null
+            },
+            {
+              "queueItemId": "c31fca98f494",
+              "position": 4,
+              "wordId": "msvl785046t8zj3z",
+              "word": "Resilient",
+              "definition": "Able to recover quickly from difficulty.",
+              "hint": "The resilient team kept improving after setbacks.",
+              "imageUrl": "https://loremflickr.com/900/560/resilient,quickly,difficulty",
+              "difficulty": 3,
+              "source": "due_review",
+              "status": "pending",
+              "attempts": 0,
+              "correctAttempts": 0,
+              "latencyMsAvg": 0,
+              "lastLatencyMs": 0,
+              "behavior": null,
+              "requeueCount": 0,
+              "lastMode": null,
+              "lastAttemptAt": null
+            },
+            {
+              "queueItemId": "bbaefd647572",
+              "position": 5,
+              "wordId": "msvl7850mxzgpixb",
+              "word": "Serendipity",
+              "definition": "A lucky discovery made by chance.",
+              "hint": "Finding that old note was pure serendipity.",
+              "imageUrl": "https://loremflickr.com/900/560/serendipity,made,chance",
+              "difficulty": 3,
+              "source": "due_review",
+              "status": "pending",
+              "attempts": 0,
+              "correctAttempts": 0,
+              "latencyMsAvg": 0,
+              "lastLatencyMs": 0,
+              "behavior": null,
+              "requeueCount": 0,
+              "lastMode": null,
+              "lastAttemptAt": null
+            }
+          ],
+          "attemptLedger": [
+            {
+              "idempotencyKey": "1787551996203-c9f074xg",
+              "queueItemId": "1a7942318939",
+              "mode": "flashcards",
+              "accepted": true,
+              "advancedToIndex": 1,
+              "version": 2,
+              "response": {
+                "accepted": true,
+                "advancedToIndex": 1,
+                "version": 2
+              },
+              "createdAt": "2026-08-24T06:13:16.276Z"
+            }
+          ]
+        }
+      },
+      "lastActivityDate": "2026-08-24T07:16:05.784Z"
+    },
+    {
+      "userId": "6a57166269d67dc6a295425d",
+      "totalXP": 0,
+      "streak": 0,
+      "longestStreak": 0,
+      "lessonsCompleted": 0,
+      "wordsLearned": 0,
+      "accuracy": 0,
+      "totalStudyTime": 0,
+      "adaptiveProfile": {
+        "targetLevel": "A1",
+        "abilityScore": 0,
+        "difficultyBand": {
+          "min": 1,
+          "max": 2
+        },
+        "diagnostic": {
+          "completedAt": null,
+          "attempts": 0,
+          "correct": 0,
+          "accuracy": 0,
+          "averageLatencyMs": 0,
+          "sessionToken": null
+        },
+        "behaviorSignals": {
+          "baselineLatencyMs": 2200,
+          "confidenceScore": 0.6,
+          "fastGuessRate": 0,
+          "slowStruggleRate": 0,
+          "recentBehaviors": [],
+          "updatedAt": null
+        },
+        "masteryGates": {
+          "flashcards": {
+            "unlocked": true,
+            "reason": "Available by default.",
+            "requiredSubSkills": [],
+            "subSkills": {},
+            "lastUnlockedAt": null,
+            "lastLockedAt": null,
+            "transitionCount": 0,
+            "transitionHistory": []
+          },
+          "matching": {
+            "unlocked": false,
+            "reason": "Improve confidence or accuracy to unlock.",
+            "requiredSubSkills": [],
+            "subSkills": {},
+            "lastUnlockedAt": null,
+            "lastLockedAt": null,
+            "transitionCount": 0,
+            "transitionHistory": []
+          },
+          "quiz": {
+            "unlocked": false,
+            "reason": "Improve confidence or accuracy to unlock.",
+            "requiredSubSkills": [],
+            "subSkills": {},
+            "lastUnlockedAt": null,
+            "lastLockedAt": null,
+            "transitionCount": 0,
+            "transitionHistory": []
+          },
+          "spelling": {
+            "unlocked": false,
+            "reason": "Improve confidence or accuracy to unlock.",
+            "requiredSubSkills": [],
+            "subSkills": {},
+            "lastUnlockedAt": null,
+            "lastLockedAt": null,
+            "transitionCount": 0,
+            "transitionHistory": []
+          }
+        },
+        "remediation": {
+          "active": false,
+          "reason": "",
+          "focusModes": [],
+          "recommendedWordIds": [],
+          "updatedAt": null
+        }
+      },
+      "completedLessons": [],
+      "dailyHistory": [],
+      "adaptiveQueue": {
+        "generatedAt": "2026-08-26T10:45:27.184Z",
+        "targetWords": 0,
+        "dueReviewCount": 0,
+        "remediationCount": 0,
+        "mix": {
+          "totalRequested": 0,
+          "targetCounts": {
+            "current": 0,
+            "stretch": 0,
+            "review": 0
+          },
+          "counts": {
+            "current": 0,
+            "stretch": 0,
+            "review": 0
+          },
+          "ratios": {
+            "current": 0.7,
+            "stretch": 0.2,
+            "review": 0.1
+          }
+        },
+        "queuePreview": [],
+        "activeQueue": {
+          "planId": "fadf86b5076b",
+          "queueId": "59c6afd78b195985",
+          "status": "active",
+          "version": 1,
+          "createdAt": "2026-08-26T10:45:27.184Z",
+          "expiresAt": "2026-08-26T16:45:27.184Z",
+          "completedAt": null,
+          "abandonedAt": null,
+          "settings": {
+            "minutes": 20,
+            "wordCount": 5,
+            "targetLevel": "AUTO",
+            "hearts": 5,
+            "difficultyBand": {
+              "min": 1,
+              "max": 2,
+              "label": "A1 Beginner",
+              "level": "A1"
+            }
+          },
+          "cursor": {
+            "nextIndex": 0,
+            "completedCount": 0
+          },
+          "modeProgress": {
+            "flashcards": 0,
+            "quiz": 0,
+            "matching": 0,
+            "spelling": 0
+          },
+          "items": [],
+          "attemptLedger": []
+        }
+      },
+      "lastActivityDate": "2026-08-26T10:33:39.592Z"
+    }
+  ],
+  "adminAudit": [],
+  "goals": [],
+  "alerts": []
+}

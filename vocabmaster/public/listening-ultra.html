@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Listening Practice - VocabMaster</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366F1;
+            --secondary: #EC4899;
+            --success: #10B981;
+            --danger: #EF4444;
+            --warning: #F59E0B;
+            --neutral-50: #F9FAFB;
+            --neutral-900: #111827;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .session-header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-info {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .info-item {
+            text-align: center;
+        }
+
+        .info-label {
+            font-size: 0.75rem;
+            color: #999;
+            text-transform: uppercase;
+        }
+
+        .info-value {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .exit-btn {
+            padding: 0.5rem 1rem;
+            background: white;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .exit-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Progress */
+        .progress-section {
+            margin-bottom: 2rem;
+        }
+
+        .progress-info {
+            color: white;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #10B981, #3B82F6);
+            transition: width 0.4s ease;
+        }
+
+        /* Lesson Card */
+        .lesson-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .lesson-level {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+        }
+
+        .lesson-level.intermediate {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+        }
+
+        .lesson-level.advanced {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+
+        .lesson-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--neutral-900);
+        }
+
+        .lesson-context {
+            color: #666;
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+        }
+
+        /* Audio Player */
+        .audio-player {
+            background: var(--neutral-50);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .play-button {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            font-size: 1.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+            margin: 0 auto;
+        }
+
+        .play-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        .play-button:active {
+            transform: scale(0.95);
+        }
+
+        .play-button.playing {
+            animation: pulse-ring 1s ease-in-out infinite;
+        }
+
+        @keyframes pulse-ring {
+            0%, 100% {
+                box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+            }
+            50% {
+                box-shadow: 0 4px 30px rgba(99, 102, 241, 0.6);
+            }
+        }
+
+        .play-status {
+            margin-top: 0.75rem;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .playback-speed {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .speed-btn {
+            background: white;
+            border: 1px solid #ddd;
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .speed-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .speed-btn:hover {
+            border-color: var(--primary);
+        }
+
+        /* Transcript Toggle */
+        .transcript-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .transcript-toggle {
+            background: white;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+
+        .transcript-toggle:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .transcript-text {
+            display: none;
+            padding: 1rem;
+            background: var(--neutral-50);
+            border-radius: 8px;
+            margin-top: 0.75rem;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: #666;
+        }
+
+        .transcript-text.show {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .key-vocab {
+            background: rgba(99, 102, 241, 0.1);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        /* Question Section */
+        .question-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .question-text {
+            font-weight: 600;
+            color: var(--neutral-900);
+            margin-bottom: 1rem;
+        }
+
+        .answer-option {
+            display: block;
+            width: 100%;
+            padding: 0.75rem 1rem;
+            margin-bottom: 0.5rem;
+            background: var(--neutral-50);
+            border: 2px solid transparent;
+            border-radius: 6px;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.3s ease;
+        }
+
+        .answer-option:hover {
+            background: white;
+            border-color: var(--primary);
+            transform: translateX(4px);
+        }
+
+        .answer-option input[type="radio"] {
+            margin-right: 0.5rem;
+            cursor: pointer;
+        }
+
+        .answer-option input[type="radio"]:checked + label {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        /* Feedback */
+        .feedback-box {
+            display: none;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border-left: 4px solid transparent;
+        }
+
+        .feedback-box.show {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+
+        .feedback-correct {
+            background: rgba(16, 185, 129, 0.1);
+            border-left-color: var(--success);
+            color: var(--success);
+        }
+
+        .feedback-incorrect {
+            background: rgba(239, 68, 68, 0.1);
+            border-left-color: var(--danger);
+            color: var(--danger);
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 0.875rem 1rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 120px;
+        }
+
+        .btn-skip {
+            background: white;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .btn-skip:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-submit {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: 2px solid transparent;
+            flex: 1.5;
+        }
+
+        .btn-submit:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Summary */
+        .summary-screen {
+            display: none;
+            background: white;
+            padding: 3rem 2rem;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .summary-screen.show {
+            display: block;
+        }
+
+        .summary-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .summary-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--neutral-900);
+            margin-bottom: 1.5rem;
+        }
+
+        .summary-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-box {
+            padding: 1rem;
+            background: var(--neutral-50);
+            border-radius: 8px;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: #999;
+            margin-top: 0.25rem;
+        }
+
+        .summary-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .summary-btn {
+            flex: 1;
+            padding: 0.875rem 1rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 120px;
+        }
+
+        .summary-btn-again {
+            background: var(--primary);
+            color: white;
+        }
+
+        .summary-btn-again:hover {
+            transform: translateY(-2px);
+        }
+
+        .summary-btn-back {
+            background: white;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        @media (max-width: 768px) {
+            .lesson-card {
+                padding: 1rem;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+            .summary-stats {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="session-header">
+            <div style="display:flex; align-items:center; gap:12px; margin-right:15px;">
+              <img src="https://www.image2url.com/r2/default/images/1784112907446-0463de99-8cb2-4889-82b8-3e0c5207bc0d.jpg" alt="Taleem Lexicon" style="width:35px; height:35px; border-radius:50%;">
+              <span style="font-weight:bold; color:#111827;">Taleem Lexicon</span>
+            </div>
+            <div class="header-info">
+                <button onclick="goBack()" style="background: none; border: none; font-size: 1.5rem; cursor: pointer;">←</button>
+                <div class="info-item">
+                    <div class="info-label">Correct</div>
+                    <div class="info-value" id="correctCount">0</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">XP Earned</div>
+                    <div class="info-value" id="xpEarned">0</div>
+                </div>
+            </div>
+            <button class="exit-btn" onclick="exitLesson()">Exit</button>
+        </div>
+
+        <!-- Progress -->
+        <div class="progress-section">
+            <div class="progress-info">
+                <span id="progressText">Lesson 1 of 5</span>
+                <span id="timeText">⏱️ 0s</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+
+        <!-- Lesson Card -->
+        <div class="lesson-card">
+            <div class="lesson-level intermediate">Intermediate</div>
+            <div class="lesson-title" id="lessonTitle">Booking a Hotel</div>
+            <div class="lesson-context">Listen to a natural conversation and answer questions about it.</div>
+
+            <!-- Audio Player -->
+            <div class="audio-player">
+                <button class="play-button" id="playBtn" onclick="playAudio()">▶️</button>
+                <div class="play-status" id="playStatus">Ready to listen</div>
+                <div class="playback-speed">
+                    <button class="speed-btn" data-speed="0.75" onclick="setSpeed(0.75)">0.75x</button>
+                    <button class="speed-btn active" data-speed="1" onclick="setSpeed(1)">1x</button>
+                    <button class="speed-btn" data-speed="1.25" onclick="setSpeed(1.25)">1.25x</button>
+                </div>
+            </div>
+
+            <!-- Transcript Toggle -->
+            <div class="transcript-section">
+                <button class="transcript-toggle" onclick="toggleTranscript()">📄 Show Transcript</button>
+                <div class="transcript-text" id="transcript"></div>
+            </div>
+
+            <!-- Question Section -->
+            <div class="question-section">
+                <div class="question-text" id="questionText">What is the main topic of the conversation?</div>
+                <div id="answersContainer"></div>
+            </div>
+
+            <!-- Feedback -->
+            <div class="feedback-box" id="feedbackBox"></div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <button class="btn btn-skip" onclick="skipQuestion()">⏭️ Skip</button>
+                <button class="btn btn-submit" id="submitBtn" onclick="submitAnswer()" disabled>Check Answer</button>
+            </div>
+        </div>
+
+        <!-- Summary -->
+        <div class="summary-screen" id="summaryScreen">
+            <div class="summary-icon">🎧</div>
+            <div class="summary-title">Listening Session Complete!</div>
+            <div class="summary-stats">
+                <div class="stat-box">
+                    <div class="stat-value" id="totalCorrect">4</div>
+                    <div class="stat-label">Questions Correct</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="earnedXPSum">+80 XP</div>
+                    <div class="stat-label">Experience</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="accuracy">80%</div>
+                    <div class="stat-label">Accuracy</div>
+                </div>
+            </div>
+            <div class="summary-buttons">
+                <button class="summary-btn summary-btn-again" onclick="restartLesson()">🔄 Retry</button>
+                <button class="summary-btn summary-btn-back" onclick="goBack()">← Dashboard</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/api.js"></script>
+    <script>
+        const lessons = [
+            {
+                title: 'Booking a Hotel',
+                level: 'intermediate',
+                audio: 'I would like to book a hotel room for next weekend.',
+                transcript: 'Customer: "Hi, I\'d like to book a room for this weekend." <br> Receptionist: "Certainly! What type of room would you prefer?" <br> Customer: "I need a <span class="key-vocab">spacious</span> room with a view." <br> Receptionist: "We have a <span class="key-vocab">luxurious</span> suite available."',
+                questions: [
+                    {
+                        question: 'What is the customer looking for?',
+                        options: ['A restaurant', 'A hotel room', 'A transportation service'],
+                        correct: 1,
+                        vocabWords: ['spacious', 'luxurious']
+                    },
+                    {
+                        question: 'When does the customer want to book?',
+                        options: ['Next month', 'This weekend', 'Next week'],
+                        correct: 1,
+                        vocabWords: ['weekend', 'book']
+                    }
+                ]
+            },
+            {
+                title: 'Restaurant Order',
+                level: 'intermediate',
+                audio: 'I would like to order a sandwich please.',
+                transcript: 'Waiter: "What can I get for you?" <br> Customer: "I\'d like a <span class="key-vocab">delicious</span> sandwich." <br> Waiter: "Would you like any <span class="key-vocab">beverages</span>?"',
+                questions: [
+                    {
+                        question: 'Where is this conversation taking place?',
+                        options: ['At a hotel', 'At a restaurant', 'At a store'],
+                        correct: 1,
+                        vocabWords: ['restaurant', 'order']
+                    },
+                    {
+                        question: 'What does the customer order?',
+                        options: ['Pizza', 'Burger', 'Sandwich'],
+                        correct: 2,
+                        vocabWords: ['sandwich', 'order']
+                    }
+                ]
+            },
+            {
+                title: 'Weather Discussion',
+                level: 'intermediate',
+                audio: 'The weather looks quite pleasant today.',
+                transcript: 'Person A: "It\'s a <span class="key-vocab">gorgeous</span> day today!" <br> Person B: "Yes, the weather is <span class="key-vocab">delightful</span>." <br> Person A: "Perfect for <span class="key-vocab">outdoors</span> activities."',
+                questions: [
+                    {
+                        question: 'What do the people think about the weather?',
+                        options: ['It\'s bad', 'It\'s nice', 'It\'s cold'],
+                        correct: 1,
+                        vocabWords: ['gorgeous', 'delightful']
+                    }
+                ]
+            },
+            {
+                title: 'Job Interview',
+                level: 'advanced',
+                audio: 'Tell me about your professional experience.',
+                transcript: 'Interviewer: "Can you <span class="key-vocab">elaborate</span> on your work history?" <br> Candidate: "I have <span class="key-vocab">extensive</span> experience in marketing." <br> Interviewer: "That\'s <span class="key-vocab">impressive</span>."',
+                questions: [
+                    {
+                        question: 'What is the context of this conversation?',
+                        options: ['Casual chat', 'Job interview', 'Sales pitch'],
+                        correct: 1,
+                        vocabWords: ['interview', 'professional']
+                    }
+                ]
+            },
+            {
+                title: 'Travel Plans',
+                level: 'intermediate',
+                audio: 'Where would you like to travel this summer?',
+                transcript: 'Friend A: "I\'m planning a <span class="key-vocab">tropical</span> vacation." <br> Friend B: "That sounds <span class="key-vocab">amazing</span>!" <br> Friend A: "Yes, I\'m <span class="key-vocab">eager</span> to relax and explore."',
+                questions: [
+                    {
+                        question: 'What type of vacation is planned?',
+                        options: ['Mountain climbing', 'Tropical vacation', 'City tour'],
+                        correct: 1,
+                        vocabWords: ['tropical', 'vacation']
+                    }
+                ]
+            }
+        ];
+
+        let currentLessonIndex = 0;
+        let currentQuestionIndex = 0;
+        let correctAnswers = 0;
+        let totalXP = 0;
+        let startTime = Date.now();
+        let currentSpeed = 1;
+        let selectedAnswer = null;
+
+        function loadLesson() {
+            const lesson = lessons[currentLessonIndex];
+            document.getElementById('lessonTitle').textContent = lesson.title;
+            document.getElementById('questionText').textContent = lesson.questions[0].question;
+            document.getElementById('transcript').innerHTML = lesson.transcript;
+            loadAnswers();
+            updateProgress();
+        }
+
+        function loadAnswers() {
+            const lesson = lessons[currentLessonIndex];
+            const question = lesson.questions[currentQuestionIndex];
+            const container = document.getElementById('answersContainer');
+            container.innerHTML = '';
+            selectedAnswer = null;
+
+            question.options.forEach((option, index) => {
+                const label = document.createElement('label');
+                label.className = 'answer-option';
+                label.innerHTML = `
+                    <input type="radio" name="answer" value="${index}" onchange="selectAnswer(${index})">
+                    <span>${option}</span>
+                `;
+                container.appendChild(label);
+            });
+
+            document.getElementById('submitBtn').disabled = true;
+        }
+
+        function selectAnswer(index) {
+            selectedAnswer = index;
+            document.getElementById('submitBtn').disabled = false;
+        }
+
+        function playAudio() {
+            const lesson = lessons[currentLessonIndex];
+            const utterance = new SpeechSynthesisUtterance(lesson.audio);
+            utterance.rate = currentSpeed;
+            utterance.pitch = 1;
+
+            const playBtn = document.getElementById('playBtn');
+            playBtn.classList.add('playing');
+            playBtn.disabled = true;
+            document.getElementById('playStatus').textContent = '🔊 Playing...';
+
+            window.speechSynthesis.speak(utterance);
+
+            utterance.onend = () => {
+                playBtn.classList.remove('playing');
+                playBtn.disabled = false;
+                document.getElementById('playStatus').textContent = 'Ready to listen';
+            };
+        }
+
+        function setSpeed(speed) {
+            currentSpeed = speed;
+            document.querySelectorAll('.speed-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`[data-speed="${speed}"]`).classList.add('active');
+        }
+
+        function toggleTranscript() {
+            document.getElementById('transcript').classList.toggle('show');
+        }
+
+        function submitAnswer() {
+            if (selectedAnswer === null) return;
+
+            const lesson = lessons[currentLessonIndex];
+            const question = lesson.questions[currentQuestionIndex];
+            const feedback = document.getElementById('feedbackBox');
+
+            if (selectedAnswer === question.correct) {
+                correctAnswers++;
+                totalXP += 20;
+                feedback.className = 'feedback-box show feedback-correct';
+                feedback.textContent = '✓ Correct! Great listening!';
+            } else {
+                feedback.className = 'feedback-box show feedback-incorrect';
+                feedback.textContent = `✗ Incorrect. The correct answer is: ${question.options[question.correct]}`;
+            }
+
+            document.getElementById('correctCount').textContent = correctAnswers;
+            document.getElementById('xpEarned').textContent = totalXP;
+
+            setTimeout(() => nextQuestion(), 2000);
+        }
+
+        function nextQuestion() {
+            const lesson = lessons[currentLessonIndex];
+            currentQuestionIndex++;
+
+            if (currentQuestionIndex < lesson.questions.length) {
+                document.getElementById('questionText').textContent = lesson.questions[currentQuestionIndex].question;
+                loadAnswers();
+                document.getElementById('feedbackBox').className = 'feedback-box';
+            } else {
+                currentLessonIndex++;
+                currentQuestionIndex = 0;
+
+                if (currentLessonIndex < lessons.length) {
+                    loadLesson();
+                } else {
+                    showSummary();
+                }
+            }
+        }
+
+        function skipQuestion() {
+            nextQuestion();
+        }
+
+        function updateProgress() {
+            const totalQuestions = lessons.reduce((sum, l) => sum + l.questions.length, 0);
+            const completedQuestions = currentLessonIndex * lessons[0].questions.length + currentQuestionIndex;
+            const progress = (completedQuestions / totalQuestions) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+            document.getElementById('progressText').textContent = `Lesson ${currentLessonIndex + 1} of ${lessons.length}`;
+        }
+
+        function showSummary() {
+            const totalQuestions = lessons.reduce((sum, l) => sum + l.questions.length, 0);
+            const accuracy = Math.round((correctAnswers / totalQuestions) * 100);
+            const totalTime = Math.round((Date.now() - startTime) / 1000);
+
+            const multipliedXP = typeof applyModeMultiplier === 'function' ? applyModeMultiplier(totalXP, 'listening') : totalXP;
+            const dailyBonus = typeof checkAndClaimDailyBonus === 'function' ? checkAndClaimDailyBonus() : 0;
+            const finalXP = multipliedXP + dailyBonus;
+
+            document.querySelector('.lesson-card').style.display = 'none';
+            document.getElementById('totalCorrect').textContent = correctAnswers;
+            document.getElementById('earnedXPSum').textContent = `+${finalXP} XP` + (dailyBonus ? ' (🌟 +50 first study!)' : '');
+            document.getElementById('accuracy').textContent = `${accuracy}%`;
+            document.getElementById('summaryScreen').classList.add('show');
+            
+            // Save progress to API
+            saveSessionProgress('listening', finalXP, accuracy, totalQuestions);
+        }
+        
+        async function saveSessionProgress(sessionType, xpEarned, accuracy, wordsCompleted) {
+            try {
+                const result = await api.post('/progress', {
+                    sessionType,
+                    xpEarned,
+                    accuracy,
+                    wordsCompleted,
+                    correctCount: correctAnswers,
+                    totalCount: wordsCompleted
+                });
+
+                const state = typeof showGamificationMoments === 'function'
+                    ? showGamificationMoments(result, { modeLabel: 'Listening' })
+                    : null;
+
+                const levelValue = state && state.level ? Number(state.level.current || state.level.level || 0) : 0;
+                if (levelValue > 0) {
+                    const xpLabel = document.getElementById('earnedXPSum');
+                    if (xpLabel) {
+                        const current = xpLabel.textContent || '';
+                        if (!/Lvl\s+\d+/i.test(current)) {
+                            xpLabel.textContent = `${current} • Lvl ${levelValue}`;
+                        }
+                    }
+                }
+            } catch (err) {
+                console.log('Error saving progress:', err.message);
+                showToast('Progress sync failed: ' + err.message, 'warning', 3500);
+            }
+        }
+
+        function restartLesson() {
+            currentLessonIndex = 0;
+            currentQuestionIndex = 0;
+            correctAnswers = 0;
+            totalXP = 0;
+            startTime = Date.now();
+
+            document.querySelector('.lesson-card').style.display = 'block';
+            document.getElementById('summaryScreen').classList.remove('show');
+
+            loadLesson();
+        }
+
+        function goBack() {
+            window.location.href = '/student-learn-v3.html';
+        }
+
+        function exitLesson() {
+            if (confirm('Exit lesson? Progress will not be saved.')) {
+                goBack();
+            }
+        }
+
+        // Update timer
+        setInterval(() => {
+            const elapsed = Math.round((Date.now() - startTime) / 1000);
+            document.getElementById('timeText').textContent = `⏱️ ${elapsed}s`;
+        }, 1000);
+
+       window.addEventListener('DOMContentLoaded', function() {
+           // Check authentication
+           if (!requireAuth()) return;
+
+           loadLesson();
+       });
+    </script>
+</body>
+</html>

@@ -1,0 +1,28 @@
+﻿{
+    "_id":  "msesc3zq1653k5ey",
+    "userId":  "mseq0vsb0yb735s8",
+    "word":  "sobering",
+    "definition":  "Causing someone to feel serious, worried, or concerned, often because of a difficult or unpleasant reality.",
+    "imageUrl":  "/generated/img_1785920751585_xm0erz.jpg",
+    "partOfSpeech":  "adjective",
+    "example":  "The news of the natural disaster was a sobering reminder of the importance of being prepared for emergencies.",
+    "notes":  "",
+    "tags":  [
+
+             ],
+    "deckId":  null,
+    "difficulty":  3,
+    "timesReviewed":  1,
+    "timesCorrect":  1,
+    "lastReviewedAt":  "2026-08-05T17:09:43.079Z",
+    "nextReviewAt":  "2026-08-10T17:09:43.081Z",
+    "createdAt":  "2026-08-04T15:00:36.278Z",
+    "adaptiveMetrics":  {
+                            "attempts":  1,
+                            "correct":  1,
+                            "lastLatencyMs":  800,
+                            "averageLatencyMs":  800,
+                            "dueAt":  "2026-08-10T17:09:43.081Z",
+                            "lastAttemptAt":  "2026-08-05T17:09:43.079Z"
+                        }
+}

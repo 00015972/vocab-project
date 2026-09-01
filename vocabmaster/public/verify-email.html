@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Verify Email — VocabMaster</title>
+  <link rel="stylesheet" href="/css/main.css" />
+</head>
+<body>
+<div class="auth-page">
+  <div class="auth-card" style="text-align:center">
+    <div class="auth-logo" style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+      <img src="https://www.image2url.com/r2/default/images/1784112907446-0463de99-8cb2-4889-82b8-3e0c5207bc0d.jpg" alt="Taleem Lexicon" style="width: 40px; height: 40px; border-radius: 50%;">
+      <span style="font-size: 1.2rem; font-weight: bold;">Taleem Lexicon</span>
+    </div>
+    <div id="loading" style="padding:32px 0">
+      <div style="font-size:2.5rem;margin-bottom:16px">⏳</div>
+      <p style="color:var(--muted)">Verifying your email...</p>
+      <div style="margin-top:16px"><span class="spinner" style="color:var(--accent2)"></span></div>
+    </div>
+    <div id="success" class="hidden" style="padding:20px 0">
+      <div style="font-size:3rem;margin-bottom:16px">✅</div>
+      <h3 style="margin-bottom:10px">Email Verified!</h3>
+      <p style="color:var(--muted);line-height:1.6;margin-bottom:24px">Your account is now active. You can log in and start learning.</p>
+      <a href="/login-ultra.html" class="btn btn-primary">Go to Login</a>
+    </div>
+    <div id="error" class="hidden" style="padding:20px 0">
+      <div style="font-size:3rem;margin-bottom:16px">❌</div>
+      <h3 style="margin-bottom:10px">Link Invalid or Expired</h3>
+      <p style="color:var(--muted);line-height:1.6;margin-bottom:24px">This verification link has expired or already been used. Please register again.</p>
+      <a href="/register-ultra.html" class="btn btn-secondary">Register Again</a>
+    </div>
+  </div>
+</div>
+<div id="toast"></div>
+<script src="/js/api.js"></script>
+<script>
+(async () => {
+  const token = new URLSearchParams(window.location.search).get('token');
+  if (!token) {
+    document.getElementById('loading').classList.add('hidden');
+    document.getElementById('error').classList.remove('hidden');
+    return;
+  }
+  try {
+    await api.get('/auth/verify-email?token=' + encodeURIComponent(token));
+    document.getElementById('loading').classList.add('hidden');
+    document.getElementById('success').classList.remove('hidden');
+  } catch {
+    document.getElementById('loading').classList.add('hidden');
+    document.getElementById('error').classList.remove('hidden');
+  }
+})();
+</script>
+</body>
+</html>
