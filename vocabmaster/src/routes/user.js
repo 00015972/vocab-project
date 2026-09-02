@@ -282,8 +282,8 @@ router.post('/change-password', authMiddleware, async (req, res) => {
       return res.status(400).json({ message: 'Current and new passwords are required' });
     }
 
-    if (newPassword.length < 6) {
-      return res.status(400).json({ message: 'New password must be at least 6 characters' });
+    if (newPassword.length < 12 || newPassword.length > 128) {
+      return res.status(400).json({ message: 'New password must be between 12 and 128 characters' });
     }
 
     if (!isDbConnected()) {
@@ -294,7 +294,11 @@ router.post('/change-password', authMiddleware, async (req, res) => {
         return res.status(401).json({ message: 'Current password is incorrect' });
       }
       const passwordHash = await bcrypt.hash(newPassword, 12);
-      devStore.updateUser(req.user.id, { passwordHash });
+      devStore.updateUser(req.user.id, {
+        passwordHash,
+        sessionVersion: Math.max(0, Number(user.sessionVersion) || 0) + 1,
+      });
+      res.clearCookie('vm_auth', { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'strict', path: '/' });
       return res.json({ message: 'Password changed successfully' });
     }
 
@@ -307,8 +311,10 @@ router.post('/change-password', authMiddleware, async (req, res) => {
     }
 
     user.password = newPassword;
+    user.sessionVersion = Math.max(0, Number(user.sessionVersion) || 0) + 1;
     await user.save();
 
+    res.clearCookie('vm_auth', { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'strict', path: '/' });
     res.json({ message: 'Password changed successfully' });
   } catch (err) {
     console.error('Change password error:', err);

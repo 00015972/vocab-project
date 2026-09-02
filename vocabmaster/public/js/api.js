@@ -6,11 +6,17 @@ const useLocalApiFallback =
 const API_BASE = useLocalApiFallback ? 'http://localhost:3000/api' : '/api';
 
 let csrfTokenCache = null;
+const AUTH_SESSION_MARKER = 'http-only-cookie';
+
+// Remove legacy JWTs that older releases stored in Web Storage.
+if (localStorage.getItem('token') && localStorage.getItem('token') !== AUTH_SESSION_MARKER) {
+  localStorage.removeItem('token');
+}
 
 async function getCSRFToken() {
   if (csrfTokenCache) return csrfTokenCache;
   try {
-    const res = await fetch(API_BASE + '/csrf-token');
+    const res = await fetch(API_BASE + '/csrf-token', { credentials: 'include' });
     const data = await res.json();
     csrfTokenCache = data.csrfToken;
     return csrfTokenCache;
@@ -20,7 +26,9 @@ async function getCSRFToken() {
   }
 }
 
-function getToken()  { return localStorage.getItem('token'); }
+// Compatibility helper for older pages. This is only a non-secret UI marker;
+// the real session credential is held in an HttpOnly cookie.
+function getToken()  { return localStorage.getItem('token') === AUTH_SESSION_MARKER ? AUTH_SESSION_MARKER : null; }
 function getUser()   { 
   try {
     const userJson = localStorage.getItem('user');
@@ -31,11 +39,14 @@ function getUser()   {
     return null;
   }
 }
-function setAuth(token, user) {
-  localStorage.setItem('token', token);
+function setAuth(_token, user) {
+  localStorage.setItem('token', AUTH_SESSION_MARKER);
   localStorage.setItem('user', JSON.stringify(user));
 }
 function clearAuth() {
+  if (typeof navigator !== 'undefined' && typeof navigator.sendBeacon === 'function') {
+    navigator.sendBeacon(API_BASE + '/auth/logout');
+  }
   localStorage.removeItem('token');
   localStorage.removeItem('user');
 }
@@ -59,9 +70,6 @@ function redirectIfAuth() {
 /* ── API Helper ────────────────────────────────────────────────── */
 async function apiRequest(method, path, body, options = {}) {
   const headers = { 'Content-Type': 'application/json' };
-  const token = getToken();
-  if (token) headers['Authorization'] = 'Bearer ' + token;
-  
   // Add CSRF token for state-changing requests
   if (['POST', 'PUT', 'PATCH', 'DELETE'].includes(method)) {
     const csrfToken = await getCSRFToken();
@@ -76,6 +84,7 @@ async function apiRequest(method, path, body, options = {}) {
       method,
       headers,
       body: body ? JSON.stringify(body) : undefined,
+      credentials: 'include',
       signal: controller.signal,
     });
     clearTimeout(timeout);

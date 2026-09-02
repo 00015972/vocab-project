@@ -143,14 +143,18 @@
     </div>
 
     <div class="title">Creator Control</div>
-    <div class="muted">Enter your creator access code to open the dashboard.</div>
+    <div class="muted">Sign in with your creator account email and password.</div>
 
     <div id="alertBox"></div>
 
     <form id="creatorForm">
       <div class="form-group">
-        <label for="creatorPortalCode">Creator Access Code</label>
-        <input type="text" id="creatorPortalCode" placeholder="Enter creator access code" required />
+        <label for="creatorEmail">Email</label>
+        <input type="email" id="creatorEmail" autocomplete="email" placeholder="creator@example.com" required />
+      </div>
+      <div class="form-group">
+        <label for="creatorPassword">Password</label>
+        <input type="password" id="creatorPassword" autocomplete="current-password" placeholder="Enter your password" required />
       </div>
 
       <button type="submit" id="submitBtn">Open Dashboard</button>
@@ -167,24 +171,20 @@
     const form = document.getElementById('creatorForm');
     form.addEventListener('submit', async function (event) {
       event.preventDefault();
-      const creatorPortalCode = document.getElementById('creatorPortalCode').value.trim();
+      const email = document.getElementById('creatorEmail').value.trim();
+      const password = document.getElementById('creatorPassword').value;
       const submitBtn = document.getElementById('submitBtn');
       const alertBox = document.getElementById('alertBox');
 
       alertBox.innerHTML = '';
       setLoading(submitBtn, true, 'Entering...');
 
-      console.log('creator-portal: submitting code', creatorPortalCode);
       try {
-        const data = await api.post('/auth/creator-access', { creatorPortalCode });
-        console.log('creator-portal: response', data);
-
-        localStorage.setItem('token', data.token);
-        localStorage.setItem('user', JSON.stringify(data.user));
+        const data = await api.post('/auth/login', { email, password, role: 'creator' });
+        setAuth(null, data.user);
         // use relative redirect to respect hosting subpaths
         window.location.href = 'creator-dashboard-new.html';
       } catch (err) {
-        console.error('creator-portal error', err);
         alertBox.innerHTML = '<div class="alert alert-error">' + esc(err.message) + '</div>';
       } finally {
         setLoading(submitBtn, false, 'Enter Creator Studio');

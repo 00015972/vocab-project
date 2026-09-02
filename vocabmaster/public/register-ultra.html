@@ -1747,9 +1747,9 @@
                             <dotlottie-wc src="https://lottie.host/b814828f-af1f-42e2-82a1-0553ea756c48/XoZsua0x0I.lottie" style="width: 220px; height: 220px" autoplay loop></dotlottie-wc>
                         </div>
                         <h2>Welcome to Taleem Lexicon!</h2>
-                        <p>Your account is ready. Let's start learning!</p>
+                        <p id="registrationSuccessMessage">Your account is ready. Let's start learning!</p>
                         <button type="button" class="btn-submit" onclick="handleSuccessRedirect()">
-                            Go to Dashboard →
+                            <span id="registrationSuccessAction">Go to Dashboard →</span>
                         </button>
                     </div>
                 </div>
@@ -1775,6 +1775,7 @@
         const queryRole = new URLSearchParams(window.location.search).get('role');
         let currentStep = 1;
         const maxSteps = 3;
+        let registrationRequiresVerification = false;
         let googleRegisterConfigured = false;
 
         function goToStep(step) {
@@ -1827,8 +1828,8 @@
                 clearError('err-confirm');
                 clearError('err-role');
                 clearError('err-creatorCode');
-                if (!password || password.length < 6) {
-                    showError('err-password', 'Password must be at least 6 characters');
+                if (!password || password.length < 12) {
+                    showError('err-password', 'Password must be at least 12 characters');
                     return false;
                 }
                 if (password !== confirmPassword) {
@@ -2039,19 +2040,21 @@
                 const response = await fetch('/api/auth/register', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
                     body: JSON.stringify(payload)
                 });
 
                 const data = await response.json();
 
                 if (response.ok) {
-                    // Store token if provided
-                    if (data.token) {
-                        localStorage.setItem('token', data.token);
+                    registrationRequiresVerification = data.emailVerificationRequired === true;
+                    if (registrationRequiresVerification) {
+                        clearAuth();
+                        document.getElementById('registrationSuccessMessage').textContent = 'Check your email and verify your account before signing in.';
+                        document.getElementById('registrationSuccessAction').textContent = 'Go to Login →';
+                    } else {
+                        setAuth(null, data.user);
                     }
-                    
-                    // Store user info
-                    localStorage.setItem('user', JSON.stringify(data.user));
                     
                     // Show success screen
                     currentStep = maxSteps + 1;
@@ -2111,7 +2114,15 @@
         }
 
         function handleSuccessRedirect() {
-            const user = JSON.parse(localStorage.getItem('user'));
+            if (registrationRequiresVerification) {
+                window.location.href = '/login-ultra.html';
+                return;
+            }
+            const user = getUser();
+            if (!user) {
+                window.location.href = '/login-ultra.html';
+                return;
+            }
             if (user.role === 'creator') {
                 window.location.href = '/creator-dashboard-new.html';
             } else {
@@ -2140,8 +2151,7 @@
                     role: 'student'
                 });
 
-                setAuth(data.token, data.user);
-                localStorage.setItem('user', JSON.stringify(data.user));
+                setAuth(null, data.user);
                 currentStep = maxSteps + 1;
                 updateUI();
                 handleSuccessRedirect();

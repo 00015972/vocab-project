@@ -5,51 +5,74 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const { OAuth2Client } = require('google-auth-library');
 const User = require('../models/User');
-const Word = require('../models/Word');
 const { sendVerificationEmail, sendPasswordResetEmail, isEmailServiceConfigured } = require('../services/email');
 const authMiddleware = require('../middleware/auth');
 const { isDbConnected } = require('../config/db');
 const devStore = require('../services/devStore');
 
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || '';
-const DEFAULT_DEV_CREATOR_ACCESS_CODE = 'creator123';
-const CREATOR_ACCESS_CODE = process.env.CREATOR_ACCESS_CODE || (process.env.NODE_ENV === 'production' ? null : DEFAULT_DEV_CREATOR_ACCESS_CODE);
+const CREATOR_ACCESS_CODE = String(process.env.CREATOR_ACCESS_CODE || '').trim();
+const AUTH_COOKIE_NAME = 'vm_auth';
+const AUTH_COOKIE_MAX_AGE_MS = Math.max(60_000, Number(process.env.JWT_COOKIE_MAX_AGE_MS) || (7 * 24 * 60 * 60 * 1000));
+const JWT_ISSUER = 'vocabmaster';
+const JWT_AUDIENCE = 'vocabmaster-web';
+const MIN_PASSWORD_LENGTH = 12;
+const MAX_PASSWORD_LENGTH = 128;
 let googleClient = null;
 
-function isDevelopmentMode() {
-  return String(process.env.NODE_ENV || '').toLowerCase() !== 'production';
+function isProductionMode() {
+  return String(process.env.NODE_ENV || '').toLowerCase() === 'production';
 }
 
-function getAllowedCreatorAccessCodes() {
-  const codes = new Set();
-  const configuredCode = String(process.env.CREATOR_ACCESS_CODE || '').trim();
-  if (configuredCode) codes.add(configuredCode.toUpperCase());
-  if (isDevelopmentMode()) {
-    codes.add('CREATOR123');
-    codes.add('DEMO01');
-  }
-  return codes;
+function normalizeEmail(value) {
+  return String(value || '').trim().toLowerCase();
 }
 
-function isValidCreatorAccessCode(candidateCode, creatorCode = '', role = 'creator') {
-  if (role !== 'creator') return true;
-  const normalizedCandidate = String(candidateCode || '').trim().toUpperCase();
-  const normalizedCreatorCode = String(creatorCode || '').trim().toUpperCase();
+function isValidCreatorAccessCode(candidateCode) {
+  const candidate = Buffer.from(String(candidateCode || '').trim(), 'utf8');
+  const configured = Buffer.from(CREATOR_ACCESS_CODE, 'utf8');
+  return candidate.length > 0
+    && configured.length > 0
+    && candidate.length === configured.length
+    && crypto.timingSafeEqual(candidate, configured);
+}
 
-  if (isDevelopmentMode()) {
-    if (!normalizedCandidate || normalizedCandidate === normalizedCreatorCode) {
-      return true;
-    }
-    return getAllowedCreatorAccessCodes().has(normalizedCandidate);
-  }
+function validatePassword(password, label = 'Password') {
+  if (typeof password !== 'string') return `${label} is required.`;
+  if (password.length < MIN_PASSWORD_LENGTH) return `${label} must be at least ${MIN_PASSWORD_LENGTH} characters.`;
+  if (password.length > MAX_PASSWORD_LENGTH) return `${label} must be no more than ${MAX_PASSWORD_LENGTH} characters.`;
+  return null;
+}
 
-  if (!normalizedCandidate) {
-    return true;
+function hashOneTimeToken(token) {
+  return crypto.createHash('sha256').update(String(token || ''), 'utf8').digest('hex');
+}
+
+function authCookieOptions() {
+  return {
+    httpOnly: true,
+    secure: isProductionMode(),
+    sameSite: 'strict',
+    path: '/',
+    maxAge: AUTH_COOKIE_MAX_AGE_MS,
+  };
+}
+
+function clearAuthCookie(res) {
+  res.clearCookie(AUTH_COOKIE_NAME, {
+    httpOnly: true,
+    secure: isProductionMode(),
+    sameSite: 'strict',
+    path: '/',
+  });
+}
+
+function requirePersistentDatabase(res) {
+  if (isProductionMode() && !isDbConnected()) {
+    res.status(503).json({ message: 'Authentication is temporarily unavailable.' });
+    return false;
   }
-  if (normalizedCreatorCode && normalizedCandidate === normalizedCreatorCode) {
-    return true;
-  }
-  return getAllowedCreatorAccessCodes().has(normalizedCandidate);
+  return true;
 }
 
 function isGoogleSignInConfigured() {
@@ -70,10 +93,20 @@ function getGoogleClient() {
   return googleClient;
 }
 
-function issueAuthToken(userId) {
-  return jwt.sign({ id: userId }, process.env.JWT_SECRET, {
+function issueAuthToken(user) {
+  const userId = String(user && (user._id || user.id) || '');
+  const sessionVersion = Math.max(0, Number(user && user.sessionVersion) || 0);
+  return jwt.sign({ id: userId, sessionVersion }, process.env.JWT_SECRET, {
+    algorithm: 'HS256',
     expiresIn: process.env.JWT_EXPIRES_IN || '7d',
+    issuer: JWT_ISSUER,
+    audience: JWT_AUDIENCE,
+    subject: userId,
   });
+}
+
+function establishAuthSession(res, user) {
+  res.cookie(AUTH_COOKIE_NAME, issueAuthToken(user), authCookieOptions());
 }
 
 function normalizeRole(input) {
@@ -81,7 +114,7 @@ function normalizeRole(input) {
 }
 
 function buildCreatorCode() {
-  return Math.random().toString(36).slice(2, 8).toUpperCase();
+  return crypto.randomBytes(6).toString('base64url').slice(0, 8).toUpperCase();
 }
 
 async function generateUniqueCreatorCode() {
@@ -117,17 +150,20 @@ router.get('/google/config', (req, res) => {
 // POST /api/auth/register
 router.post('/register', async (req, res) => {
   try {
-    const { name, email, password, role, creatorPortalCode, linkedCreatorCode } = req.body;
+    if (!requirePersistentDatabase(res)) return;
+    const { name, password, role, creatorPortalCode } = req.body;
+    const email = normalizeEmail(req.body.email);
+    const linkedCreatorCode = String(req.body.linkedCreatorCode || '').trim().toUpperCase();
     const normalizedRole = normalizeRole(role);
     if (!name || !email || !password)
       return res.status(400).json({ message: 'Name, email and password are required.' });
-    if (password.length < 6)
-      return res.status(400).json({ message: 'Password must be at least 6 characters.' });
+    const passwordError = validatePassword(password);
+    if (passwordError) return res.status(400).json({ message: passwordError });
     if (normalizedRole === 'creator') {
-      if (!CREATOR_ACCESS_CODE && !isDevelopmentMode()) {
+      if (!CREATOR_ACCESS_CODE) {
         return res.status(403).json({ message: 'Creator registration is disabled.' });
       }
-      if (!isValidCreatorAccessCode(creatorPortalCode, '', normalizedRole)) {
+      if (!isValidCreatorAccessCode(creatorPortalCode)) {
         return res.status(403).json({ message: 'Invalid creator access code.' });
       }
     }
@@ -158,9 +194,7 @@ router.post('/register', async (req, res) => {
         creatorCode: localCreatorCode,
         linkedCreatorCode: normalizedRole === 'student' && linkedCreatorCode ? linkedCreatorCode.toUpperCase() : '',
       });
-      
-      // Create token for immediate login
-      const token = issueAuthToken(localUser._id);
+
       const userResp = {
         id: localUser._id,
         name: localUser.name,
@@ -170,9 +204,9 @@ router.post('/register', async (req, res) => {
         linkedCreatorCode: localUser.linkedCreatorCode || null,
         createdAt: new Date().toISOString(),
       };
-      
+
+      establishAuthSession(res, localUser);
       return res.status(201).json({
-        token,
         user: userResp,
         message: normalizedRole === 'creator'
           ? `Creator account created in local mode. Your class code is ${localCreatorCode}.`
@@ -190,7 +224,10 @@ router.post('/register', async (req, res) => {
     }
 
     const emailConfigured = isEmailServiceConfigured();
-    const skipEmailVerification = normalizedRole === 'creator';
+    if (isProductionMode() && !emailConfigured) {
+      return res.status(503).json({ message: 'Registration is temporarily unavailable because email verification is not configured.' });
+    }
+    const verificationToken = emailConfigured ? crypto.randomBytes(32).toString('hex') : null;
     const user = new User({
       name,
       email,
@@ -198,37 +235,36 @@ router.post('/register', async (req, res) => {
       role: normalizedRole,
       creatorCode: resolvedCreatorCode,
       linkedCreatorCode: normalizedRole === 'student' && linkedCreatorCode ? linkedCreatorCode.toUpperCase() : undefined,
-      ...(emailConfigured && !skipEmailVerification
+      ...(emailConfigured
         ? {
-            verificationToken: crypto.randomBytes(32).toString('hex'),
+            verificationToken: hashOneTimeToken(verificationToken),
             verificationExpires: new Date(Date.now() + 24 * 60 * 60 * 1000),
           }
         : { isVerified: true }),
     });
     await user.save();
 
-    const token = issueAuthToken(user._id);
     const userResp = buildAuthUser(user);
 
-    if (emailConfigured && !skipEmailVerification) {
+    if (emailConfigured) {
       try {
-        await sendVerificationEmail(email, name, user.verificationToken);
+        await sendVerificationEmail(email, name, verificationToken);
       } catch (emailErr) {
         console.error('Verification email send error:', emailErr);
+        await User.deleteOne({ _id: user._id, isVerified: false });
         return res.status(502).json({
-          message: 'Account created, but verification email could not be sent. Check RESEND_API_KEY, FROM_EMAIL and Resend sender settings.',
+          message: 'Registration could not be completed because the verification email failed. Please try again later.',
         });
       }
       return res.status(201).json({
-        token,
         user: userResp,
         message: 'Registration successful! Please check your email to verify your account.',
         emailVerificationRequired: true,
         creatorCode: user.creatorCode || null,
       });
     }
+    establishAuthSession(res, user);
     return res.status(201).json({
-      token,
       user: userResp,
       message: normalizedRole === 'creator'
         ? `Creator account created! Your class code is ${user.creatorCode}. You can log in now.`
@@ -245,7 +281,9 @@ router.post('/register', async (req, res) => {
 // POST /api/auth/login
 router.post('/login', async (req, res) => {
   try {
-    const { email, password, role, creatorPortalCode } = req.body;
+    if (!requirePersistentDatabase(res)) return;
+    const email = normalizeEmail(req.body.email);
+    const { password, role } = req.body;
     const requestedRole = role ? String(role).toLowerCase() : null;
     const expectedRole = ['student', 'creator', 'admin'].includes(requestedRole)
       ? requestedRole
@@ -256,6 +294,8 @@ router.post('/login', async (req, res) => {
     if (!isDbConnected()) {
       const user = devStore.findUserByEmail(email);
       if (!user) return res.status(401).json({ message: 'Invalid email or password.' });
+      const isMatch = await bcrypt.compare(password, user.passwordHash);
+      if (!isMatch) return res.status(401).json({ message: 'Invalid email or password.' });
       if (user.isActive === false) {
         return res.status(403).json({ message: 'Your account is deactivated. Contact support.' });
       }
@@ -263,23 +303,20 @@ router.post('/login', async (req, res) => {
       if (expectedRole && expectedRole !== effectiveRole) {
         return res.status(403).json({ message: `This account is registered as ${effectiveRole}. Use the correct portal.` });
       }
-      if (effectiveRole === 'creator' && !isValidCreatorAccessCode(creatorPortalCode, user.creatorCode || '', effectiveRole)) {
-        return res.status(403).json({ message: 'Invalid creator access code.' });
-      }
+      if (!user.isVerified) return res.status(403).json({ message: 'Please verify your email before logging in.' });
 
-      const isMatch = await bcrypt.compare(password, user.passwordHash);
-      if (!isMatch) return res.status(401).json({ message: 'Invalid email or password.' });
-
-      const token = issueAuthToken(user._id);
-
+      const updatedUser = devStore.updateUser(user._id, { lastLogin: new Date().toISOString() }) || user;
+      establishAuthSession(res, updatedUser);
       return res.json({
-        token,
-        user: buildAuthUser(user),
+        user: buildAuthUser(updatedUser),
       });
     }
 
     const user = await User.findOne({ email });
     if (!user)
+      return res.status(401).json({ message: 'Invalid email or password.' });
+    const isMatch = await user.comparePassword(password);
+    if (!isMatch)
       return res.status(401).json({ message: 'Invalid email or password.' });
     if (user.isActive === false) {
       return res.status(403).json({ message: 'Your account is deactivated. Contact support.' });
@@ -288,28 +325,15 @@ router.post('/login', async (req, res) => {
     if (expectedRole && expectedRole !== effectiveRole) {
       return res.status(403).json({ message: `This account is registered as ${effectiveRole}. Use the correct portal.` });
     }
-    if (effectiveRole === 'creator' && !isValidCreatorAccessCode(creatorPortalCode, user.creatorCode || '', effectiveRole)) {
-      return res.status(403).json({ message: 'Invalid creator access code.' });
-    }
 
     if (!user.isVerified) {
-      if (isEmailServiceConfigured() && effectiveRole !== 'creator') {
-        return res.status(403).json({ message: 'Please verify your email before logging in. Check your inbox.' });
-      }
-      user.isVerified = true;
-      user.verificationToken = undefined;
-      user.verificationExpires = undefined;
-      await user.save();
+      return res.status(403).json({ message: 'Please verify your email before logging in. Check your inbox.' });
     }
 
-    const isMatch = await user.comparePassword(password);
-    if (!isMatch)
-      return res.status(401).json({ message: 'Invalid email or password.' });
-
-    const token = issueAuthToken(user._id);
-
+    user.lastLogin = new Date();
+    await user.save();
+    establishAuthSession(res, user);
     res.json({
-      token,
       user: buildAuthUser(user),
     });
   } catch (err) {
@@ -321,10 +345,11 @@ router.post('/login', async (req, res) => {
 // POST /api/auth/google
 router.post('/google', async (req, res) => {
   try {
+    if (!requirePersistentDatabase(res)) return;
     const { credential, role } = req.body;
     const expectedRole = role ? normalizeRole(role) : null;
     if (expectedRole === 'creator') {
-      return res.status(403).json({ message: 'Creator accounts must use email/password and creator access code.' });
+      return res.status(403).json({ message: 'Creator accounts must use email and password.' });
     }
     if (!credential) {
       return res.status(400).json({ message: 'Google credential is required.' });
@@ -357,12 +382,12 @@ router.post('/google', async (req, res) => {
         return res.status(403).json({ message: 'Your account is deactivated. Contact support.' });
       }
       if ((localUser.role || 'creator') === 'creator') {
-        return res.status(403).json({ message: 'Creator accounts must use email/password and creator access code.' });
+        return res.status(403).json({ message: 'Creator accounts must use email and password.' });
       }
 
-      const token = issueAuthToken(localUser._id);
+      localUser = devStore.updateUser(localUser._id, { lastLogin: new Date().toISOString() }) || localUser;
+      establishAuthSession(res, localUser);
       return res.json({
-        token,
         user: buildAuthUser(localUser),
       });
     }
@@ -388,12 +413,13 @@ router.post('/google', async (req, res) => {
       return res.status(403).json({ message: 'Your account is deactivated. Contact support.' });
     }
     if ((user.role || 'creator') === 'creator') {
-      return res.status(403).json({ message: 'Creator accounts must use email/password and creator access code.' });
+      return res.status(403).json({ message: 'Creator accounts must use email and password.' });
     }
 
-    const token = issueAuthToken(user._id);
+    user.lastLogin = new Date();
+    await user.save();
+    establishAuthSession(res, user);
     return res.json({
-      token,
       user: buildAuthUser(user),
     });
   } catch (err) {
@@ -405,6 +431,7 @@ router.post('/google', async (req, res) => {
 // GET /api/auth/verify-email?token=xxx
 router.get('/verify-email', async (req, res) => {
   try {
+    if (!requirePersistentDatabase(res)) return;
     if (!isDbConnected()) {
       return res.json({ message: 'Email verification is skipped in local mode.' });
     }
@@ -417,7 +444,7 @@ router.get('/verify-email', async (req, res) => {
       return res.status(400).json({ message: 'Verification token is missing.' });
 
     const user = await User.findOne({
-      verificationToken: token,
+      verificationToken: hashOneTimeToken(token),
       verificationExpires: { $gt: new Date() },
     });
 
@@ -436,55 +463,18 @@ router.get('/verify-email', async (req, res) => {
   }
 });
 
-router.post('/creator-access', async (req, res) => {
-  try {
-    const { creatorPortalCode } = req.body;
-    if (!isValidCreatorAccessCode(creatorPortalCode, '', 'creator')) {
-      return res.status(403).json({ message: 'Invalid creator access code.' });
-    }
-
-    if (!isDbConnected()) {
-      const creatorUser = devStore.listUsers().find((u) => (u.role || 'student') === 'creator' && u.isActive !== false);
-      if (!creatorUser) {
-        return res.status(404).json({ message: 'No creator account exists yet.' });
-      }
-
-      return res.json({
-        token: issueAuthToken(creatorUser._id),
-        user: buildAuthUser(creatorUser),
-      });
-    }
-
-    const creatorUser = await User.findOne({ role: 'creator', isActive: { $ne: false } })
-      .sort({ createdAt: 1 })
-      .lean();
-
-    if (!creatorUser) {
-      return res.status(404).json({ message: 'No creator account exists yet.' });
-    }
-
-    return res.json({
-      token: issueAuthToken(creatorUser._id),
-      user: buildAuthUser(creatorUser),
-    });
-  } catch (err) {
-    console.error('Creator access error:', err);
-    return res.status(500).json({ message: 'Failed to open creator dashboard.' });
-  }
-});
-
 // POST /api/auth/forgot-password
 router.post('/forgot-password', async (req, res) => {
   try {
-    const isDevMode = isDevelopmentMode();
-    const { email } = req.body;
+    if (!requirePersistentDatabase(res)) return;
+    const email = normalizeEmail(req.body.email);
     if (!email)
       return res.status(400).json({ message: 'Email is required.' });
 
     // Verify email service is configured
     if (!isEmailServiceConfigured()) {
-      return res.status(503).json({ 
-        message: 'Password reset service is currently unavailable. Please try again later or contact support.' 
+      return res.status(503).json({
+        message: 'Password reset service is currently unavailable. Please try again later or contact support.'
       });
     }
 
@@ -502,24 +492,25 @@ router.post('/forgot-password', async (req, res) => {
     if (user) {
       try {
         const resetToken = crypto.randomBytes(32).toString('hex');
+        const resetTokenHash = hashOneTimeToken(resetToken);
         const resetExpires = new Date(Date.now() + 60 * 60 * 1000); // 1 hour expiry
-        
+
         // Update user with reset token
         if (isDbConnected()) {
-          user.resetPasswordToken = resetToken;
+          user.resetPasswordToken = resetTokenHash;
           user.resetPasswordExpires = resetExpires;
           await user.save();
         } else {
           // Update in dev store (only reset token fields)
           devStore.updateUser(user._id, {
-            resetPasswordToken: resetToken,
+            resetPasswordToken: resetTokenHash,
             resetPasswordExpires: resetExpires,
           });
         }
 
         // Send password reset email
         await sendPasswordResetEmail(email, user.name || 'User', resetToken);
-        console.log(`✅ Password reset email sent to ${email}`);
+        console.log('Password reset email sent.');
       } catch (emailError) {
         console.error('Failed to send password reset email:', emailError);
         // Don't expose email service error to user
@@ -538,19 +529,21 @@ router.post('/forgot-password', async (req, res) => {
 // POST /api/auth/reset-password
 router.post('/reset-password', async (req, res) => {
   try {
+    if (!requirePersistentDatabase(res)) return;
     const { token, password } = req.body;
     if (!token || !password)
       return res.status(400).json({ message: 'Token and new password are required.' });
-    if (password.length < 6)
-      return res.status(400).json({ message: 'Password must be at least 6 characters.' });
+    const passwordError = validatePassword(password);
+    if (passwordError) return res.status(400).json({ message: passwordError });
+    const tokenHash = hashOneTimeToken(token);
 
     // Works with or without database
     if (!isDbConnected()) {
       // For devStore: get all users and find user with valid reset token
       const users = devStore.listUsers();
-      const user = users.find(u => 
-        u.resetPasswordToken === token && 
-        u.resetPasswordExpires && 
+      const user = users.find(u =>
+        u.resetPasswordToken === tokenHash &&
+        u.resetPasswordExpires &&
         new Date(u.resetPasswordExpires) > new Date()
       );
 
@@ -558,19 +551,20 @@ router.post('/reset-password', async (req, res) => {
         return res.status(400).json({ message: 'Invalid or expired reset link. Please request a new one.' });
 
       // Update user with hashed password and clear reset token
-      const hashedPassword = bcrypt.hashSync(password, 10);
+      const hashedPassword = await bcrypt.hash(password, 12);
       devStore.updateUser(user._id, {
         passwordHash: hashedPassword,
         resetPasswordToken: undefined,
         resetPasswordExpires: undefined,
+        sessionVersion: Math.max(0, Number(user.sessionVersion) || 0) + 1,
       });
 
-      console.log(`✅ Password reset successfully for user ${user.email}`);
+      clearAuthCookie(res);
       return res.json({ message: 'Password reset successfully! You can now log in with your new password.' });
     }
 
     const user = await User.findOne({
-      resetPasswordToken: token,
+      resetPasswordToken: tokenHash,
       resetPasswordExpires: { $gt: new Date() },
     });
 
@@ -581,9 +575,10 @@ router.post('/reset-password', async (req, res) => {
     user.password = password;
     user.resetPasswordToken = undefined;
     user.resetPasswordExpires = undefined;
+    user.sessionVersion = Math.max(0, Number(user.sessionVersion) || 0) + 1;
     await user.save();
 
-    console.log(`✅ Password reset successfully for user ${user.email}`);
+    clearAuthCookie(res);
     res.json({ message: 'Password reset successfully! You can now log in with your new password.' });
   } catch (err) {
     console.error('Reset password error:', err);
@@ -594,27 +589,7 @@ router.post('/reset-password', async (req, res) => {
 // GET /api/auth/me
 router.get('/me', authMiddleware, async (req, res) => {
   try {
-    if (!isDbConnected()) {
-      const user = devStore.findUserById(req.user.id);
-      if (!user) return res.status(404).json({ message: 'User not found.' });
-      return res.json({
-        user: {
-          _id: user._id,
-          name: user.name,
-          email: user.email,
-          createdAt: user.createdAt,
-          isVerified: true,
-          role: user.role || 'creator',
-          creatorCode: user.creatorCode || null,
-          linkedCreatorCode: user.linkedCreatorCode || null,
-          avatar: user.avatar || null,
-        },
-      });
-    }
-
-    const user = await User.findById(req.user.id).select('-password -verificationToken -resetPasswordToken');
-    if (!user) return res.status(404).json({ message: 'User not found.' });
-    res.json({ user });
+    return res.json({ user: buildAuthUser(req.authUser) });
   } catch (err) {
     res.status(500).json({ message: 'Server error.' });
   }
@@ -626,8 +601,8 @@ router.post('/change-password', authMiddleware, async (req, res) => {
     const { currentPassword, newPassword } = req.body;
     if (!currentPassword || !newPassword)
       return res.status(400).json({ message: 'Both current and new password are required.' });
-    if (newPassword.length < 6)
-      return res.status(400).json({ message: 'New password must be at least 6 characters.' });
+    const passwordError = validatePassword(newPassword, 'New password');
+    if (passwordError) return res.status(400).json({ message: passwordError });
 
     if (!isDbConnected()) {
       const user = devStore.findUserById(req.user.id);
@@ -637,17 +612,24 @@ router.post('/change-password', authMiddleware, async (req, res) => {
       if (!isMatch) return res.status(401).json({ message: 'Current password is incorrect.' });
 
       const passwordHash = await bcrypt.hash(newPassword, 12);
-      devStore.updateUser(req.user.id, { passwordHash });
+      devStore.updateUser(req.user.id, {
+        passwordHash,
+        sessionVersion: Math.max(0, Number(user.sessionVersion) || 0) + 1,
+      });
+      clearAuthCookie(res);
       return res.json({ message: 'Password changed successfully.' });
     }
 
     const user = await User.findById(req.user.id);
+    if (!user) return res.status(404).json({ message: 'User not found.' });
     const isMatch = await user.comparePassword(currentPassword);
     if (!isMatch)
       return res.status(401).json({ message: 'Current password is incorrect.' });
 
     user.password = newPassword;
+    user.sessionVersion = Math.max(0, Number(user.sessionVersion) || 0) + 1;
     await user.save();
+    clearAuthCookie(res);
     res.json({ message: 'Password changed successfully.' });
   } catch (err) {
     res.status(500).json({ message: 'Server error.' });
@@ -659,16 +641,45 @@ router.delete('/account', authMiddleware, async (req, res) => {
   try {
     if (!isDbConnected()) {
       devStore.deleteUser(req.user.id);
+      clearAuthCookie(res);
       return res.json({ message: 'Account deleted successfully.' });
     }
 
     await User.findByIdAndDelete(req.user.id);
     const Word = require('../models/Word');
     await Word.deleteMany({ userId: req.user.id });
+    clearAuthCookie(res);
     res.json({ message: 'Account deleted successfully.' });
   } catch (err) {
     res.status(500).json({ message: 'Server error.' });
   }
 });
 
+// POST /api/auth/logout — revokes all outstanding sessions for this account.
+router.post('/logout', authMiddleware, async (req, res) => {
+  try {
+    if (!isDbConnected()) {
+      const user = devStore.findUserById(req.user.id);
+      if (user) {
+        devStore.updateUser(user._id, {
+          sessionVersion: Math.max(0, Number(user.sessionVersion) || 0) + 1,
+        });
+      }
+    } else {
+      await User.updateOne({ _id: req.user.id }, { $inc: { sessionVersion: 1 } });
+    }
+    clearAuthCookie(res);
+    return res.json({ message: 'Logged out successfully.' });
+  } catch (err) {
+    clearAuthCookie(res);
+    return res.status(500).json({ message: 'Could not complete logout.' });
+  }
+});
+
 module.exports = router;
+module.exports.__internals = {
+  isValidCreatorAccessCode,
+  validatePassword,
+  hashOneTimeToken,
+  authCookieOptions,
+};

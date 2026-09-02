@@ -528,7 +528,7 @@
     }
 
     function logout() {
-      localStorage.removeItem('token');
+      clearAuth();
       window.location.href = '/login.html';
     }
 

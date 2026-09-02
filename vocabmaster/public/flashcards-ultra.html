@@ -1217,32 +1217,27 @@
                     }
                     if (!queueItems.length) return false;
 
-                    const sanitizedItems = queueItems
-                        .map((it) => ({
-                            wordId: String(it && it.wordId || '').trim(),
+                    // Keep the consumed queue as the single source of truth. Mapping it
+                    // directly also makes it impossible for an intermediate collection
+                    // to get out of sync with the queue item metadata used by attempts.
+                    cards = queueItems.map((it) => ({
+                        baseId:     String(it && it.wordId || '').trim(),
+                        word:       String(it && it.word || '').trim(),
+                        definition: String(it && it.definition || '').trim(),
+                        hint:       String(it && it.hint || '').trim(),
+                        imageUrl:   resolveCardImageUrl({
+                            imageUrl: String(it && it.imageUrl || '').trim(),
                             word: String(it && it.word || '').trim(),
                             definition: String(it && it.definition || '').trim(),
-                            hint: String(it && it.hint || '').trim(),
-                            imageUrl: String(it && it.imageUrl || '').trim(),
-                            difficulty: Number(it && it.difficulty || 3),
-                            queueMeta: it && it.queueMeta,
-                        }))
-                        .filter((it) => it.word && it.definition);
+                        }),
+                        difficulty: Number(it && it.difficulty || 3),
+                        queueMeta:  it && it.queueMeta,
+                    })).filter((card) => card.word && card.definition);
 
-                    if (!sanitizedItems.length) {
+                    if (!cards.length) {
                         console.warn('[flashcards] queue items missing required word/definition fields');
                         return false;
                     }
-
-                    cards = sanitizedItems.map((it) => ({
-                        baseId:     it.wordId,
-                        word:       it.word,
-                        definition: it.definition,
-                        hint:       it.hint,
-                        imageUrl:   resolveCardImageUrl({ imageUrl: it.imageUrl, word: it.word, definition: it.definition }),
-                        difficulty: it.difficulty,
-                        queueMeta:  it.queueMeta,
-                    }));
                     return true;  // queue loaded successfully
                 }
             } catch (err) {

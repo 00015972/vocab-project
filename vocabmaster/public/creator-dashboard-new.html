@@ -740,19 +740,8 @@
   <script src="/js/api.js"></script>
   <script>
     async function ensureCreatorAccess() {
-      if (getToken()) return true;
-
-      try {
-        const data = await api.post('/auth/creator-access', { creatorPortalCode: 'creator123' });
-        if (data && data.token) {
-          setAuth(data.token, data.user);
-          return true;
-        }
-      } catch (err) {
-        console.warn('Auto creator access failed:', err);
-      }
-
-      return false;
+      const user = getUser();
+      return Boolean(getToken() && user && (user.role === 'creator' || user.role === 'admin'));
     }
 
     let currentUser = null;

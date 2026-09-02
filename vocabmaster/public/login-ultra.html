@@ -854,6 +854,7 @@
                 const response = await fetch('/api/auth/login', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
                     body: JSON.stringify({
                         email,
                         password
@@ -862,8 +863,7 @@
 
                 if (response.ok) {
                     const data = await response.json();
-                    localStorage.setItem('token', data.token);
-                    localStorage.setItem('user', JSON.stringify(data.user));
+                    setAuth(null, data.user);
                     
                     if (remember) {
                         localStorage.setItem('rememberMe', 'true');
@@ -957,8 +957,7 @@
                     role: 'student'
                 });
 
-                localStorage.setItem('token', data.token);
-                localStorage.setItem('user', JSON.stringify(data.user));
+                setAuth(null, data.user);
                 window.location.href = '/student-learn-v3.html';
             } catch (err) {
                 if (errorBox) {

@@ -21,8 +21,8 @@ module.exports = async (req, res, next) => {
     }
 
     const role = String(user.role || 'student').toLowerCase();
-    if (role !== 'admin' && role !== 'creator') {
-      return res.status(403).json({ message: 'Control panel access required' });
+    if (role !== 'admin') {
+      return res.status(403).json({ message: 'Administrator access required' });
     }
 
     req.adminUser = user;

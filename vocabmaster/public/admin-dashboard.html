@@ -970,7 +970,7 @@
       try {
         const user = JSON.parse(userRaw);
         const role = String(user.role || 'student').toLowerCase();
-        if (role !== 'admin' && role !== 'creator') {
+        if (role !== 'admin') {
           window.location.replace('/login-ultra.html');
           return false;
         }

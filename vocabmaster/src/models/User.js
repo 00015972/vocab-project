@@ -17,7 +17,8 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,
     required: [true, 'Password is required'],
-    minlength: 6,
+    minlength: 12,
+    maxlength: 128,
   },
   isVerified: {
     type: Boolean,
@@ -55,10 +56,11 @@ const userSchema = new mongoose.Schema({
   notificationsEnabled: { type: Boolean, default: true },
   
   // Auth tokens
-  verificationToken: String,
+  verificationToken: { type: String, select: false },
   verificationExpires: Date,
-  resetPasswordToken: String,
+  resetPasswordToken: { type: String, select: false },
   resetPasswordExpires: Date,
+  sessionVersion: { type: Number, default: 0, min: 0 },
   
   // Classes (for creators managing students)
   classes: [
