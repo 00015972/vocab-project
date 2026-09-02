@@ -4,6 +4,7 @@ const helmet = require('helmet');
 const cors = require('cors');
 const rateLimit = require('express-rate-limit');
 const session = require('express-session');
+const MongoStore = require('connect-mongo');
 const csrf = require('express-csurf');
 const path = require('path');
 const { connectDB, isDbConnected } = require('./src/config/db');
@@ -23,7 +24,7 @@ function validateProductionConfig() {
   const fromEmail = String(process.env.FROM_EMAIL || '');
 
   if (jwtSecret.length < 32 || /change|secret-key|your-/i.test(jwtSecret)) problems.push('JWT_SECRET must be a random value of at least 32 characters');
-  if (sessionSecret.length < 32 || /change|secret-key|your-/i.test(sessionSecret)) problems.push('SESSION_SECRET must be a different random value of at least 32 characters');
+  if (sessionSecret.length < 32 || /change|secret-key|your-/i.test(sessionSecret) || sessionSecret === jwtSecret) problems.push('SESSION_SECRET must be a different random value of at least 32 characters');
   if (!clientUrl.startsWith('https://')) problems.push('CLIENT_URL must be the public HTTPS origin');
   if (!mongoUri || /YOUR_PASSWORD|USERNAME:PASSWORD/i.test(mongoUri)) problems.push('MONGODB_URI must contain real Atlas credentials');
   if (creatorAccessCode.length < 12) problems.push('CREATOR_ACCESS_CODE must be at least 12 characters');
@@ -128,8 +129,10 @@ app.use('/api', (req, res, next) => {
   return res.status(403).json({ message: 'Request origin is not allowed.' });
 });
 
-// Session middleware for CSRF token generation
-app.use(session({
+// Sessions are currently used for CSRF token generation. Persist production
+// sessions in MongoDB so restarts do not invalidate them and memory cannot grow
+// without bound inside the application process.
+const sessionOptions = {
   secret: process.env.SESSION_SECRET || 'local-development-session-secret',
   resave: false,
   saveUninitialized: false,
@@ -138,7 +141,18 @@ app.use(session({
     httpOnly: true,
     sameSite: 'strict',
   },
-}));
+};
+
+if (isProduction) {
+  sessionOptions.store = MongoStore.create({
+    mongoUrl: process.env.MONGODB_URI,
+    collectionName: 'sessions',
+    ttl: 24 * 60 * 60,
+    touchAfter: 60 * 60,
+  });
+}
+
+app.use(session(sessionOptions));
 
 // CSRF protection middleware - skip for API routes
 const csrfProtection = csrf({ cookie: false });
