@@ -1,0 +1,2686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Creator Studio — VocabMaster</title>
+  <link rel="stylesheet" href="/css/main.css" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Manrope:wght@400;500;600;700;800&display=swap');
+
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0f1117; color: #e2e8f0; }
+    .shell { min-height: 100vh; display: flex; flex-direction: column; }
+    .hidden { display: none !important; }
+    .gate {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: radial-gradient(circle at top, rgba(108,99,255,.18), transparent 40%), #0f1117;
+    }
+    .gate-card {
+      width: 100%;
+      max-width: 640px;
+      background: #1a1d27;
+      border: 1px solid #2e3250;
+      border-radius: 20px;
+      padding: 28px;
+      text-align: center;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+    }
+    .gate-card h1 { margin: 14px 0 10px; font-size: 28px; }
+    .gate-card p { color: #94a3b8; line-height: 1.6; margin-bottom: 20px; }
+    .gate-links { display:flex; flex-wrap:wrap; gap:12px; justify-content:center; }
+    .header { display:flex; justify-content:space-between; align-items:center; padding:20px 24px; background:#1a1d27; border-bottom:1px solid #2e3250; }
+    .brand { font-weight:800; font-size:20px; background:linear-gradient(135deg,#6c63ff,#a78bfa); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+    .welcome-wrap { display:flex; align-items:center; gap:12px; flex:1; min-width:0; }
+    .welcome-anim { width:72px; height:72px; flex-shrink:0; display:flex; align-items:center; justify-content:center; }
+    .welcome-anim dotlottie-wc { width:100%; height:100%; }
+    .welcome-title {
+      font-family: 'Caveat', 'Segoe Script', cursive;
+      font-size: 1.7rem;
+      font-weight: 700;
+      color: #0f766e;
+      letter-spacing: 0.02em;
+      line-height: 1.1;
+      margin-bottom: 4px;
+    }
+    .class-chip { display:flex; align-items:center; gap:10px; background:rgba(108,99,255,.12); border:1px solid #6c63ff; border-radius:10px; padding:10px 14px; }
+    .code { font-family: monospace; letter-spacing:2px; color:#a78bfa; font-weight:700; }
+    .btn { border:0; border-radius:10px; padding:10px 14px; font-weight:700; cursor:pointer; }
+    .btn-primary { background:#6c63ff; color:#fff; }
+    .btn-secondary { background:#25293a; color:#e2e8f0; border:1px solid #2e3250; }
+    .btn-danger { background:#ef4444; color:#fff; }
+    .tabs { display:flex; gap:8px; padding:12px 24px 0; background:#1a1d27; border-bottom:1px solid #2e3250; overflow:auto; }
+    .tab { border:0; background:none; color:#94a3b8; padding:14px 10px; font-weight:700; cursor:pointer; border-bottom:2px solid transparent; white-space:nowrap; }
+    .tab.active { color:#6c63ff; border-bottom-color:#6c63ff; }
+    .content { max-width:1400px; width:100%; margin:0 auto; padding:24px; }
+    .section { display:none; }
+    .section.active { display:block; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:16px; margin-bottom:24px; }
+    .card { background:#1a1d27; border:1px solid #2e3250; border-radius:16px; padding:18px; }
+    .stat-title { color:#94a3b8; font-size:12px; text-transform:uppercase; letter-spacing:.08em; }
+    .stat-value { font-size:32px; font-weight:800; margin-top:8px; }
+    .muted { color:#94a3b8; }
+    .toolbar { display:flex; gap:10px; flex-wrap:wrap; margin:18px 0; }
+    .table-wrap { overflow:auto; background:#1a1d27; border:1px solid #2e3250; border-radius:16px; }
+    table { width:100%; border-collapse:collapse; min-width:900px; }
+    th, td { padding:14px 16px; text-align:left; border-bottom:1px solid rgba(255,255,255,.06); vertical-align:top; }
+    th { color:#94a3b8; font-size:12px; text-transform:uppercase; letter-spacing:.08em; background:rgba(255,255,255,.02); }
+    tr:hover td { background:rgba(108,99,255,.05); }
+    .badge { display:inline-block; padding:4px 8px; border-radius:999px; font-size:11px; font-weight:700; }
+    .badge-noun, .badge-verb, .badge-adjective, .badge-adverb, .badge-phrase, .badge-idiom, .badge-other { background:rgba(108,99,255,.18); color:#c4b5fd; }
+    .badge-good { background:rgba(16,185,129,.18); color:#6ee7b7; }
+    .badge-warn { background:rgba(245,158,11,.18); color:#fbbf24; }
+    .badge-bad { background:rgba(239,68,68,.18); color:#fca5a5; }
+    .empty { padding:48px 20px; text-align:center; color:#94a3b8; }
+    .modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,.7); align-items:center; justify-content:center; padding:20px; z-index:1000; }
+    .modal.open { display:flex; }
+    .modal-card { width:100%; max-width:720px; background:#1a1d27; border:1px solid #2e3250; border-radius:18px; padding:22px; max-height:90vh; overflow:auto; }
+    .modal-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; gap:12px; }
+    .close-btn { background:none; border:0; color:#94a3b8; font-size:22px; cursor:pointer; }
+    .form-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; }
+    .form-group { margin-bottom:14px; }
+    .form-group.full { grid-column:1/-1; }
+    label { display:block; font-size:13px; font-weight:700; margin-bottom:6px; }
+    input, textarea, select { width:100%; border-radius:10px; border:1px solid #2e3250; background:#0f1117; color:#e2e8f0; padding:11px 12px; font:inherit; }
+    textarea { min-height:92px; resize:vertical; }
+    .row-actions { display:flex; gap:8px; flex-wrap:wrap; }
+    .topline { display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; align-items:flex-end; }
+    .mini-bars { display:grid; gap:10px; }
+    .mini-bar { display:grid; grid-template-columns:110px 1fr 48px; gap:10px; align-items:center; }
+    .bar-track { height:12px; background:#0f1117; border:1px solid #2e3250; border-radius:999px; overflow:hidden; }
+    .bar-fill { height:100%; background:linear-gradient(90deg,#6c63ff,#a78bfa); }
+    /* Goals */
+    .goal-card { background:#1a1d27; border:1px solid #2e3250; border-radius:16px; padding:20px; position:relative; overflow:hidden; }
+    .goal-card::before { content:''; position:absolute; top:0; left:0; width:4px; height:100%; border-radius:4px 0 0 4px; }
+    .goal-achieved::before { background:#10b981; }
+    .goal-on_track::before { background:#6c63ff; }
+    .goal-at_risk::before { background:#f59e0b; }
+    .goal-behind::before { background:#ef4444; }
+    .goal-not_started::before { background:#6b7280; }
+    .goal-header { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px; }
+    .goal-label { font-weight:700; font-size:15px; }
+    .goal-badge { font-size:11px; font-weight:700; padding:4px 10px; border-radius:20px; }
+    .badge-achieved { background:rgba(16,185,129,.2); color:#34d399; border:1px solid rgba(16,185,129,.3); }
+    .badge-on_track { background:rgba(108,99,255,.2); color:#a78bfa; border:1px solid rgba(108,99,255,.3); }
+    .badge-at_risk { background:rgba(245,158,11,.2); color:#fbbf24; border:1px solid rgba(245,158,11,.3); }
+    .badge-behind { background:rgba(239,68,68,.2); color:#f87171; border:1px solid rgba(239,68,68,.3); }
+    .badge-not_started { background:rgba(107,114,128,.2); color:#9ca3af; border:1px solid rgba(107,114,128,.3); }
+    .goal-numbers { display:flex; align-items:baseline; gap:6px; margin-bottom:8px; }
+    .goal-actual { font-size:28px; font-weight:800; color:#e2e8f0; }
+    .goal-slash { color:#4b5563; font-size:18px; }
+    .goal-target { font-size:18px; color:#6b7280; }
+    .goal-unit { font-size:13px; color:#6b7280; margin-left:2px; }
+    .goal-track { height:8px; background:#0f1117; border:1px solid #2e3250; border-radius:999px; overflow:hidden; margin-bottom:8px; }
+    .goal-fill-achieved { background: linear-gradient(90deg,#10b981,#34d399); }
+    .goal-fill-on_track { background: linear-gradient(90deg,#6c63ff,#a78bfa); }
+    .goal-fill-at_risk { background: linear-gradient(90deg,#f59e0b,#fbbf24); }
+    .goal-fill-behind { background: linear-gradient(90deg,#ef4444,#f87171); }
+    .goal-fill-not_started { background: #4b5563; }
+    .goal-meta { font-size:12px; color:#6b7280; display:flex; justify-content:space-between; }
+    .goal-actions { display:flex; gap:8px; margin-top:14px; }
+    .goals-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:16px; }
+    /* Alert banners */
+    .alert-bar { border-radius:12px; padding:12px 16px; margin-bottom:12px; display:flex; align-items:center; gap:12px; font-size:13px; font-weight:600; }
+    .alert-achieved { background:rgba(16,185,129,.12); border:1px solid rgba(16,185,129,.3); color:#34d399; }
+    .alert-at_risk { background:rgba(245,158,11,.12); border:1px solid rgba(245,158,11,.3); color:#fbbf24; }
+    .alert-behind { background:rgba(239,68,68,.12); border:1px solid rgba(239,68,68,.3); color:#f87171; }
+    .alert-on_track { background:rgba(108,99,255,.12); border:1px solid rgba(108,99,255,.3); color:#a78bfa; }
+    .alert-dismiss { margin-left:auto; cursor:pointer; background:none; border:0; color:inherit; font-size:18px; line-height:1; opacity:.7; }
+    .alert-dismiss:hover { opacity:1; }
+    .alerts-empty { justify-content:center; color:#94a3b8; }
+    .tab-badge { display:inline-block; background:#ef4444; color:#fff; border-radius:999px; font-size:10px; font-weight:700; padding:1px 5px; margin-left:6px; vertical-align:top; }
+    /* Empty goals state */
+    .goals-empty { text-align:center; padding:60px 20px; color:#6b7280; }
+    .goals-empty-icon { font-size:48px; margin-bottom:16px; }
+    .goals-empty h3 { color:#94a3b8; font-size:18px; margin-bottom:8px; }
+    .metric-select-label { display:grid; grid-template-columns:1fr auto; gap:4px; align-items:baseline; }
+    .student-list { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:14px; }
+    .student-card { background:#1a1d27; border:1px solid #2e3250; border-radius:16px; padding:16px; }
+    .student-head { display:flex; justify-content:space-between; gap:12px; margin-bottom:10px; }
+    .avatar { width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:800; background:linear-gradient(135deg,#6c63ff,#a78bfa); color:white; }
+    .student-meta { color:#94a3b8; font-size:13px; line-height:1.5; }
+    @media (max-width: 720px) {
+      .header { flex-direction:column; align-items:flex-start; }
+      .form-grid { grid-template-columns:1fr; }
+      .topline { align-items:stretch; }
+      .btn { width:100%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="gate hidden" id="creatorGate">
+    <div class="gate-card">
+      <div class="brand">VocabMaster Creator Studio</div>
+      <h1>Creator access required</h1>
+      <p>This page is only for creator accounts. Sign in through the creator portal to manage your learning content.</p>
+      <div class="gate-links">
+        <a class="btn btn-primary" href="creator-portal.html" style="text-decoration:none;display:inline-flex;align-items:center;">Go to Creator Portal</a>
+        <a class="btn btn-secondary" href="/register-ultra.html" style="text-decoration:none;display:inline-flex;align-items:center;">Create Creator Account</a>
+      </div>
+    </div>
+  </div>
+  <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.9.4/dist/dotlottie-wc.js" type="module"></script>
+  <div class="shell">
+    <div class="header">
+      <div class="welcome-wrap">
+        <div class="welcome-anim">
+          <dotlottie-wc src="https://lottie.host/b814828f-af1f-42e2-82a1-0553ea756c48/XoZsua0x0I.lottie" autoplay loop></dotlottie-wc>
+        </div>
+        <div>
+          <div class="welcome-title">Welcome to Taleem Lexicon</div>
+          <div class="muted" id="subtitle">Loading dashboard...</div>
+        </div>
+      </div>
+      <div class="class-chip">
+        <span>Creator Code</span>
+        <span class="code" id="classCode">------</span>
+        <button class="btn btn-secondary" style="padding:6px 10px" onclick="copyClassCode()">Copy</button>
+      </div>
+      <button class="btn btn-danger" onclick="logout()">Logout</button>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" data-tab="overview" onclick="switchTab('overview', this)">Overview</button>
+      <button class="tab" data-tab="words" onclick="switchTab('words', this)">Vocabulary</button>
+      <button class="tab" data-tab="students" onclick="switchTab('students', this)">Students</button>
+      <button class="tab" data-tab="analytics" onclick="switchTab('analytics', this)">Analytics</button>
+      <button class="tab" id="goalsTab" data-tab="goals" onclick="switchTab('goals', this)">Goals &amp; Alerts</button>
+      <button class="tab" data-tab="aigen" onclick="switchTab('aigen', this)" style="color:#a78bfa;">✦ AI Generate Words</button>
+      <button class="tab" data-tab="aiimages" onclick="switchTab('aiimages', this)" style="color:#f59e0b;">🖼 AI Images</button>
+    </div>
+
+    <div class="content">
+      <section class="section active" id="overview">
+        <div class="grid">
+          <div class="card"><div class="stat-title">Total Words</div><div class="stat-value" id="statWords">0</div><div class="muted">Vocabulary items from Creator Studio</div></div>
+          <div class="card"><div class="stat-title">Students</div><div class="stat-value" id="statStudents">0</div><div class="muted">Enrolled students</div></div>
+          <div class="card"><div class="stat-title">Active Today</div><div class="stat-value" id="statActive">0</div><div class="muted">Studied today</div></div>
+          <div class="card"><div class="stat-title">Avg Accuracy</div><div class="stat-value" id="statAccuracy">0%</div><div class="muted">Across all students</div></div>
+        </div>
+        <div class="card">
+          <div class="topline">
+            <div>
+              <h2 style="margin:0 0 6px">Quick Links</h2>
+              <div class="muted">Jump to content management tools.</div>
+            </div>
+            <div class="toolbar" style="margin:0">
+              <button class="btn btn-primary" style="background:linear-gradient(135deg,#6c63ff,#a78bfa)" onclick="switchTab('aigen', document.querySelector('[data-tab=aigen]'))">✦ AI Generate Words</button>
+              <button class="btn btn-secondary" onclick="window.location.href='/deck-manager.html'">Deck Manager</button>
+              <button class="btn btn-secondary" onclick="switchTab('words', document.querySelector('[data-tab=words]'))">Vocabulary List</button>
+              <button class="btn btn-secondary" onclick="switchTab('analytics', document.querySelector('[data-tab=analytics]'))">Analytics</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="aigen">
+        <div class="topline" style="margin-bottom:20px;">
+          <div>
+            <h2 style="margin:0 0 6px">✦ AI Word Generator</h2>
+            <div class="muted">Generate words by topic — or give your own word list and let the AI fill in definitions, examples and part of speech.</div>
+          </div>
+            <div class="toolbar" style="margin:0;">
+            <button class="btn btn-secondary" id="aiModeTopicBtn" onclick="setAIMode('topic')" style="font-size:13px;padding:8px 14px;">Generate by Topic</button>
+            <button class="btn btn-primary" id="aiModeEnrichBtn" onclick="setAIMode('enrich')" style="font-size:13px;padding:8px 14px;">Give My Own Words</button>
+            <button class="btn btn-secondary" id="aiModeDeckBtn" onclick="setAIMode('deck')" style="font-size:13px;padding:8px 14px;">Create Deck</button>
+          </div>
+        </div>
+
+        <!-- MODE: Give My Own Words -->
+        <div id="aiEnrichPanel" style="display:grid;grid-template-columns:minmax(280px,380px) 1fr;gap:20px;align-items:start;">
+          <div class="card" style="position:sticky;top:20px;">
+            <h3 style="margin:0 0 6px;font-size:16px;">Your Word List</h3>
+            <p class="muted" style="font-size:13px;margin:0 0 14px;">Paste words one per line. The AI will write definitions, examples and identify the part of speech for each.</p>
+            <div class="form-group">
+              <label for="aiEnrichInput">Words (one per line, max 60)</label>
+              <textarea id="aiEnrichInput" style="width:100%;min-height:160px;border:1px solid #2e3250;border-radius:10px;background:#0f1117;color:#e2e8f0;padding:10px;font:inherit;resize:vertical;" placeholder="perseverance&#10;eloquent&#10;tenacity&#10;curriculum&#10;hypothesis&#10;..."></textarea>
+            </div>
+            <div class="form-group">
+              <label for="aiEnrichDeckSelect">Import into Deck (optional)</label>
+              <select id="aiEnrichDeckSelect" style="width:100%;border:1px solid #2e3250;border-radius:10px;background:#0f1117;color:#e2e8f0;padding:10px;font:inherit;">
+                <option value="">— No deck, add to general vocabulary —</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="aiEnrichDeckName">New deck name (optional)</label>
+              <input id="aiEnrichDeckName" placeholder="Create a new deck and import enriched words" style="width:100%;border:1px solid #2e3250;border-radius:10px;background:#0f1117;color:#e2e8f0;padding:10px;font:inherit;" />
+            </div>
+            <button class="btn btn-primary" id="aiEnrichBtn" onclick="runAIEnrich()" style="width:100%;">Enrich with AI</button>
+            <div id="aiEnrichStatus" style="margin-top:10px;font-size:13px;min-height:18px;color:#a78bfa;font-weight:600;"></div>
+          </div>
+          <div class="card">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:10px;">
+              <h3 style="margin:0;font-size:16px;" id="aiEnrichResultTitle">Results will appear here</h3>
+              <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                <button class="btn btn-secondary" id="aiEnrichSelectAllBtn" onclick="aiEnrichSelectAll()" style="display:none;padding:8px 12px;font-size:12px;">Select All</button>
+                <button class="btn btn-primary" id="aiEnrichImportBtn" onclick="aiEnrichImportSelected()" style="display:none;padding:8px 14px;font-size:12px;">Import Selected</button>
+              </div>
+            </div>
+            <div id="aiEnrichResults" style="display:grid;gap:10px;">
+              <div class="empty" style="color:#4b5563;">Paste your words on the left and click Enrich with AI.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- MODE: Generate by Topic -->
+        <div id="aiTopicPanel" style="display:none;grid-template-columns:minmax(280px,380px) 1fr;gap:20px;align-items:start;">
+          <div class="card" style="position:sticky;top:20px;">
+            <h3 style="margin:0 0 14px;font-size:16px;">Generate Settings</h3>
+            <div class="form-group">
+              <label for="aiTopic">Topic or Prompt</label>
+              <textarea id="aiTopic" style="width:100%;min-height:80px;border:1px solid #2e3250;border-radius:10px;background:#0f1117;color:#e2e8f0;padding:10px;font:inherit;resize:vertical;" placeholder="e.g. Business English, IELTS Academic vocabulary, words about emotions, medical terminology..."></textarea>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+              <div class="form-group">
+                <label for="aiCount">Word Count</label>
+                <select id="aiCount" style="width:100%;border:1px solid #2e3250;border-radius:10px;background:#0f1117;color:#e2e8f0;padding:10px;font:inherit;">
+                  <option value="5">5 words</option>
+                  <option value="10" selected>10 words</option>
+                  <option value="15">15 words</option>
+                  <option value="20">20 words</option>
+                  <option value="30">30 words</option>
+                  <option value="40">40 words</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="aiDifficulty">Level</label>
+                <select id="aiDifficulty" style="width:100%;border:1px solid #2e3250;border-radius:10px;background:#0f1117;color:#e2e8f0;padding:10px;font:inherit;">
+                  <option value="beginner">Beginner</option>
+                  <option value="intermediate" selected>Intermediate</option>
+                  <option value="advanced">Advanced</option>
+                  <option value="expert">Expert</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="aiDeckSelect">Import into Deck (optional)</label>
+              <select id="aiDeckSelect" style="width:100%;border:1px solid #2e3250;border-radius:10px;background:#0f1117;color:#e2e8f0;padding:10px;font:inherit;">
+                <option value="">— No deck, add to general vocabulary —</option>
+              </select>
+            </div>
+            <button class="btn btn-primary" id="aiGenBtn" onclick="runAIGenerate()" style="width:100%;margin-top:4px;">Generate Words</button>
+            <div id="aiGenStatus" style="margin-top:10px;font-size:13px;min-height:18px;color:#a78bfa;font-weight:600;"></div>
+          </div>
+
+          <div class="card">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:10px;">
+              <h3 style="margin:0;font-size:16px;" id="aiResultTitle">Results will appear here</h3>
+              <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                <button class="btn btn-secondary" id="aiSelectAllBtn" onclick="aiSelectAll()" style="display:none;padding:8px 12px;font-size:12px;">Select All</button>
+                <button class="btn btn-primary" id="aiImportBtn" onclick="aiImportSelected()" style="display:none;padding:8px 14px;font-size:12px;">Import Selected</button>
+              </div>
+            </div>
+            <div id="aiWordResults" style="display:grid;gap:10px;">
+              <div class="empty" style="color:#4b5563;">Enter a topic above and click Generate.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- MODE: Create Deck -->
+        <div id="aiDeckPanel" style="display:none;grid-template-columns:minmax(320px,420px) 1fr;gap:20px;align-items:start;">
+          <div class="card" style="position:sticky;top:20px;">
+            <h3 style="margin:0 0 12px;font-size:16px;">Create Deck</h3>
+            <div class="form-group">
+              <label for="deckName">Deck Name</label>
+              <input id="deckName" placeholder="e.g. Advanced Adjectives" style="width:100%;border:1px solid #2e3250;border-radius:10px;background:#0f1117;color:#e2e8f0;padding:10px;font:inherit;" />
+            </div>
+            <div class="form-group">
+              <label for="deckTopic">Topic (optional)</label>
+              <input id="deckTopic" placeholder="e.g. IELTS, Business" style="width:100%;border:1px solid #2e3250;border-radius:10px;background:#0f1117;color:#e2e8f0;padding:10px;font:inherit;" />
+            </div>
+            <div class="form-group">
+              <label for="deckDifficulty">Difficulty</label>
+              <select id="deckDifficulty" style="width:100%;border:1px solid #2e3250;border-radius:10px;background:#0f1117;color:#e2e8f0;padding:10px;font:inherit;">
+                <option value="beginner">Beginner</option>
+                <option value="intermediate" selected>Intermediate</option>
+                <option value="advanced">Advanced</option>
+                <option value="expert">Expert</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="deckWords">Words (one per line)</label>
+              <textarea id="deckWords" style="width:100%;min-height:120px;border:1px solid #2e3250;border-radius:10px;background:#0f1117;color:#e2e8f0;padding:10px;font:inherit;resize:vertical;" placeholder="abundant\nmediate\n..."></textarea>
+            </div>
+            <button class="btn btn-primary" id="createDeckBtn" onclick="runAICreateDeck()" style="width:100%;">Create Deck</button>
+            <div id="createDeckStatus" style="margin-top:10px;font-size:13px;min-height:18px;color:#a78bfa;font-weight:600;"></div>
+          </div>
+
+          <div class="card">
+            <h3 style="margin:0 0 6px;font-size:16px;">Recent Decks</h3>
+            <div id="deckCreateResults">
+              <div class="empty" style="color:#4b5563;">Create a new deck on the left. After creating, you can import words into it.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="aiimages">
+        <div class="topline" style="margin-bottom:20px;">
+          <div>
+            <h2 style="margin:0 0 6px">🖼 AI Image Generator</h2>
+            <div class="muted">The AI turns each description into a matching free stock image from Pexels and saves it to the word. Images appear in flashcards.</div>
+          </div>
+          <div class="toolbar" style="margin:0;">
+            <button class="btn btn-secondary" id="aiImgRefreshBtn" onclick="loadAIImageWords(true)" style="font-size:13px;padding:8px 14px;">Refresh Word List</button>
+            <button class="btn btn-primary" id="aiImgGenerateAllBtn" onclick="generateAllImages()" style="font-size:13px;padding:8px 14px;background:linear-gradient(135deg,#f59e0b,#d97706);">Generate All Missing Images</button>
+            <button class="btn btn-secondary" id="aiImgDeckBtn" onclick="toggleAIImgDeckPanel()" style="font-size:13px;padding:8px 14px;">Deck Images</button>
+          </div>
+        </div>
+        <div id="aiImgStatus" style="font-size:13px;color:#a78bfa;font-weight:600;min-height:20px;margin-bottom:14px;"></div>
+        <div id="aiImgDeckPanel" style="display:none;margin-bottom:12px;">
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+            <label style="margin-right:6px;color:#94a3b8;font-weight:700;">Deck:</label>
+            <select id="aiImgDeckSelect" style="min-width:220px;border:1px solid #2e3250;border-radius:10px;background:#0f1117;color:#e2e8f0;padding:8px;font:inherit;">
+              <option value="">— Select a deck —</option>
+            </select>
+            <button class="btn btn-primary" id="aiImgDeckGenerateBtn" onclick="generateDeckImages()" style="padding:8px 12px;background:linear-gradient(135deg,#f59e0b,#d97706);">Generate Images for Deck</button>
+            <button class="btn btn-secondary" onclick="loadAIImageWords(true)">Refresh</button>
+            <div id="aiImgDeckStatus" style="margin-left:8px;color:#a78bfa;font-weight:600;"></div>
+          </div>
+        </div>
+        <div id="aiImgWordGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;">
+          <div class="empty" style="grid-column:1/-1;">Loading vocabulary...</div>
+        </div>
+      </section>
+
+      <section class="section" id="words">
+        <div class="topline">
+          <div>
+            <h2 style="margin:0 0 6px">Vocabulary</h2>
+            <div class="muted">Create, edit, and remove the words your students study.</div>
+          </div>
+          <div class="toolbar" style="margin:0">
+            <input id="wordSearch" placeholder="Search words..." oninput="renderWords()" />
+            <button class="btn btn-primary" onclick="openWordModal()">+ Add Word</button>
+            <button class="btn btn-secondary" id="scopeSyncBtn" onclick="syncVocabularyScopes()">Separate Deck/General</button>
+          </div>
+        </div>
+        <div class="table-wrap" style="margin-top:16px">
+          <div id="wordsContainer" class="empty">Loading words...</div>
+        </div>
+      </section>
+
+      <section class="section" id="students">
+        <div class="topline">
+          <div>
+            <h2 style="margin:0 0 6px">Students</h2>
+            <div class="muted">See who is enrolled and how they are performing.</div>
+          </div>
+        </div>
+        <div id="studentsContainer" class="student-list" style="margin-top:16px">
+          <div class="empty" style="grid-column:1/-1">Loading students...</div>
+        </div>
+      </section>
+
+      <section class="section" id="analytics">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 16px; margin-bottom: 24px;">
+          <div>
+            <h2 style="margin:0 0 12px">Class Analytics</h2>
+            <div class="muted">Real-time insights into your class performance and student progress.</div>
+          </div>
+          <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+            <button class="btn btn-secondary" id="exportCsvBtn" onclick="exportAnalyticsAsCSV()" style="white-space: nowrap;">
+              📊 Export as CSV
+            </button>
+            <button class="btn btn-secondary" id="exportPdfBtn" onclick="exportAnalyticsAsPDF()" style="white-space: nowrap;">
+              📄 Export as PDF
+            </button>
+          </div>
+        </div>
+
+        <div class="grid">
+          <div class="card">
+            <div class="stat-title">Total Students</div>
+            <div class="stat-value" id="cohortTotalStudents">0</div>
+            <div class="muted" id="cohortTotalStudentsNote"></div>
+          </div>
+          <div class="card">
+            <div class="stat-title">Active Students</div>
+            <div class="stat-value" id="cohortActiveStudents">0</div>
+            <div class="muted" id="cohortActiveNote"></div>
+          </div>
+          <div class="card">
+            <div class="stat-title">Average XP</div>
+            <div class="stat-value" id="cohortAvgXP">0</div>
+            <div class="muted">Per student</div>
+          </div>
+          <div class="card">
+            <div class="stat-title">Class Accuracy</div>
+            <div class="stat-value" id="cohortAvgAccuracy">0%</div>
+            <div class="muted">Average across all sessions</div>
+          </div>
+          <div class="card">
+            <div class="stat-title">Avg Sessions/Student</div>
+            <div class="stat-value" id="cohortAvgSessions">0</div>
+            <div class="muted">Average sessions per student</div>
+          </div>
+          <div class="card">
+            <div class="stat-title">Total Sessions</div>
+            <div class="stat-value" id="cohortTotalSessions">0</div>
+            <div class="muted">Across entire class</div>
+          </div>
+        </div>
+
+        <div style="margin-top: 24px;">
+          <h3 style="margin-top:0">Class Skill Gaps</h3>
+          <div class="card" id="classSkillGapsContainer">
+            <div class="muted">Loading skill gaps...</div>
+          </div>
+        </div>
+
+        <div class="grid" style="margin-top: 24px;">
+          <div class="card">
+            <h3 style="margin-top:0">Top Performers</h3>
+            <div id="cohortTopPerformers" class="mini-bars"></div>
+          </div>
+          <div class="card">
+            <h3 style="margin-top:0">Struggling Students</h3>
+            <div id="cohortStrugglingStudents" class="mini-bars"></div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top: 24px;">
+          <h3 style="margin-top:0">Vocabulary Metadata</h3>
+          <div class="grid">
+            <div class="card" style="background: rgba(255,255,255,.02)">
+              <div class="stat-title">Average Word Difficulty</div>
+              <div class="stat-value" id="avgDifficulty">0.0</div>
+            </div>
+            <div class="card" style="background: rgba(255,255,255,.02)">
+              <div class="stat-title">Words This Week</div>
+              <div class="stat-value" id="wordsThisWeek">0</div>
+            </div>
+            <div class="card" style="background: rgba(255,255,255,.02)">
+              <div class="stat-title">Best Student Streak</div>
+              <div class="stat-value" id="bestStreak">0</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top: 24px;">
+          <h3 style="margin-top:0">Difficulty Breakdown</h3>
+          <div class="mini-bars" id="difficultyBars"></div>
+        </div>
+      </section>
+
+      <!-- GOALS & ALERTS SECTION -->
+      <section class="section" id="goals">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:16px; margin-bottom:24px;">
+          <div>
+            <h2 style="margin:0 0 6px">Goals &amp; Alerts</h2>
+            <div class="muted">Set targets for your class. Track real progress vs goals. Get alerted when goals are at risk or achieved.</div>
+          </div>
+          <button class="btn btn-primary" onclick="openGoalModal()">＋ New Goal</button>
+        </div>
+
+        <!-- Alert banners -->
+        <div id="goalAlerts"></div>
+
+        <!-- Goals grid -->
+        <div class="goals-grid" id="goalsGrid">
+          <div class="goals-empty">
+            <div class="goals-empty-icon">🎯</div>
+            <h3>No goals yet</h3>
+            <p>Create your first goal to start tracking class progress against targets.</p>
+            <button class="btn btn-primary" style="margin-top:16px" onclick="openGoalModal()">Create First Goal</button>
+          </div>
+        </div>
+
+        <!-- Legend -->
+        <div class="card" style="margin-top:24px; padding:16px 20px;">
+          <h4 style="margin:0 0 12px; font-size:13px; color:#94a3b8; text-transform:uppercase; letter-spacing:.08em;">Status Guide</h4>
+          <div style="display:flex; flex-wrap:wrap; gap:16px;">
+            <span style="display:flex;align-items:center;gap:8px;font-size:13px;">
+              <span style="width:10px;height:10px;border-radius:50%;background:#10b981;display:inline-block;"></span>
+              <strong style="color:#34d399">Achieved</strong> — Target met ✓
+            </span>
+            <span style="display:flex;align-items:center;gap:8px;font-size:13px;">
+              <span style="width:10px;height:10px;border-radius:50%;background:#6c63ff;display:inline-block;"></span>
+              <strong style="color:#a78bfa">On Track</strong> — ≥75% of target
+            </span>
+            <span style="display:flex;align-items:center;gap:8px;font-size:13px;">
+              <span style="width:10px;height:10px;border-radius:50%;background:#f59e0b;display:inline-block;"></span>
+              <strong style="color:#fbbf24">At Risk</strong> — 40–74% of target
+            </span>
+            <span style="display:flex;align-items:center;gap:8px;font-size:13px;">
+              <span style="width:10px;height:10px;border-radius:50%;background:#ef4444;display:inline-block;"></span>
+              <strong style="color:#f87171">Behind</strong> — &lt;40% of target
+            </span>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <div class="modal" id="wordModal" onclick="if (event.target === this) closeWordModal()">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h2 id="wordModalTitle" style="margin:0">Add Word</h2>
+        <button class="close-btn" onclick="closeWordModal()">×</button>
+      </div>
+      <input type="hidden" id="editingWordId" />
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Word</label>
+          <input id="wordInput" placeholder="e.g. analyze" />
+        </div>
+        <div class="form-group">
+          <label>Part of Speech</label>
+          <select id="posInput">
+            <option value="other">Other</option>
+            <option value="noun">Noun</option>
+            <option value="verb">Verb</option>
+            <option value="adjective">Adjective</option>
+            <option value="adverb">Adverb</option>
+            <option value="phrase">Phrase</option>
+            <option value="idiom">Idiom</option>
+          </select>
+        </div>
+        <div class="form-group full">
+          <label>Definition</label>
+          <textarea id="definitionInput" placeholder="Write the meaning..."></textarea>
+        </div>
+        <div class="form-group full">
+          <label>Example</label>
+          <textarea id="exampleInput" placeholder="Example sentence..."></textarea>
+        </div>
+        <div class="form-group full">
+          <label>Notes</label>
+          <textarea id="notesInput" placeholder="Teacher notes or memory tips..."></textarea>
+        </div>
+        <div class="form-group">
+          <label>Difficulty (1-5)</label>
+          <input id="difficultyInput" type="number" min="1" max="5" value="3" />
+        </div>
+        <div class="form-group">
+          <label>Tags</label>
+          <input id="tagsInput" placeholder="comma, separated, tags" />
+        </div>
+      </div>
+      <div class="toolbar" style="justify-content:flex-end; margin-top:12px">
+        <button class="btn btn-secondary" onclick="closeWordModal()">Cancel</button>
+        <button class="btn btn-primary" id="saveWordBtn" onclick="saveWord()">Save Word</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="importModal" onclick="if (event.target === this) closeImportModal()">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h2 style="margin:0">Import Document</h2>
+        <button class="close-btn" onclick="closeImportModal()">×</button>
+      </div>
+      <p class="muted">Upload a PDF, Word document, or text file containing vocabulary lines like: <strong>Word - Definition</strong> or <strong>Word: Definition</strong>.</p>
+      <input id="pdfInput" type="file" accept=".pdf,.docx,.txt,.md,.html,.htm,.rtf,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain,text/markdown,text/html,application/msword" />
+      <div class="muted" id="pdfImportHint" style="margin-top:10px;font-size:12px;line-height:1.5;">
+        Supported files: PDF, DOCX, TXT, Markdown, HTML, and other text-based documents.
+        <br />Example line formats:
+        <br />• Serendipity - A lucky discovery made by chance
+        <br />• Pragmatic: Focused on practical outcomes
+      </div>
+      <div class="toolbar" style="justify-content:flex-end">
+        <button class="btn btn-secondary" onclick="closeImportModal()">Cancel</button>
+        <button class="btn btn-primary" id="importPdfBtn" onclick="importDocumentFile()">Import Document</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast"></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.8.0/mammoth.browser.min.js"></script>
+
+  <!-- Goal Create/Edit Modal -->
+  <div class="modal" id="goalModal" onclick="if(event.target===this)closeGoalModal()">
+    <div class="modal-card" style="max-width:480px">
+      <div class="modal-head">
+        <h2 id="goalModalTitle" style="margin:0">New Goal</h2>
+        <button class="close-btn" onclick="closeGoalModal()">×</button>
+      </div>
+      <input type="hidden" id="editingGoalId" />
+
+      <div class="form-group">
+        <label>Goal Label <span style="color:#94a3b8;font-weight:400">(describe what you want to achieve)</span></label>
+        <input id="goalLabel" placeholder='e.g. "Raise class accuracy to 85%"' />
+      </div>
+
+      <div class="form-group">
+        <label>Metric to track</label>
+        <select id="goalMetric" onchange="updateGoalTargetHint()">
+          <option value="accuracy">Class Accuracy (%) — avg accuracy across sessions</option>
+          <option value="avgXP">Average XP per student</option>
+          <option value="sessions">Avg Sessions per student</option>
+          <option value="streak">Best student streak (days)</option>
+          <option value="activeRate">Student engagement rate (%)</option>
+          <option value="wordsLearned">Avg words learned per student</option>
+        </select>
+      </div>
+
+      <div class="form-grid" style="grid-template-columns:1fr 1fr">
+        <div class="form-group">
+          <label>Target value <small id="goalTargetHint" style="color:#94a3b8"></small></label>
+          <input id="goalTarget" type="number" min="1" placeholder="e.g. 85" />
+        </div>
+        <div class="form-group">
+          <label>Timeframe</label>
+          <select id="goalTimeframe">
+            <option value="weekly">Weekly</option>
+            <option value="monthly" selected>Monthly</option>
+            <option value="allTime">All Time</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="goalCurrentHint" style="background:rgba(108,99,255,.08);border:1px solid rgba(108,99,255,.2);border-radius:10px;padding:12px;font-size:13px;color:#a78bfa;margin-bottom:14px;display:none;">
+        📊 Current class value: <strong id="goalCurrentValue">—</strong>
+      </div>
+
+      <div class="toolbar" style="justify-content:flex-end; margin-top:4px">
+        <button class="btn btn-secondary" onclick="closeGoalModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="saveGoal()">Save Goal</button>
+      </div>
+    </div>
+  </div>
+  <!-- AI Image Change Panel Overlay -->
+  <div id="imgPanelOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:2000;align-items:center;justify-content:center;padding:20px;">
+    <div style="width:100%;max-width:820px;background:#1a1d27;border:1px solid #2e3250;border-radius:20px;padding:24px;box-shadow:0 30px 80px rgba(0,0,0,.5);max-height:92vh;overflow:auto;">
+
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;">
+        <div>
+          <div style="font-size:12px;color:#64748b;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;">Changing image for</div>
+          <div id="imgPanelWord" style="font-size:22px;font-weight:800;color:#e2e8f0;"></div>
+        </div>
+        <button onclick="closeImgPanel()" style="background:none;border:1px solid #2e3250;color:#94a3b8;border-radius:10px;padding:8px 14px;cursor:pointer;font-size:13px;font-weight:700;">✕ Dismiss</button>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start;">
+
+        <!-- Left: description input -->
+        <div>
+          <label style="display:block;font-size:13px;font-weight:700;margin-bottom:8px;color:#94a3b8;">Describe the image</label>
+          <textarea id="imgPanelDesc" style="width:100%;min-height:120px;border:1px solid #2e3250;border-radius:12px;background:#0f1117;color:#e2e8f0;padding:12px;font:inherit;resize:vertical;" placeholder="e.g. A person standing firmly in a storm, showing strength and determination&#10;&#10;Or just leave as-is to use AI auto-description."></textarea>
+          <button id="imgPanelPreviewBtn" onclick="previewImgPanel()" style="width:100%;margin-top:12px;background:linear-gradient(135deg,#6c63ff,#a78bfa);color:#fff;border:0;border-radius:12px;padding:12px;font-size:14px;font-weight:700;cursor:pointer;">
+            ✦ Generate Preview
+          </button>
+          <input id="imgPanelFileInput" type="file" accept="image/*" style="display:none;" onchange="handleOwnImageSelected(event)" />
+          <button id="imgPanelUploadBtn" onclick="openOwnImagePicker()" style="width:100%;margin-top:10px;background:#25293a;border:1px solid #3e4460;color:#e2e8f0;border-radius:12px;padding:12px;font-size:14px;font-weight:700;cursor:pointer;">
+            ⤴ Upload Card
+          </button>
+          <div id="imgPanelStatus" style="margin-top:10px;font-size:13px;color:#a78bfa;font-weight:600;min-height:18px;"></div>
+        </div>
+
+        <!-- Right: preview + submit/cancel -->
+        <div style="display:flex;flex-direction:column;gap:12px;">
+          <div style="height:260px;background:#0f1117;border:1px solid #2e3250;border-radius:14px;overflow:hidden;display:flex;align-items:center;justify-content:center;position:relative;">
+            <div id="imgPanelPlaceholder" style="display:flex;flex-direction:column;align-items:center;gap:8px;color:#4b5563;">
+              <span style="font-size:48px;">🖼</span>
+              <span style="font-size:13px;">Preview will appear here</span>
+            </div>
+            <img id="imgPanelPreview" src="" style="display:none;width:100%;height:100%;object-fit:cover;" alt="Image preview" />
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+            <button onclick="closeImgPanel()" style="background:#25293a;border:1px solid #2e3250;color:#e2e8f0;border-radius:12px;padding:13px;font-size:14px;font-weight:700;cursor:pointer;">
+              ✕ Dismiss
+            </button>
+            <button id="imgPanelSubmitBtn" onclick="submitImgPanel()" disabled style="background:linear-gradient(135deg,#10b981,#059669);color:#fff;border:0;border-radius:12px;padding:13px;font-size:14px;font-weight:700;cursor:pointer;opacity:.5;">
+              ✓ Accept
+            </button>
+          </div>
+          <div style="font-size:11px;color:#4b5563;text-align:center;">Accept saves the image to the word. Dismiss rejects it.</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script>
+    async function ensureCreatorAccess() {
+      const user = getUser();
+      return Boolean(getToken() && user && (user.role === 'creator' || user.role === 'admin'));
+    }
+
+    let currentUser = null;
+    let words = [];
+    let students = [];
+    let wordStats = null;
+    let cohortAnalytics = null;
+    let goalsProgress = [];   // cached goals+progress from server
+    let dismissedAlerts = JSON.parse(localStorage.getItem('vmDismissedAlerts') || '{}');
+
+    function switchTab(name, btn) {
+      document.querySelectorAll('.tab').forEach(function (item) { item.classList.remove('active'); });
+      document.querySelectorAll('.section').forEach(function (sec) { sec.classList.remove('active'); });
+      if (btn) btn.classList.add('active');
+      const sec = document.getElementById(name);
+      if (sec) sec.classList.add('active');
+      if (name === 'goals') loadGoalsProgress();
+      if (name === 'aigen') { loadAIDecks(); loadAIEnrichDecks(); setAIMode('enrich'); }
+      if (name === 'aiimages') loadAIImageWords(true);
+    }
+
+    /* ── AI WORD GENERATOR ──────────────────────────────────── */
+    var aiGeneratedWords = [];
+
+    async function loadAIDecks() {
+      try {
+        var sel = document.getElementById('aiDeckSelect');
+        if (!sel) return;
+        var current = sel.value;
+        var data = await api.get('/decks?limit=100');
+        var decks = Array.isArray(data && data.decks) ? data.decks : [];
+        sel.innerHTML = '<option value="">\u2014 No deck, add to general vocabulary \u2014</option>' +
+          decks.map(function (d) {
+            return '<option value="' + escapeAttr(d._id) + '">' + escapeHtml(d.name) + '</option>';
+          }).join('');
+        if (current) sel.value = current;
+        // Also populate image-generator deck select if present
+        try {
+          var imgSel = document.getElementById('aiImgDeckSelect');
+          if (imgSel) {
+            var cur2 = imgSel.value;
+            imgSel.innerHTML = '<option value="">\u2014 Select a deck \u2014</option>' + decks.map(function(d){ return '<option value="' + escapeAttr(d._id) + '">' + escapeHtml(d.name) + '</option>'; }).join('');
+            if (cur2) imgSel.value = cur2;
+          }
+        } catch(_) {}
+      } catch (e) { /* ignore deck load errors */ }
+    }
+
+    function escapeAttr(s) {
+      return String(s || '').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+
+    function escapeHtml(s) {
+      return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    async function runAIGenerate() {
+      var topic = (document.getElementById('aiTopic').value || '').trim();
+      var count = document.getElementById('aiCount').value;
+      var difficulty = document.getElementById('aiDifficulty').value;
+      var status = document.getElementById('aiGenStatus');
+      var btn = document.getElementById('aiGenBtn');
+
+      if (!topic) { status.textContent = 'Enter a topic first.'; return; }
+      status.textContent = 'Generating with AI\u2026';
+      btn.disabled = true;
+
+      try {
+        var result = await api.post('/ai/generate-vocab', { topic: topic, count: parseInt(count), difficulty: difficulty }, { timeoutMs: 60000 });
+        aiGeneratedWords = Array.isArray(result.words) ? result.words : [];
+        renderAIResults();
+        document.getElementById('aiResultTitle').textContent = aiGeneratedWords.length + ' words generated for \u201c' + topic + '\u201d';
+        document.getElementById('aiSelectAllBtn').style.display = '';
+        document.getElementById('aiImportBtn').style.display = '';
+        status.textContent = 'Done. Review words below, then import selected.';
+      } catch (err) {
+        status.textContent = err.message || 'AI generation failed.';
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    function renderAIResults() {
+      var container = document.getElementById('aiWordResults');
+      if (!aiGeneratedWords.length) {
+        container.innerHTML = '<div class="empty">No words returned.</div>';
+        return;
+      }
+      container.innerHTML = aiGeneratedWords.map(function (w, i) {
+        return '<div style="border:1px solid #2e3250;border-radius:14px;padding:14px;background:#1a1d27;display:flex;gap:14px;align-items:flex-start;">' +
+          '<input type="checkbox" id="aiw_' + i + '" checked style="margin-top:4px;width:16px;height:16px;cursor:pointer;flex-shrink:0;" />' +
+          '<div style="flex:1;min-width:0;">' +
+            '<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:6px;">' +
+              '<span style="font-weight:800;font-size:16px;">' + escapeHtml(w.word) + '</span>' +
+              '<span style="background:rgba(108,99,255,.18);color:#c4b5fd;border-radius:999px;padding:3px 9px;font-size:11px;font-weight:700;">' + escapeHtml(w.partOfSpeech) + '</span>' +
+            '</div>' +
+            '<div style="color:#cbd5e1;font-size:14px;margin-bottom:4px;">' + escapeHtml(w.definition) + '</div>' +
+            (w.example ? '<div style="color:#64748b;font-size:13px;font-style:italic;">\u201c' + escapeHtml(w.example) + '\u201d</div>' : '') +
+          '</div>' +
+        '</div>';
+      }).join('');
+    }
+
+    function aiSelectAll() {
+      var boxes = document.querySelectorAll('#aiWordResults input[type=checkbox]');
+      var allChecked = Array.from(boxes).every(function (b) { return b.checked; });
+      boxes.forEach(function (b) { b.checked = !allChecked; });
+    }
+
+    async function aiImportSelected() {
+      var boxes = document.querySelectorAll('#aiWordResults input[type=checkbox]');
+      var selected = [];
+      boxes.forEach(function (b, i) { if (b.checked && aiGeneratedWords[i]) selected.push(aiGeneratedWords[i]); });
+
+      if (!selected.length) {
+        document.getElementById('aiGenStatus').textContent = 'Check at least one word to import.';
+        return;
+      }
+
+      var deckId = document.getElementById('aiDeckSelect').value.trim() || null;
+      var status = document.getElementById('aiGenStatus');
+      var importBtn = document.getElementById('aiImportBtn');
+      status.textContent = 'Importing ' + selected.length + ' words\u2026';
+      importBtn.disabled = true;
+
+      try {
+        var payload = selected.map(function (w) {
+          return { word: w.word, definition: w.definition, example: w.example, partOfSpeech: w.partOfSpeech, deckId: deckId || undefined };
+        });
+        var result = await api.post('/words/bulk/import', { words: payload, autoGenerate: false });
+        var imp = Number(result && result.imported ? result.imported : selected.length);
+        var dup = Number(result && result.skippedDuplicates ? result.skippedDuplicates : 0);
+        status.textContent = imp + ' words imported.' + (dup ? ' ' + dup + ' duplicates skipped.' : '') + (deckId ? ' Added to selected deck.' : '');
+        await loadWords();
+        await loadStats();
+      } catch (err) {
+        status.textContent = err.message || 'Import failed.';
+      } finally {
+        importBtn.disabled = false;
+      }
+    }
+
+    /* ── AI ENRICH MODE (user gives own word list) ──────────── */
+    var aiEnrichedWords = [];
+
+    function setAIMode(mode) {
+      var topicPanel = document.getElementById('aiTopicPanel');
+      var enrichPanel = document.getElementById('aiEnrichPanel');
+      var deckPanel = document.getElementById('aiDeckPanel');
+      var topicBtn = document.getElementById('aiModeTopicBtn');
+      var enrichBtn = document.getElementById('aiModeEnrichBtn');
+      var deckBtn = document.getElementById('aiModeDeckBtn');
+      // default hide all
+      topicPanel.style.display = 'none';
+      enrichPanel.style.display = 'none';
+      if (deckPanel) deckPanel.style.display = 'none';
+      topicBtn.className = 'btn btn-secondary';
+      enrichBtn.className = 'btn btn-secondary';
+      if (deckBtn) deckBtn.className = 'btn btn-secondary';
+
+      if (mode === 'topic') {
+        topicPanel.style.display = 'grid';
+        topicBtn.className = 'btn btn-primary';
+        loadAIDecks();
+      } else if (mode === 'deck') {
+        if (deckPanel) deckPanel.style.display = 'grid';
+        if (deckBtn) deckBtn.className = 'btn btn-primary';
+        // ensure deck lists are loaded for selects
+        loadAIDecks();
+        loadAIEnrichDecks();
+      } else {
+        enrichPanel.style.display = 'grid';
+        enrichBtn.className = 'btn btn-primary';
+        loadAIEnrichDecks();
+      }
+    }
+
+    async function loadAIEnrichDecks() {
+      try {
+        var sel = document.getElementById('aiEnrichDeckSelect');
+        if (!sel) return;
+        var current = sel.value;
+        var data = await api.get('/decks?limit=100');
+        var decks = Array.isArray(data && data.decks) ? data.decks : [];
+        sel.innerHTML = '<option value="">\u2014 No deck, add to general vocabulary \u2014</option>' +
+          decks.map(function (d) {
+            return '<option value="' + escapeAttr(d._id) + '">' + escapeHtml(d.name) + '</option>';
+          }).join('');
+        if (current) sel.value = current;
+      } catch (e) { /* ignore */ }
+    }
+
+    async function runAIEnrich() {
+      var raw = (document.getElementById('aiEnrichInput').value || '').trim();
+      var status = document.getElementById('aiEnrichStatus');
+      var btn = document.getElementById('aiEnrichBtn');
+      if (!raw) { status.textContent = 'Paste at least one word first.'; return; }
+
+      var wordList = raw.split(/\r?\n/).map(function (l) { return l.trim(); }).filter(Boolean);
+      if (!wordList.length) { status.textContent = 'No valid words found.'; return; }
+      if (wordList.length > 60) { status.textContent = 'Max 60 words at once. Please trim your list.'; return; }
+
+      status.textContent = 'Enriching ' + wordList.length + ' words with AI\u2026';
+      btn.disabled = true;
+
+      try {
+        var result = await api.post('/ai/enrich-words', { words: wordList }, { timeoutMs: 60000 });
+        aiEnrichedWords = Array.isArray(result.words) ? result.words : [];
+        renderAIEnrichResults();
+        document.getElementById('aiEnrichResultTitle').textContent = aiEnrichedWords.length + ' words enriched';
+        document.getElementById('aiEnrichSelectAllBtn').style.display = '';
+        document.getElementById('aiEnrichImportBtn').style.display = '';
+        status.textContent = 'Done. Review below and import selected.';
+        // Show provider/model if available
+        try {
+          if (result && result.provider) {
+            var providerInfo = result.provider + (result.model ? ' / ' + result.model : '');
+            status.textContent = 'Done (' + providerInfo + '). Review below and import selected.';
+          }
+        } catch (e) { /* ignore */ }
+
+        // If a deck is selected or a new deck name provided, import enriched words into that deck.
+        try {
+          var autoDeckId = document.getElementById('aiEnrichDeckSelect').value.trim() || null;
+          var newDeckName = (document.getElementById('aiEnrichDeckName').value || '').trim() || null;
+
+          // If user provided a new deck name and no deck selected, create it first
+          if (!autoDeckId && newDeckName) {
+            status.textContent = 'Creating deck "' + newDeckName + '"...';
+            try {
+              var dresp = await api.post('/decks', { name: newDeckName, topic: '', difficulty: 'intermediate' });
+              var createdDeck = dresp && dresp.deck ? dresp.deck : null;
+              if (createdDeck && createdDeck._id) {
+                autoDeckId = createdDeck._id;
+                status.textContent = 'Deck created. Importing enriched words...';
+                loadAIDecks();
+                loadAIEnrichDecks();
+              }
+            } catch (createErr) {
+              // If deck creation failed because it already exists, try to find existing deck and use it
+              console.warn('Deck creation failed, attempting to find existing deck:', createErr);
+              try {
+                var all = await api.get('/decks?limit=200');
+                var found = (Array.isArray(all && all.decks) ? all.decks : []).find(function(d){ return String(d.name || '').toLowerCase() === String(newDeckName).toLowerCase(); });
+                if (found && found._id) {
+                  autoDeckId = found._id;
+                  status.textContent = 'Using existing deck "' + (found.name || '') + '". Importing enriched words...';
+                  loadAIDecks();
+                  loadAIEnrichDecks();
+                } else {
+                  throw createErr;
+                }
+              } catch (findErr) {
+                console.error('Failed to find existing deck after create failure:', findErr);
+                throw createErr;
+              }
+            }
+          }
+
+          // If still no deck selected and no newDeckName, ask the AI to suggest and create one
+          if (!autoDeckId && !newDeckName && aiEnrichedWords.length) {
+            try {
+              status.textContent = 'AI is creating a deck for these words...';
+              var suggestRes = await api.post('/ai/suggest-deck', { words: aiEnrichedWords.map(function(w){ return w.word; }) }, { timeoutMs: 60000 });
+              var suggestion = suggestRes && suggestRes.suggestion ? suggestRes.suggestion : null;
+              if (suggestion && suggestion.name) {
+                var suggestedName = suggestion.name;
+                status.textContent = 'Creating deck "' + suggestedName + '"...';
+                var dresp2 = await api.post('/decks', { name: suggestedName, topic: suggestion.topic || '', difficulty: suggestion.difficulty || 'intermediate', description: suggestion.description || '' });
+                var createdDeck2 = dresp2 && dresp2.deck ? dresp2.deck : null;
+                if (createdDeck2 && createdDeck2._id) {
+                  autoDeckId = createdDeck2._id;
+                  status.textContent = 'Deck created. Importing enriched words...';
+                  loadAIDecks();
+                  loadAIEnrichDecks();
+                }
+              }
+            } catch (sErr) {
+              console.warn('AI suggested deck creation failed:', sErr);
+            }
+          }
+
+          if (autoDeckId && aiEnrichedWords.length) {
+            // simple analysis/sort: ensure fields exist and sort alphabetically
+            aiEnrichedWords = aiEnrichedWords.map(function(w){
+              return {
+                word: w.word || '',
+                definition: w.definition || '',
+                example: w.example || '',
+                partOfSpeech: w.partOfSpeech || 'other'
+              };
+            }).sort(function(a,b){ return String(a.word || '').toLowerCase().localeCompare(String(b.word || '').toLowerCase()); });
+
+            status.textContent = 'Importing ' + aiEnrichedWords.length + ' enriched words into the selected deck...';
+            var payload = aiEnrichedWords.map(function (w) {
+              return { word: w.word, definition: w.definition, example: w.example, partOfSpeech: w.partOfSpeech, deckId: autoDeckId };
+            });
+            var impRes = await api.post('/words/bulk/import', { words: payload, autoGenerate: false });
+            var imp = Number(impRes && impRes.imported ? impRes.imported : aiEnrichedWords.length);
+            var dup = Number(impRes && impRes.skippedDuplicates ? impRes.skippedDuplicates : 0);
+            status.textContent = imp + ' words imported.' + (dup ? ' ' + dup + ' duplicates skipped.' : '') + ' Added to deck.';
+            await loadWords();
+            await loadStats();
+          }
+        } catch (e) {
+          console.error('Auto-import failed:', e);
+          status.textContent = 'Enrichment succeeded but automatic import failed: ' + (e && e.message ? e.message : 'unknown error');
+        }
+      } catch (err) {
+        status.textContent = err.message || 'AI enrichment failed.';
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    function renderAIEnrichResults() {
+      var container = document.getElementById('aiEnrichResults');
+      if (!aiEnrichedWords.length) {
+        container.innerHTML = '<div class="empty">No words returned.</div>';
+        return;
+      }
+      container.innerHTML = aiEnrichedWords.map(function (w, i) {
+        return '<div style="border:1px solid #2e3250;border-radius:14px;padding:14px;background:#1a1d27;display:flex;gap:14px;align-items:flex-start;">' +
+          '<input type="checkbox" id="aiew_' + i + '" checked style="margin-top:4px;width:16px;height:16px;cursor:pointer;flex-shrink:0;" />' +
+          '<div style="flex:1;min-width:0;">' +
+            '<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:6px;">' +
+              '<span style="font-weight:800;font-size:16px;">' + escapeHtml(w.word) + '</span>' +
+              '<span style="background:rgba(108,99,255,.18);color:#c4b5fd;border-radius:999px;padding:3px 9px;font-size:11px;font-weight:700;">' + escapeHtml(w.partOfSpeech) + '</span>' +
+            '</div>' +
+            '<div style="color:#cbd5e1;font-size:14px;margin-bottom:4px;">' + escapeHtml(w.definition) + '</div>' +
+            (w.example ? '<div style="color:#64748b;font-size:13px;font-style:italic;">\u201c' + escapeHtml(w.example) + '\u201d</div>' : '') +
+          '</div>' +
+        '</div>';
+      }).join('');
+    }
+
+    function aiEnrichSelectAll() {
+      var boxes = document.querySelectorAll('#aiEnrichResults input[type=checkbox]');
+      var allChecked = Array.from(boxes).every(function (b) { return b.checked; });
+      boxes.forEach(function (b) { b.checked = !allChecked; });
+    }
+
+    async function aiEnrichImportSelected() {
+      var boxes = document.querySelectorAll('#aiEnrichResults input[type=checkbox]');
+      var selected = [];
+      boxes.forEach(function (b, i) { if (b.checked && aiEnrichedWords[i]) selected.push(aiEnrichedWords[i]); });
+
+      if (!selected.length) {
+        document.getElementById('aiEnrichStatus').textContent = 'Check at least one word.';
+        return;
+      }
+
+      var deckId = document.getElementById('aiEnrichDeckSelect').value.trim() || null;
+      var status = document.getElementById('aiEnrichStatus');
+      var importBtn = document.getElementById('aiEnrichImportBtn');
+      status.textContent = 'Importing ' + selected.length + ' words\u2026';
+      importBtn.disabled = true;
+
+      try {
+        var payload = selected.map(function (w) {
+          return { word: w.word, definition: w.definition, example: w.example, partOfSpeech: w.partOfSpeech, deckId: deckId || undefined };
+        });
+        var result = await api.post('/words/bulk/import', { words: payload, autoGenerate: false });
+        var imp = Number(result && result.imported ? result.imported : selected.length);
+        var dup = Number(result && result.skippedDuplicates ? result.skippedDuplicates : 0);
+        status.textContent = imp + ' words imported.' + (dup ? ' ' + dup + ' duplicates skipped.' : '') + (deckId ? ' Added to deck.' : '');
+        await loadWords();
+        await loadStats();
+      } catch (err) {
+        status.textContent = err.message || 'Import failed.';
+      } finally {
+        importBtn.disabled = false;
+      }
+    }
+
+    /* ── Deck Creation: simple UI handler ───────────────────────── */
+    async function runAICreateDeck() {
+      var name = (document.getElementById('deckName').value || '').trim();
+      var topic = (document.getElementById('deckTopic').value || '').trim();
+      var difficulty = document.getElementById('deckDifficulty').value || 'intermediate';
+      var rawWords = (document.getElementById('deckWords').value || '').trim();
+      var status = document.getElementById('createDeckStatus');
+      var btn = document.getElementById('createDeckBtn');
+      if (!name) { status.textContent = 'Deck name is required.'; return; }
+      btn.disabled = true; status.textContent = 'Creating deck';
+      try {
+        var deckResp = await api.post('/decks', { name: name, topic: topic, difficulty: difficulty });
+        var deck = deckResp && deckResp.deck ? deckResp.deck : null;
+        if (!deck) throw new Error('Failed to create deck.');
+        status.textContent = 'Deck created: ' + (deck.name || deck._id) + '.';
+
+        // Import words if provided
+        if (rawWords) {
+          var words = rawWords.split(/\s*(?:\r?\n|\/|,|;)\s*/).map(function (l) { return l.trim(); }).filter(Boolean);
+          if (words.length) {
+            status.textContent = 'Importing ' + words.length + ' words into deck...';
+            var payload = words.map(function (w) { return { word: w, definition: '', partOfSpeech: 'other', deckId: deck._id }; });
+            // Allow server to auto-generate missing definitions/images
+            var res = await api.post('/words/bulk/import', { words: payload, autoGenerate: true });
+            var imported = Number(res && res.imported ? res.imported : 0);
+            var skipped = Number(res && res.skippedInvalid ? res.skippedInvalid : 0) + Number(res && res.skippedDuplicates ? res.skippedDuplicates : 0);
+            if (!imported) {
+              status.textContent = 'No words were imported. ' + (res && res.message ? res.message : '') + (skipped ? ' Skipped: ' + skipped + '.' : '');
+            } else {
+              status.textContent = 'Imported ' + imported + ' words into deck "' + (deck.name || '') + '".' + (skipped ? ' ' + skipped + ' skipped.' : '');
+            }
+          }
+        }
+
+        // refresh deck selects
+        loadAIDecks();
+        loadAIEnrichDecks();
+        // show created deck in results area
+        var results = document.getElementById('deckCreateResults');
+        if (results) results.innerHTML = '<div class="card" style="padding:12px;">Created deck: <strong>' + escapeHtml(deck.name || '') + '</strong></div>';
+      } catch (err) {
+        status.textContent = err && err.message ? err.message : 'Deck creation failed.';
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    /* ── AI IMAGE GENERATOR ─────────────────────────────────── */
+    var aiImgWords = [];
+    var aiImgActiveIdx = -1;
+    var aiImgPendingUrl = '';
+    var aiImgPendingUploadFile = null;
+
+    function getRetryAfterSeconds(err) {
+      var sec = Number(err && err.data && err.data.retryAfterSeconds);
+      return Number.isFinite(sec) && sec > 0 ? sec : 0;
+    }
+
+    function useCachedWordsForImageTab(onlyUnassigned, statusEl) {
+      if (!Array.isArray(words) || !words.length) return false;
+      var list = words.slice(0, 200);
+      if (onlyUnassigned) list = list.filter(function(w){ return !String(w.deckId || '').trim(); });
+      aiImgWords = list;
+      renderAIImgGrid();
+      if (statusEl) {
+        statusEl.textContent = 'Using cached words from Creator Studio. Refresh again in a moment for latest server data.';
+      }
+      return true;
+    }
+
+    async function loadAIImageWords(onlyUnassigned = true) {
+      var grid = document.getElementById('aiImgWordGrid');
+      var status = document.getElementById('aiImgStatus');
+      if (!grid) return;
+      grid.innerHTML = '<div class="empty" style="grid-column:1/-1;">Loading...</div>';
+      try {
+        var url = '/words?limit=200' + (onlyUnassigned ? '&unassigned=true' : '');
+        var data = await api.get(url);
+        aiImgWords = Array.isArray(data && data.words) ? data.words : [];
+        renderAIImgGrid();
+        status.textContent = aiImgWords.length + ' words loaded. ' +
+          aiImgWords.filter(function(w){ return !hasRenderableImage(w && w.imageUrl); }).length + ' missing images.';
+      } catch (err) {
+        var retryAfter = getRetryAfterSeconds(err);
+        if (Number(err && err.status) === 429 && useCachedWordsForImageTab(onlyUnassigned, status)) {
+          if (retryAfter > 0) {
+            status.textContent += ' Rate limit active. Retry in about ' + retryAfter + 's.';
+          }
+          return;
+        }
+        var hint = retryAfter > 0 ? ' Retry in about ' + retryAfter + ' seconds.' : '';
+        grid.innerHTML = '<div class="empty" style="grid-column:1/-1;color:#ef4444;">Failed to load words: ' + escapeHtml(err.message) + '.' + hint + '</div>';
+      }
+    }
+
+    function hasRenderableImage(url) {
+      var value = String(url || '').trim();
+      return value.startsWith('http') || value.startsWith('/');
+    }
+
+    function toProxyUrl(url) {
+      if (!url) return '';
+      if (url.startsWith('/api/image-proxy')) return url;
+      if (url.startsWith('https://image.pollinations.ai/')) return '/api/image-proxy?url=' + encodeURIComponent(url);
+      return url;
+    }
+
+    function renderAIImgGrid() {
+      var grid = document.getElementById('aiImgWordGrid');
+      if (!grid) return;
+      if (!aiImgWords.length) {
+        grid.innerHTML = '<div class="empty" style="grid-column:1/-1;">No vocabulary words yet. Add words first.</div>';
+        return;
+      }
+      grid.innerHTML = aiImgWords.map(function(w, i) {
+        var hasImage = hasRenderableImage(w.imageUrl);
+        var imgSrc = hasImage ? escapeHtml(toProxyUrl(w.imageUrl)) : '';
+        return '<div id="imgcard_' + i + '" style="background:#1a1d27;border:1px solid ' + (hasImage ? '#2d7a5c' : '#2e3250') + ';border-radius:16px;overflow:hidden;">' +
+          '<div style="height:140px;background:#0f1117;display:flex;align-items:center;justify-content:center;position:relative;">' +
+            (hasImage
+              ? '<img src="' + imgSrc + '" style="width:100%;height:100%;object-fit:cover;" onerror="this.parentNode.innerHTML=\'<span style=font-size:36px>🖼</span>\'" />'
+              : '<span style="font-size:36px;">🖼</span>') +
+            (hasImage ? '<span style="position:absolute;top:6px;right:6px;background:#10b981;color:#fff;border-radius:999px;font-size:10px;font-weight:700;padding:2px 7px;">✓ has image</span>' : '') +
+          '</div>' +
+          '<div style="padding:12px;">' +
+            '<div style="font-weight:800;font-size:15px;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + escapeHtml(w.word) + '</div>' +
+            '<div style="font-size:11px;color:#64748b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:10px;">' + escapeHtml((w.definition || '').slice(0,60)) + '…</div>' +
+            '<div style="display:grid;gap:8px;">' +
+              '<button onclick="openImgPanel(' + i + ')" style="width:100%;background:#25293a;border:1px solid #3e4460;color:#e2e8f0;border-radius:10px;padding:8px;font-size:12px;font-weight:700;cursor:pointer;">' +
+                (hasImage ? '🖼 Change Image' : '✦ Generate Image') +
+              '</button>' +
+              '<button onclick="triggerOwnImageUpload(' + i + ')" style="width:100%;background:#182232;border:1px solid #31506f;color:#bfdbfe;border-radius:10px;padding:8px;font-size:12px;font-weight:700;cursor:pointer;">⤴ Upload Card</button>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+    }
+
+    function clearPendingUploadPreview() {
+      aiImgPendingUploadFile = null;
+      var input = document.getElementById('imgPanelFileInput');
+      if (input) input.value = '';
+    }
+
+    function openImgPanel(idx) {
+      aiImgActiveIdx = idx;
+      aiImgPendingUrl = '';
+      clearPendingUploadPreview();
+      var w = aiImgWords[idx];
+      if (!w) return;
+
+      // Pre-fill description with word + definition hint
+      var defaultDesc = w.word + (w.definition ? ' — ' + w.definition.slice(0,80) : '');
+      document.getElementById('imgPanelWord').textContent = w.word;
+      document.getElementById('imgPanelDesc').value = defaultDesc;
+      document.getElementById('imgPanelPreview').src = '';
+      document.getElementById('imgPanelPreview').style.display = 'none';
+      document.getElementById('imgPanelPlaceholder').style.display = 'flex';
+      document.getElementById('imgPanelStatus').textContent = 'Describe the image you want, then click Preview.';
+      document.getElementById('imgPanelSubmitBtn').disabled = true;
+      document.getElementById('imgPanelOverlay').style.display = 'flex';
+      document.getElementById('imgPanelDesc').focus();
+    }
+
+    function closeImgPanel() {
+      document.getElementById('imgPanelOverlay').style.display = 'none';
+      aiImgActiveIdx = -1;
+      aiImgPendingUrl = '';
+      clearPendingUploadPreview();
+    }
+
+    function triggerOwnImageUpload(idx) {
+      aiImgActiveIdx = idx;
+      var w = aiImgWords[idx];
+      if (!w) return;
+      document.getElementById('imgPanelWord').textContent = w.word;
+      document.getElementById('imgPanelDesc').value = w.word + (w.definition ? ' — ' + w.definition.slice(0,80) : '');
+      document.getElementById('imgPanelOverlay').style.display = 'flex';
+      document.getElementById('imgPanelStatus').textContent = 'Choose an image file, then Accept or Dismiss it.';
+      document.getElementById('imgPanelSubmitBtn').disabled = true;
+      document.getElementById('imgPanelPreview').style.display = 'none';
+      document.getElementById('imgPanelPlaceholder').style.display = 'flex';
+      clearPendingUploadPreview();
+      openOwnImagePicker();
+    }
+
+    function openOwnImagePicker() {
+      var input = document.getElementById('imgPanelFileInput');
+      if (input) input.click();
+    }
+
+    function handleOwnImageSelected(event) {
+      var file = event && event.target && event.target.files && event.target.files[0];
+      if (!file) return;
+      if (!String(file.type || '').startsWith('image/')) {
+        document.getElementById('imgPanelStatus').textContent = 'Choose a valid image file.';
+        return;
+      }
+
+      aiImgPendingUploadFile = file;
+      var reader = new FileReader();
+      reader.onload = function(loadEvent) {
+        aiImgPendingUrl = String(loadEvent && loadEvent.target && loadEvent.target.result || '');
+
+        var img = document.getElementById('imgPanelPreview');
+        img.onload = function() {
+          document.getElementById('imgPanelStatus').textContent = 'Preview ready (upload). Click Accept to save or Dismiss it.';
+        };
+        img.onerror = function() {
+          document.getElementById('imgPanelStatus').textContent = 'Selected image could not be previewed.';
+          document.getElementById('imgPanelSubmitBtn').disabled = true;
+        };
+        document.getElementById('imgPanelPlaceholder').style.display = 'none';
+        img.style.display = 'block';
+        img.src = aiImgPendingUrl;
+        document.getElementById('imgPanelSubmitBtn').disabled = false;
+        document.getElementById('imgPanelSubmitBtn').style.opacity = '1';
+      };
+      reader.readAsDataURL(file);
+    }
+
+    async function previewImgPanel() {
+      var desc = (document.getElementById('imgPanelDesc').value || '').trim();
+      if (!desc) { document.getElementById('imgPanelStatus').textContent = 'Please enter a description first.'; return; }
+
+      var previewBtn = document.getElementById('imgPanelPreviewBtn');
+      var status = document.getElementById('imgPanelStatus');
+      previewBtn.disabled = true;
+      status.textContent = 'Generating preview image… (usually 10–30 seconds)';
+
+      try {
+        var w = aiImgWords[aiImgActiveIdx] || {};
+        var result = await api.post('/ai/generate-word-image', {
+          word: w.word || '',
+          definition: w.definition || '',
+          customPrompt: desc,
+        }, { timeoutMs: 65000 });
+
+        var imageUrl = result.imageUrl;
+        var provider = String(result.provider || 'unknown');
+        var attribution = String(result.attribution || '');
+        var img = document.getElementById('imgPanelPreview');
+        img.onerror = function() {
+          var currentSrc = img.getAttribute('src') || '';
+          if (currentSrc.indexOf('/api/image-proxy?url=') === 0) {
+            try {
+              var direct = decodeURIComponent(currentSrc.split('url=')[1] || '');
+              if (direct && !img.dataset.directTried) {
+                img.dataset.directTried = '1';
+                img.src = direct;
+                document.getElementById('imgPanelStatus').textContent = 'Proxy failed, trying direct image source...';
+                return;
+              }
+            } catch (_) {}
+          }
+          document.getElementById('imgPanelPlaceholder').style.display = 'flex';
+          img.style.display = 'none';
+          document.getElementById('imgPanelSubmitBtn').disabled = true;
+          document.getElementById('imgPanelStatus').textContent = 'Image failed to load. Please try a different description.';
+        };
+        img.onload = function() {
+          img.dataset.directTried = '';
+          document.getElementById('imgPanelStatus').textContent = 'Preview ready (' + provider + (attribution ? ' - ' + attribution : '') + '). Click Submit to save or try another description.';
+        };
+        document.getElementById('imgPanelPlaceholder').style.display = 'none';
+        img.style.display = 'block';
+        img.src = imageUrl;
+
+        aiImgPendingUrl = imageUrl;
+        document.getElementById('imgPanelSubmitBtn').disabled = false;
+        document.getElementById('imgPanelSubmitBtn').style.opacity = '1';
+        status.textContent = 'Loading preview from ' + provider + '...';
+      } catch (err) {
+        document.getElementById('imgPanelPlaceholder').style.display = 'flex';
+        document.getElementById('imgPanelPreview').style.display = 'none';
+        var msg = err.message || 'Preview failed.';
+        if (Number(err && err.status) === 429) {
+          var waitSec = getRetryAfterSeconds(err);
+          msg = waitSec > 0
+            ? 'Rate limit reached. Please wait about ' + waitSec + ' seconds and try again.'
+            : 'Rate limit reached. Please wait a moment and try again.';
+        }
+        if (msg.includes('503') || msg.toLowerCase().includes('loading')) {
+          msg = 'Model is warming up — wait 20 seconds and try again.';
+        }
+        status.textContent = msg;
+      } finally {
+        previewBtn.disabled = false;
+      }
+    }
+
+    async function submitImgPanel() {
+      if (!aiImgPendingUrl || aiImgActiveIdx < 0) return;
+      var w = aiImgWords[aiImgActiveIdx];
+      if (!w) return;
+
+      var submitBtn = document.getElementById('imgPanelSubmitBtn');
+      var status = document.getElementById('imgPanelStatus');
+      submitBtn.disabled = true;
+      status.textContent = 'Saving image…';
+
+      try {
+        var finalUrl = aiImgPendingUrl;
+        if (aiImgPendingUploadFile) {
+          var formData = new FormData();
+          formData.append('image', aiImgPendingUploadFile);
+          var uploadRes = await fetch('/api/ai/upload-word-image', {
+            method: 'POST',
+            headers: { 'Authorization': 'Bearer ' + getToken() },
+            body: formData,
+          });
+          var uploadData = await uploadRes.json().catch(function(){ return {}; });
+          if (!uploadRes.ok || !uploadData.imageUrl) {
+            throw new Error(uploadData.message || 'Upload failed.');
+          }
+          finalUrl = uploadData.imageUrl;
+        }
+
+        await api.post('/ai/save-word-image', { wordId: String(w._id || w.id || ''), imageUrl: finalUrl });
+        aiImgWords[aiImgActiveIdx] = Object.assign({}, w, { imageUrl: finalUrl });
+
+        // Update card thumbnail and button label
+        var card = document.getElementById('imgcard_' + aiImgActiveIdx);
+        if (card) {
+          card.style.borderColor = '#2d7a5c';
+          var thumb = card.querySelector('img');
+          if (thumb) { thumb.src = finalUrl; }
+          else { card.querySelector('div').innerHTML = '<img src="' + escapeHtml(finalUrl) + '" style="width:100%;height:100%;object-fit:cover;" />'; }
+          var badge = card.querySelector('span[style*="position:absolute"]');
+          if (!badge) {
+            var imgWrap = card.querySelector('div');
+            imgWrap.insertAdjacentHTML('beforeend', '<span style="position:absolute;top:6px;right:6px;background:#10b981;color:#fff;border-radius:999px;font-size:10px;font-weight:700;padding:2px 7px;">✓ has image</span>');
+          }
+          var btn = card.querySelector('button');
+          if (btn) btn.textContent = '🖼 Change Image';
+        }
+
+        document.getElementById('aiImgStatus').textContent = 'Image saved for "' + w.word + '".';
+        clearPendingUploadPreview();
+        closeImgPanel();
+      } catch (err) {
+        status.textContent = 'Save failed: ' + (err.message || 'Unknown error');
+        submitBtn.disabled = false;
+      }
+    }
+
+    async function generateAllImages() {
+      var missing = aiImgWords.map(function(w, i){ return { w: w, i: i }; })
+        .filter(function(x){ return !x.w.imageUrl || !String(x.w.imageUrl).startsWith('http'); });
+      var status = document.getElementById('aiImgStatus');
+      var allBtn = document.getElementById('aiImgGenerateAllBtn');
+
+      if (!missing.length) { status.textContent = 'All words already have images.'; return; }
+      if (allBtn) allBtn.disabled = true;
+
+      status.textContent = 'Generating images for ' + missing.length + ' words… (this may take a moment)';
+      var done = 0;
+      for (var k = 0; k < missing.length; k++) {
+        var item = missing[k];
+        status.textContent = 'Generating image ' + (done + 1) + ' of ' + missing.length + ': "' + item.w.word + '"…';
+        try {
+          var genResult = await api.post('/ai/generate-word-image', {
+            word: item.w.word, definition: item.w.definition || '', partOfSpeech: item.w.partOfSpeech || ''
+          }, { timeoutMs: 65000 });
+          await api.post('/ai/save-word-image', { wordId: String(item.w._id || item.w.id || ''), imageUrl: genResult.imageUrl });
+          aiImgWords[item.i] = Object.assign({}, item.w, { imageUrl: genResult.imageUrl });
+          var card = document.getElementById('imgcard_' + item.i);
+          if (card) { card.style.borderColor = '#2d7a5c'; var img = card.querySelector('img'); if (img) { img.src = genResult.imageUrl; } }
+          done++;
+        } catch(e) {
+          if (Number(e && e.status) === 429) {
+            var wait = getRetryAfterSeconds(e);
+            status.textContent = 'Rate limit reached while generating. Waiting ' + (wait || 2) + 's before continuing...';
+            await new Promise(function(r){ setTimeout(r, (wait || 2) * 1000); });
+          }
+        }
+        await new Promise(function(r){ setTimeout(r, 400); });
+      }
+      status.textContent = 'Done! Generated images for ' + done + ' of ' + missing.length + ' words.';
+      if (allBtn) allBtn.disabled = false;
+      renderAIImgGrid();
+    }
+
+    function toggleAIImgDeckPanel() {
+      var panel = document.getElementById('aiImgDeckPanel');
+      if (!panel) return;
+      if (panel.style.display && panel.style.display !== 'none') panel.style.display = 'none';
+      else {
+        panel.style.display = 'block';
+        // populate deck select
+        try { loadAIDecks(); } catch (_) {}
+      }
+    }
+
+    async function generateDeckImages() {
+      var sel = document.getElementById('aiImgDeckSelect');
+      var deckId = sel ? sel.value : null;
+      var status = document.getElementById('aiImgDeckStatus');
+      var btn = document.getElementById('aiImgDeckGenerateBtn');
+      if (!deckId) { status.textContent = 'Select a deck first.'; return; }
+      btn.disabled = true; status.textContent = 'Loading deck words...';
+      try {
+        const data = await api.get('/decks/' + deckId);
+        const deckWords = Array.isArray(data.words) ? data.words : [];
+        if (!deckWords.length) { status.textContent = 'No words found in this deck.'; return; }
+        status.textContent = 'Generating images for ' + deckWords.length + ' words...';
+        let done = 0;
+        for (let i = 0; i < deckWords.length; i++) {
+          const w = deckWords[i];
+          status.textContent = 'Generating image ' + (done + 1) + ' of ' + deckWords.length + ': "' + (w.word || '') + '"...';
+          try {
+            const gen = await api.post('/ai/generate-word-image', { word: w.word || '', definition: w.definition || '', partOfSpeech: w.partOfSpeech || '' }, { timeoutMs: 65000 });
+            if (gen && gen.imageUrl) {
+              await api.post('/ai/save-word-image', { wordId: String(w._id || w.id || ''), imageUrl: gen.imageUrl });
+              done++;
+            }
+          } catch (e) {
+            if (Number(e && e.status) === 429) {
+              var wait = getRetryAfterSeconds(e);
+              status.textContent = 'Rate limit reached while generating. Waiting ' + (wait || 2) + 's before continuing...';
+              await new Promise(function (r){ setTimeout(r, (wait || 2) * 1000); });
+            }
+          }
+          await new Promise(function(r){ setTimeout(r, 400); });
+        }
+        status.textContent = 'Done — generated images for ' + done + ' of ' + deckWords.length + ' words.';
+        // Refresh grid
+        await loadAIImageWords();
+        // notify other open pages (like Deck Manager) to refresh their data
+        try {
+          if (window.BroadcastChannel) {
+            const ch = new BroadcastChannel('vocab-updates');
+            ch.postMessage({ type: 'images-updated', deckId: deckId });
+            ch.close();
+          }
+        } catch (e) {
+          /* ignore */
+        }
+      } catch (err) {
+        status.textContent = err && err.message ? err.message : 'Failed to generate deck images.';
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    async function init() {
+      try {
+        const hasAccess = await ensureCreatorAccess();
+        if (!hasAccess) {
+          document.querySelector('.shell').classList.add('hidden');
+          document.getElementById('creatorGate').classList.remove('hidden');
+          const gateText = document.querySelector('.gate-card p');
+          if (gateText) gateText.textContent = 'We couldn\'t open Creator Studio automatically. Please use the creator portal to enter your access code.';
+          return;
+        }
+
+        const me = await api.get('/auth/me');
+        currentUser = me.user;
+        if ((currentUser.role || 'student') !== 'creator') {
+          document.querySelector('.shell').classList.add('hidden');
+          document.getElementById('creatorGate').classList.remove('hidden');
+          return;
+        }
+        document.getElementById('subtitle').textContent = 'Welcome back, ' + (currentUser.name || 'Creator');
+        document.getElementById('classCode').textContent = currentUser.creatorCode || 'N/A';
+      } catch (err) {
+        showToast(err.message, 'error');
+        return;
+      }
+
+      await loadStudents();
+      const startup = await Promise.allSettled([
+        loadWords(),
+        loadStats(),
+        loadCohortAnalytics(),
+        loadGoalsProgress(),
+      ]);
+
+      const failedCount = startup.filter(function (result) { return result.status === 'rejected'; }).length;
+      if (failedCount) {
+        showToast('Some dashboard data failed to load. Please refresh and try again.', 'error');
+      }
+    }
+
+    function computeStudentMetrics(studentList) {
+      const studentsArray = Array.isArray(studentList) ? studentList : [];
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const activeToday = studentsArray.reduce(function (count, student) {
+        if (!student || !student.lastActivityDate) return count;
+        const lastDate = new Date(student.lastActivityDate);
+        lastDate.setHours(0, 0, 0, 0);
+        return count + (lastDate.getTime() === today.getTime() ? 1 : 0);
+      }, 0);
+      const averageAccuracy = studentsArray.length
+        ? Math.round(studentsArray.reduce(function (sum, student) {
+            return sum + (Number(student.accuracy) || 0);
+          }, 0) / studentsArray.length)
+        : 0;
+      return {
+        totalStudents: studentsArray.length,
+        activeToday: activeToday,
+        averageAccuracy: averageAccuracy,
+      };
+    }
+
+    function formatPercent(value) {
+      return String(Number(value || 0)) + '%';
+    }
+
+    async function loadStats() {
+      try {
+        const stats = await api.get('/user/stats');
+        const wordsStats = await api.get('/words/stats');
+        wordStats = wordsStats;
+        const studentMetrics = computeStudentMetrics(students);
+        const totalStudents = stats.studentCount ?? studentMetrics.totalStudents;
+        const activeToday = stats.activeToday ?? studentMetrics.activeToday;
+        const averageAccuracy = stats.averageAccuracy ?? studentMetrics.averageAccuracy;
+
+        document.getElementById('statWords').textContent = wordsStats.total ?? words.length;
+        document.getElementById('statStudents').textContent = totalStudents;
+        document.getElementById('statActive').textContent = activeToday;
+        document.getElementById('statAccuracy').textContent = formatPercent(averageAccuracy);
+        document.getElementById('avgDifficulty').textContent = wordsStats.avgDifficulty || '0.0';
+        document.getElementById('wordsThisWeek').textContent = wordsStats.thisWeek || 0;
+        document.getElementById('bestStreak').textContent = getBestStreak(students);
+        renderAnalytics();
+        renderCohortAnalytics();
+      } catch (err) {
+        document.getElementById('statWords').textContent = words.length;
+        document.getElementById('statStudents').textContent = students.length;
+        document.getElementById('statActive').textContent = 0;
+        document.getElementById('statAccuracy').textContent = '0%';
+        document.getElementById('avgDifficulty').textContent = '0.0';
+        document.getElementById('wordsThisWeek').textContent = 0;
+        document.getElementById('bestStreak').textContent = getBestStreak(students);
+        renderAnalytics();
+        renderCohortAnalytics();
+        throw err;
+      }
+    }
+
+    async function loadWords() {
+      const container = document.getElementById('wordsContainer');
+      if (container) {
+        container.className = 'empty';
+        container.textContent = 'Loading words...';
+      }
+
+      try {
+        const data = await api.get('/words');
+        words = Array.isArray(data && data.words) ? data.words : [];
+        renderWords();
+        renderAnalytics();
+        renderCohortAnalytics();
+      } catch (err) {
+        words = [];
+        if (container) {
+          container.className = 'empty';
+          container.textContent = 'Failed to load words. Please refresh or sign in again.';
+        }
+        showToast(err.message || 'Failed to load words.', 'error');
+        throw err;
+      }
+    }
+
+    async function syncVocabularyScopes() {
+      const btn = document.getElementById('scopeSyncBtn');
+      if (btn) setLoading(btn, true, 'Separating...');
+      try {
+        const result = await api.post('/creator/vocab/scope-sync', {});
+        await loadWords();
+        showToast((result && result.message ? result.message : 'Vocabulary scopes normalized.') + ' Updated: ' + Number(result && result.updated || 0), 'success');
+      } catch (err) {
+        showToast(err && err.message ? err.message : 'Failed to separate vocabulary scopes.', 'error');
+      } finally {
+        if (btn) setLoading(btn, false, 'Separate Deck/General');
+      }
+    }
+
+    async function loadStudents() {
+      try {
+        const data = await api.get('/user/students');
+        students = Array.isArray(data.students) ? data.students : [];
+        const studentMetrics = computeStudentMetrics(students);
+        document.getElementById('statStudents').textContent = data.totalStudents ?? studentMetrics.totalStudents;
+        document.getElementById('statActive').textContent = data.activeToday ?? studentMetrics.activeToday;
+        document.getElementById('statAccuracy').textContent = formatPercent(data.averageAccuracy ?? studentMetrics.averageAccuracy);
+        renderStudents();
+        renderAnalytics();
+        renderCohortAnalytics();
+      } catch (err) {
+        students = [];
+        document.getElementById('statStudents').textContent = 0;
+        document.getElementById('statActive').textContent = 0;
+        document.getElementById('statAccuracy').textContent = '0%';
+        renderStudents();
+        showToast(err.message || 'Failed to load students.', 'error');
+        throw err;
+      }
+    }
+
+    function renderWords() {
+      const q = document.getElementById('wordSearch').value.trim().toLowerCase();
+      const filtered = words.filter(function (word) {
+        return (
+          word.word.toLowerCase().includes(q) ||
+          (word.definition || '').toLowerCase().includes(q) ||
+          (word.example || '').toLowerCase().includes(q)
+        );
+      });
+
+      const container = document.getElementById('wordsContainer');
+      if (!filtered.length) {
+        container.className = 'empty';
+        container.innerHTML = words.length ? 'No matching words found.' : 'No words yet. Add your first word.';
+        return;
+      }
+
+      container.className = '';
+      container.innerHTML = '<table><thead><tr><th>Word</th><th>Details</th><th>Difficulty</th><th>Actions</th></tr></thead><tbody>' + filtered.map(function (word) {
+        var tags = Array.isArray(word.tags) && word.tags.length ? '<div class="muted" style="margin-top:6px">Tags: ' + esc(word.tags.join(', ')) + '</div>' : '';
+        var example = word.example ? '<div class="muted" style="margin-top:6px">“' + esc(word.example) + '”</div>' : '';
+        var notes = word.notes ? '<div class="muted" style="margin-top:6px">📝 ' + esc(word.notes) + '</div>' : '';
+        return '<tr>' +
+          '<td><strong>' + esc(word.word) + '</strong><br><span class="badge badge-' + esc(word.partOfSpeech || 'other') + '">' + esc(word.partOfSpeech || 'other') + '</span></td>' +
+          '<td>' + esc(word.definition || '') + example + notes + tags + '</td>' +
+          '<td>' + renderDifficulty(word.difficulty) + '</td>' +
+          '<td><div class="row-actions"><button class="btn btn-secondary" onclick="openWordModal(\'' + word._id + '\')">Edit</button><button class="btn btn-danger" onclick="deleteWord(\'' + word._id + '\')">Delete</button></div></td>' +
+        '</tr>';
+      }).join('') + '</tbody></table>';
+    }
+
+    function renderStudents() {
+      const container = document.getElementById('studentsContainer');
+      if (!students.length) {
+        container.innerHTML = '<div class="empty" style="grid-column:1/-1">No student activity yet.</div>';
+        return;
+      }
+
+      container.innerHTML = students.map(function (student) {
+        var initials = (student.name || '?').split(' ').map(function (part) { return part[0] || ''; }).join('').slice(0, 2).toUpperCase();
+        var accuracy = Number(student.accuracy || 0);
+        var badgeClass = accuracy >= 85 ? 'badge-good' : accuracy >= 60 ? 'badge-warn' : 'badge-bad';
+        return '<div class="student-card">' +
+          '<div class="student-head"><div style="display:flex;gap:12px;align-items:center"><div class="avatar">' + esc(initials || '?') + '</div><div><div style="font-weight:800">' + esc(student.name || 'Student') + '</div><div class="student-meta">' + esc(student.email || '') + '</div></div></div><span class="badge ' + badgeClass + '">' + accuracy + '%</span></div>' +
+          '<div class="student-meta">XP: <strong>' + (student.totalXP || 0) + '</strong> · Lessons: <strong>' + (student.lessonsCompleted || 0) + '</strong> · Streak: <strong>' + (student.streak || 0) + '</strong></div>' +
+          '<div class="student-meta" style="margin-top:8px">Last activity: ' + formatDate(student.lastActivityDate) + '</div>' +
+        '</div>';
+      }).join('');
+    }
+
+    function renderAnalytics() {
+      var counts = {1:0, 2:0, 3:0, 4:0, 5:0};
+      words.forEach(function (word) {
+        var diff = Math.max(1, Math.min(5, parseInt(word.difficulty, 10) || 3));
+        counts[diff] += 1;
+      });
+      var total = Math.max(words.length, 1);
+      var bars = [1,2,3,4,5].map(function (level) {
+        var value = counts[level];
+        var pct = Math.round((value / total) * 100);
+        return '<div class="mini-bar"><div class="muted">Level ' + level + '</div><div class="bar-track"><div class="bar-fill" style="width:' + pct + '%"></div></div><div style="text-align:right">' + value + '</div></div>';
+      }).join('');
+      var difficultyBars = document.getElementById('difficultyBars');
+      if (difficultyBars) {
+        difficultyBars.innerHTML = bars;
+      }
+
+      var top = students.slice().sort(function (a, b) {
+        return (b.totalXP || 0) - (a.totalXP || 0);
+      }).slice(0, 5);
+      var topPerformersContainer = document.getElementById('topPerformers');
+      if (topPerformersContainer) {
+        topPerformersContainer.innerHTML = top.length ? top.map(function (student) {
+        var pct = Math.max(0, Math.min(100, Number(student.accuracy || 0)));
+        return '<div class="mini-bar"><div class="muted">' + esc(student.name || 'Student') + '</div><div class="bar-track"><div class="bar-fill" style="width:' + pct + '%"></div></div><div style="text-align:right">' + pct + '%</div></div>';
+        }).join('') : '<div class="muted">No student activity yet.</div>';
+      }
+
+      document.getElementById('bestStreak').textContent = getBestStreak(students);
+    }
+
+    function renderDifficulty(value) {
+      var n = Math.max(1, Math.min(5, parseInt(value, 10) || 3));
+      return '<span class="badge badge-warn">' + n + '/5</span>';
+    }
+
+    function getBestStreak(list) {
+      return list.reduce(function (best, student) {
+        return Math.max(best, parseInt(student.streak, 10) || 0);
+      }, 0);
+    }
+
+    async function loadCohortAnalytics() {
+      try {
+        const data = await api.get('/creator/cohort-analytics');
+        cohortAnalytics = data;
+        if (cohortAnalytics) {
+          renderCohortAnalytics();
+        }
+      } catch (err) {
+        console.error('Failed to load cohort analytics:', err);
+        showToast('Failed to load cohort analytics. Please try again.', 'error');
+        cohortAnalytics = null;
+      }
+    }
+
+    function renderCohortAnalytics() {
+      if (!cohortAnalytics) return;
+
+      const overview = cohortAnalytics.overview || {};
+      const classGaps = cohortAnalytics.classSkillGaps || [];
+      const topPerformers = cohortAnalytics.topPerformers || [];
+      const struggling = cohortAnalytics.struggling || [];
+      const allStudents = cohortAnalytics.students || [];
+
+      // Update overview stats
+      document.getElementById('cohortTotalStudents').textContent = overview.totalStudents || 0;
+      document.getElementById('cohortTotalStudentsNote').textContent = overview.totalStudents === 1 ? '1 student enrolled' : (overview.totalStudents || 0) + ' students enrolled';
+
+      document.getElementById('cohortActiveStudents').textContent = overview.activeStudents || 0;
+      const pctActive = overview.totalStudents ? Math.round((overview.activeStudents / overview.totalStudents) * 100) : 0;
+      document.getElementById('cohortActiveNote').textContent = pctActive + '% of class active';
+
+      document.getElementById('cohortAvgXP').textContent = overview.avgXP || 0;
+      document.getElementById('cohortAvgAccuracy').textContent = (overview.avgAccuracy || 0) + '%';
+      document.getElementById('cohortAvgSessions').textContent = (overview.avgSessions || 0).toFixed(1);
+      document.getElementById('cohortTotalSessions').textContent = overview.totalSessionsAll || 0;
+
+      // Render skill gaps
+      const gapsContainer = document.getElementById('classSkillGapsContainer');
+      if (classGaps.length === 0) {
+        gapsContainer.innerHTML = '<div class="muted">No skill gaps detected. Your class is doing well!</div>';
+      } else {
+        gapsContainer.innerHTML = '<div class="mini-bars">' + classGaps.map(function (gap) {
+          const severity = gap.severity || 'ok';
+          const severityIcon = severity === 'high' ? '🔴' : severity === 'medium' ? '🟡' : '🟢';
+          const severityLabel = severity === 'high' ? 'High' : severity === 'medium' ? 'Medium' : 'OK';
+          return '<div class="mini-bar">' +
+            '<div class="muted">' + esc(gap.type || 'Unknown') + ' ' + severityIcon + '</div>' +
+            '<div class="bar-track"><div class="bar-fill" style="width:' + (100 - Math.max(0, Math.min(100, gap.avgAccuracy || 0))) + '%"></div></div>' +
+            '<div style="text-align:right;font-size:12px">' + (gap.avgAccuracy || 0).toFixed(1) + '%</div>' +
+          '</div>';
+        }).join('') + '</div>';
+      }
+
+      // Top performers
+      const topContainer = document.getElementById('cohortTopPerformers');
+      if (topPerformers.length === 0) {
+        topContainer.innerHTML = '<div class="muted">No top performers yet.</div>';
+      } else {
+        const maxXP = Math.max(1, ...topPerformers.map(function(s) { return s.totalXP || 0; }));
+        topContainer.innerHTML = topPerformers.map(function (student) {
+          const barWidth = maxXP > 0 ? ((student.totalXP || 0) / maxXP) * 100 : 0;
+          return '<div class="mini-bar">' +
+            '<div class="muted">' + esc(student.name || 'Student') + '</div>' +
+            '<div class="bar-track"><div class="bar-fill" style="width:' + barWidth + '%"></div></div>' +
+            '<div style="text-align:right">' + (student.totalXP || 0) + ' XP</div>' +
+          '</div>';
+        }).join('');
+      }
+
+      // Struggling students
+      const strugglingContainer = document.getElementById('cohortStrugglingStudents');
+      if (struggling.length === 0) {
+        strugglingContainer.innerHTML = '<div class="muted">No struggling students detected.</div>';
+      } else {
+        strugglingContainer.innerHTML = struggling.slice(0, 5).map(function (student) {
+          const accuracy = Number(student.avgAccuracy || 0);
+          const xp = Number(student.totalXP || 0);
+          const note = xp === 0 ? 'No activity' : accuracy + '% accuracy';
+          return '<div class="mini-bar">' +
+            '<div class="muted">' + esc(student.name || 'Student') + '</div>' +
+            '<div class="bar-track"><div class="bar-fill" style="width:' + accuracy + '%"></div></div>' +
+            '<div style="text-align:right;font-size:12px">' + note + '</div>' +
+          '</div>';
+        }).join('');
+      }
+    }
+
+    // Export Analytics Functions
+    async function exportAnalyticsAsCSV() {
+      const btn = event.target.closest('button');
+      if (!btn) return;
+      
+      setLoading(btn, true, 'Exporting...');
+      try {
+        const response = await fetch('/api/creator/export/analytics?format=csv', {
+          method: 'GET',
+          headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
+        });
+        
+        if (!response.ok) {
+          const err = await response.json();
+          throw new Error(err.message || 'Export failed');
+        }
+        
+        const blob = await response.blob();
+        const filename = 'analytics-' + new Date().toISOString().split('T')[0] + '.csv';
+        downloadFile(blob, filename, 'text/csv');
+        showToast('Analytics exported as CSV successfully!', 'success');
+      } catch (err) {
+        console.error('CSV export error:', err);
+        showToast('Failed to export as CSV: ' + err.message, 'error');
+      } finally {
+        setLoading(btn, false, 'Export as CSV');
+      }
+    }
+
+    async function exportAnalyticsAsPDF() {
+      const btn = event.target.closest('button');
+      if (!btn) return;
+      
+      setLoading(btn, true, 'Generating PDF...');
+      try {
+        const response = await fetch('/api/creator/export/analytics?format=pdf', {
+          method: 'GET',
+          headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
+        });
+        
+        if (!response.ok) {
+          const err = await response.json();
+          throw new Error(err.message || 'Export failed');
+        }
+        
+        const data = await response.json();
+        
+        // Use jsPDF and html2canvas to generate PDF from HTML
+        if (typeof jsPDF === 'undefined' || typeof html2canvas === 'undefined') {
+          throw new Error('PDF libraries not loaded');
+        }
+        
+        // Create temporary container for HTML to canvas conversion
+        const container = document.createElement('div');
+        container.innerHTML = data.html;
+        container.style.position = 'fixed';
+        container.style.left = '-9999px';
+        container.style.top = '-9999px';
+        container.style.width = '210mm';
+        container.style.background = 'white';
+        document.body.appendChild(container);
+        
+        // Convert to canvas
+        const canvas = await html2canvas(container, {
+          scale: 2,
+          useCORS: true,
+          backgroundColor: '#ffffff'
+        });
+        
+        document.body.removeChild(container);
+        
+        // Create PDF from canvas
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        const pageWidth = pdf.internal.pageSize.getWidth();
+        const pageHeight = pdf.internal.pageSize.getHeight();
+        const imgWidth = pageWidth - 10; // 5mm margins
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        
+        let heightLeft = imgHeight;
+        let position = 5;
+        
+        // Add pages as needed
+        pdf.addImage(imgData, 'PNG', 5, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight - 10;
+        
+        while (heightLeft >= 0) {
+          position = heightLeft - imgHeight + 5;
+          pdf.addPage();
+          pdf.addImage(imgData, 'PNG', 5, position, imgWidth, imgHeight);
+          heightLeft -= pageHeight - 10;
+        }
+        
+        pdf.save(data.filename);
+        showToast('Analytics exported as PDF successfully!', 'success');
+      } catch (err) {
+        console.error('PDF export error:', err);
+        showToast('Failed to export as PDF: ' + err.message, 'error');
+      } finally {
+        setLoading(btn, false, 'Export as PDF');
+      }
+    }
+
+    function downloadFile(blob, filename, contentType) {
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = filename;
+      link.type = contentType;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    }
+
+    function openWordModal(id) {
+      var modal = document.getElementById('wordModal');
+      var editing = words.find(function (word) { return word._id === id; });
+      document.getElementById('wordModalTitle').textContent = editing ? 'Edit Word' : 'Add Word';
+      document.getElementById('editingWordId').value = editing ? editing._id : '';
+      document.getElementById('wordInput').value = editing ? editing.word || '' : '';
+      document.getElementById('definitionInput').value = editing ? editing.definition || '' : '';
+      document.getElementById('posInput').value = editing ? editing.partOfSpeech || 'other' : 'other';
+      document.getElementById('exampleInput').value = editing ? editing.example || '' : '';
+      document.getElementById('notesInput').value = editing ? editing.notes || '' : '';
+      document.getElementById('difficultyInput').value = editing ? editing.difficulty || 3 : 3;
+      document.getElementById('tagsInput').value = editing && Array.isArray(editing.tags) ? editing.tags.join(', ') : '';
+      modal.classList.add('open');
+    }
+
+    function closeWordModal() {
+      document.getElementById('wordModal').classList.remove('open');
+    }
+
+    async function saveWord() {
+      var word = document.getElementById('wordInput').value.trim();
+      var definition = document.getElementById('definitionInput').value.trim();
+      if (!word || !definition) {
+        showToast('Word and definition are required.', 'error');
+        return;
+      }
+
+      var payload = {
+        word: word,
+        definition: definition,
+        partOfSpeech: document.getElementById('posInput').value,
+        example: document.getElementById('exampleInput').value.trim(),
+        notes: document.getElementById('notesInput').value.trim(),
+        difficulty: parseInt(document.getElementById('difficultyInput').value, 10) || 3,
+        tags: document.getElementById('tagsInput').value.split(',').map(function (tag) { return tag.trim(); }).filter(Boolean)
+      };
+
+      var id = document.getElementById('editingWordId').value;
+      var btn = document.getElementById('saveWordBtn');
+      setLoading(btn, true, 'Saving...');
+      try {
+        if (id) {
+          var updated = await api.put('/words/' + id, payload);
+          var idx = words.findIndex(function (item) { return item._id === id; });
+          if (idx >= 0) words[idx] = updated.word;
+          showToast('Word updated.', 'success');
+        } else {
+          var created = await api.post('/words', payload);
+          words.unshift(created.word);
+          showToast('Word created.', 'success');
+        }
+        closeWordModal();
+        renderWords();
+        await Promise.all([loadStudents(), loadStats()]);
+      } catch (err) {
+        showToast(err.message, 'error');
+      } finally {
+        setLoading(btn, false);
+      }
+    }
+
+    async function deleteWord(id) {
+      if (!confirm('Delete this word?')) return;
+      try {
+        await api.delete('/words/' + id);
+        words = words.filter(function (word) { return word._id !== id; });
+        renderWords();
+        await Promise.all([loadStudents(), loadStats()]);
+        showToast('Word deleted.', 'info');
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+
+    function openImportModal() {
+      var input = document.getElementById('pdfInput');
+      if (input) input.value = '';
+      document.getElementById('importModal').classList.add('open');
+    }
+
+    function closeImportModal() {
+      document.getElementById('importModal').classList.remove('open');
+    }
+
+    function normalizeDocumentLine(line) {
+      return String(line || '')
+        .replace(/^#{1,6}\s*/, '')
+        .replace(/^\s*[•\-–—\u2022*]+\s*/, '')
+        .replace(/^\s*\d+[\)\.\-\s]+/, '')
+        .replace(/\s+/g, ' ')
+        .trim();
+    }
+
+    function looksLikeWordCandidate(line) {
+      return /^[A-Za-z][A-Za-z\s'’\-]{1,40}$/.test(line) && !/\b(the|and|for|with|from|into|about|that|this)\b/i.test(line);
+    }
+
+    function looksLikeDefinitionCandidate(line) {
+      return line.length >= 4 && !/^[A-Za-z][A-Za-z\s'’\-]{1,40}$/.test(line);
+    }
+
+    function extractWordsFromDocumentLines(lines, sourceLabel) {
+      var extracted = [];
+      var seen = {};
+      var normalizedLines = [];
+
+      lines.forEach(function (rawLine) {
+        var line = normalizeDocumentLine(rawLine);
+        if (line) normalizedLines.push(line);
+      });
+
+      for (var i = 0; i < normalizedLines.length; i += 1) {
+        var line = normalizedLines[i];
+        if (!line || line.length < 3) continue;
+
+        var match = line.match(/^([A-Za-z][A-Za-z\s'’\-]{1,40})\s*(?:[-–—:|=])\s*(.+)$/);
+        if (match) {
+          var word = match[1] ? match[1].trim() : '';
+          var definition = match[2] ? match[2].trim() : '';
+          if (word && definition) {
+            var key = word.toLowerCase();
+            if (!seen[key]) {
+              seen[key] = true;
+              extracted.push({
+                word: word,
+                definition: definition,
+                partOfSpeech: 'other',
+                example: '',
+                notes: 'Imported from ' + sourceLabel,
+                difficulty: 3,
+                tags: ['document-import']
+              });
+            }
+            continue;
+          }
+        }
+
+        if (looksLikeWordCandidate(line) && i + 1 < normalizedLines.length) {
+          var nextLine = normalizedLines[i + 1];
+          if (looksLikeDefinitionCandidate(nextLine) && nextLine.length >= 4) {
+            var pairedWord = line.trim();
+            var pairedDefinition = nextLine.trim();
+            var pairedKey = pairedWord.toLowerCase();
+            if (!seen[pairedKey]) {
+              seen[pairedKey] = true;
+              extracted.push({
+                word: pairedWord,
+                definition: pairedDefinition,
+                partOfSpeech: 'other',
+                example: '',
+                notes: 'Imported from ' + sourceLabel,
+                difficulty: 3,
+                tags: ['document-import']
+              });
+            }
+            i += 1;
+            continue;
+          }
+        }
+
+        var delimiterMatch = line.match(/^(.*?)\s[-–—:|=]\s(.+)$/);
+        if (delimiterMatch) {
+          var wordFromLine = delimiterMatch[1].trim();
+          var definitionFromLine = delimiterMatch[2].trim();
+          if (wordFromLine && definitionFromLine && wordFromLine.length <= 80 && definitionFromLine.length >= 4) {
+            var fallbackKey = wordFromLine.toLowerCase();
+            if (!seen[fallbackKey]) {
+              seen[fallbackKey] = true;
+              extracted.push({
+                word: wordFromLine,
+                definition: definitionFromLine,
+                partOfSpeech: 'other',
+                example: '',
+                notes: 'Imported from ' + sourceLabel,
+                difficulty: 3,
+                tags: ['document-import']
+              });
+            }
+          }
+        }
+      }
+
+      if (!extracted.length) {
+        for (var j = 0; j < normalizedLines.length; j += 1) {
+          var single = normalizedLines[j];
+          if (!looksLikeWordCandidate(single)) continue;
+
+          var cleanWord = single.trim();
+          var cleanKey = cleanWord.toLowerCase();
+          if (seen[cleanKey]) continue;
+          seen[cleanKey] = true;
+
+          extracted.push({
+            word: cleanWord,
+            definition: '',
+            partOfSpeech: 'other',
+            example: '',
+            notes: 'Imported from ' + sourceLabel,
+            difficulty: 3,
+            tags: ['document-import', 'auto-definition']
+          });
+        }
+      }
+
+      return extracted;
+    }
+
+    async function readPdfLines(file) {
+      var data = await file.arrayBuffer();
+
+      if (!window.pdfjsLib) {
+        throw new Error('PDF loader is not available. Please refresh the page.');
+      }
+
+      window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+      var pdf = await window.pdfjsLib.getDocument({ data: data }).promise;
+      var lines = [];
+
+      for (var pageNum = 1; pageNum <= pdf.numPages; pageNum += 1) {
+        var page = await pdf.getPage(pageNum);
+        var content = await page.getTextContent();
+
+        var current = '';
+        var lastY = null;
+
+        content.items.forEach(function (item) {
+          var text = String(item.str || '').trim();
+          if (!text) return;
+          var y = item.transform && item.transform.length >= 6 ? item.transform[5] : null;
+
+          if (lastY !== null && y !== null && Math.abs(y - lastY) > 2.5) {
+            if (current.trim()) lines.push(current.trim());
+            current = text;
+          } else {
+            current += (current ? ' ' : '') + text;
+          }
+
+          lastY = y;
+        });
+
+        if (current.trim()) lines.push(current.trim());
+      }
+
+      return lines;
+    }
+
+    async function readDocumentText(file) {
+      var name = String(file.name || '').toLowerCase();
+      var type = String(file.type || '').toLowerCase();
+
+      if (name.endsWith('.pdf') || type === 'application/pdf') {
+        return { lines: await readPdfLines(file), sourceLabel: 'PDF' };
+      }
+
+      if (name.endsWith('.docx') || type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
+        if (!window.mammoth) {
+          throw new Error('DOCX reader is not available. Please refresh the page.');
+        }
+        var docxResult = await window.mammoth.extractRawText({ arrayBuffer: await file.arrayBuffer() });
+        var text = docxResult && docxResult.value ? docxResult.value : '';
+        return { lines: text.split(/\r?\n/).map(function (line) { return line.trim(); }).filter(Boolean), sourceLabel: 'DOCX' };
+      }
+
+      if (name.endsWith('.txt') || name.endsWith('.md') || name.endsWith('.html') || name.endsWith('.htm') || name.endsWith('.rtf') || type === 'text/plain' || type === 'text/markdown' || type === 'text/html' || type === 'application/msword') {
+        var text = await file.text();
+        return { lines: text.split(/\r?\n/).map(function (line) { return line.trim(); }).filter(Boolean), sourceLabel: 'document' };
+      }
+
+      throw new Error('Unsupported file type. Please upload a PDF, DOCX, TXT, Markdown, HTML, or other text-based document.');
+    }
+
+    async function importDocumentFile() {
+      var input = document.getElementById('pdfInput');
+      var btn = document.getElementById('importPdfBtn');
+      var file = input && input.files && input.files[0] ? input.files[0] : null;
+
+      if (!file) {
+        showToast('Choose a document file first.', 'error');
+        return;
+      }
+
+      setLoading(btn, true, 'Importing...');
+      try {
+        var documentData = await readDocumentText(file);
+        var wordsToImport = extractWordsFromDocumentLines(documentData.lines, documentData.sourceLabel);
+
+        if (!wordsToImport.length) {
+          showToast('No vocabulary entries found in this file.', 'error');
+          return;
+        }
+
+        var result = await api.post('/words/bulk/import', { words: wordsToImport, autoGenerate: true });
+        closeImportModal();
+        await Promise.all([loadWords(), loadStudents(), loadStats()]);
+        var importedCount = Number(result && result.imported ? result.imported : wordsToImport.length);
+        var autoCount = Number(result && result.autoGenerated ? result.autoGenerated : 0);
+        var autoImages = Number(result && result.autoImages ? result.autoImages : 0);
+        var skippedDup = Number(result && result.skippedDuplicates ? result.skippedDuplicates : 0);
+        var skippedInvalid = Number(result && result.skippedInvalid ? result.skippedInvalid : 0);
+
+        var message = 'Imported ' + importedCount + ' words from ' + documentData.sourceLabel + '.';
+        if (autoCount > 0) message += ' Auto-created ' + autoCount + ' definitions.';
+        if (autoImages > 0) message += ' Auto-attached ' + autoImages + ' images.';
+        if (skippedDup > 0) message += ' Skipped duplicates: ' + skippedDup + '.';
+        if (skippedInvalid > 0) message += ' Skipped invalid: ' + skippedInvalid + '.';
+        showToast(message, 'success');
+      } catch (err) {
+        showToast(err.message || 'Document import failed.', 'error');
+      } finally {
+        setLoading(btn, false);
+      }
+    }
+
+    function exportCSV() {
+      var header = 'word,definition,partOfSpeech,example,notes,difficulty,tags';
+      var lines = words.map(function (word) {
+        return [
+          word.word,
+          word.definition,
+          word.partOfSpeech || 'other',
+          word.example || '',
+          word.notes || '',
+          word.difficulty || 3,
+          Array.isArray(word.tags) ? word.tags.join(';') : ''
+        ].map(function (value) {
+          var text = String(value).replace(/"/g, '""');
+          return '"' + text + '"';
+        }).join(',');
+      });
+      var blob = new Blob([header + '\n' + lines.join('\n')], { type: 'text/csv;charset=utf-8;' });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = 'vocabmaster-words.csv';
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function copyClassCode() {
+      var code = currentUser && currentUser.creatorCode ? currentUser.creatorCode : document.getElementById('classCode').textContent;
+      navigator.clipboard.writeText(code);
+      showToast('Creator code copied.', 'success');
+    }
+
+    function formatDate(value) {
+      if (!value) return 'Never';
+      var d = new Date(value);
+      if (Number.isNaN(d.getTime())) return 'Never';
+      return d.toLocaleDateString() + ' ' + d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    }
+
+    function logout() {
+      clearAuth();
+      window.location.href = '/login.html';
+    }
+
+    // ─── GOALS & ALERTS ───────────────────────────────────────────────────────
+
+    const METRIC_LABELS = {
+      accuracy: 'Class Accuracy',
+      avgXP: 'Avg XP per Student',
+      sessions: 'Avg Sessions/Student',
+      streak: 'Best Student Streak',
+      activeRate: 'Engagement Rate',
+      wordsLearned: 'Avg Words Learned',
+    };
+
+    const METRIC_UNITS = {
+      accuracy: '%',
+      avgXP: 'XP',
+      sessions: 'sessions',
+      streak: 'days',
+      activeRate: '%',
+      wordsLearned: 'words',
+    };
+
+    const STATUS_LABELS = {
+      achieved: '✅ Achieved',
+      on_track: '🟣 On Track',
+      at_risk: '⚠️ At Risk',
+      behind: '🔴 Behind',
+      not_started: '⚪ Not Started',
+    };
+
+    const TIMEFRAME_LABELS = { weekly: 'Weekly', monthly: 'Monthly', allTime: 'All Time' };
+
+    async function loadGoalsProgress() {
+      try {
+        const data = await api.get('/creator/goals/progress');
+        goalsProgress = data.goalsProgress || [];
+        renderGoals();
+        renderGoalAlerts();
+        updateGoalsTabBadge();
+      } catch (err) {
+        console.warn('Goals load error:', err.message);
+        goalsProgress = [];
+        renderGoals();
+      }
+    }
+
+    function renderGoals() {
+      const grid = document.getElementById('goalsGrid');
+      if (!grid) return;
+
+      if (!goalsProgress || goalsProgress.length === 0) {
+        grid.innerHTML = `
+          <div class="goals-empty" style="grid-column:1/-1">
+            <div class="goals-empty-icon">🎯</div>
+            <h3>No goals yet</h3>
+            <p>Set targets for your class — accuracy, XP, engagement, and more.<br>We'll track actual vs goal and alert you when action is needed.</p>
+            <button class="btn btn-primary" style="margin-top:16px" onclick="openGoalModal()">Create First Goal</button>
+          </div>`;
+        return;
+      }
+
+      grid.innerHTML = goalsProgress.map(function(g) {
+        var fillPct = Math.min(g.pct || 0, 100);
+        var statusClass = 'goal-' + g.status;
+        var badgeClass = 'badge-' + g.status;
+        var fillClass = 'goal-fill-' + g.status;
+        var statusLabel = STATUS_LABELS[g.status] || g.status;
+        var metricLabel = METRIC_LABELS[g.metric] || g.metric;
+        var unit = METRIC_UNITS[g.metric] || g.unit || '';
+        var timeLabel = TIMEFRAME_LABELS[g.timeframe] || g.timeframe;
+
+        return `
+          <div class="goal-card ${statusClass}">
+            <div class="goal-header">
+              <div>
+                <div class="goal-label">${escapeHtml(g.label)}</div>
+                <div style="font-size:12px;color:#6b7280;margin-top:3px;">${metricLabel} · ${timeLabel}</div>
+              </div>
+              <span class="goal-badge ${badgeClass}">${statusLabel}</span>
+            </div>
+            <div class="goal-numbers">
+              <span class="goal-actual">${formatGoalNumber(g.actual, g.metric)}</span>
+              <span class="goal-slash">/</span>
+              <span class="goal-target">${formatGoalNumber(g.target, g.metric)}</span>
+              <span class="goal-unit">${unit}</span>
+            </div>
+            <div class="goal-track">
+              <div class="${fillClass} bar-fill" style="width:${fillPct}%;height:100%;border-radius:999px;transition:width .6s ease;"></div>
+            </div>
+            <div class="goal-meta">
+              <span>${fillPct}% of target</span>
+              <span>${g.description || ''}</span>
+            </div>
+            <div class="goal-actions">
+              <button class="btn btn-secondary" style="padding:6px 12px;font-size:12px;" onclick="openGoalModal('${g._id}')">✏️ Edit</button>
+              <button class="btn btn-danger" style="padding:6px 12px;font-size:12px;" onclick="deleteGoal('${g._id}')">🗑 Delete</button>
+            </div>
+          </div>`;
+      }).join('');
+    }
+
+    function formatGoalNumber(val, metric) {
+      if (metric === 'accuracy' || metric === 'activeRate') return Number(val).toFixed(1);
+      return Math.round(Number(val));
+    }
+
+    function renderGoalAlerts() {
+      var container = document.getElementById('goalAlerts');
+      if (!container) return;
+
+      var alerts = [];
+      goalsProgress.forEach(function(g) {
+        var key = 'alert_' + g._id + '_' + g.status;
+        if (dismissedAlerts[key]) return;
+
+        var status = g.status || 'not_started';
+        var message = '';
+        var alertType = 'on_track';
+
+        if (status === 'achieved') {
+          alertType = 'achieved';
+          message = '🎉 Goal achieved: "' + escapeHtml(g.label) + '" — ' + formatGoalNumber(g.actual, g.metric) + ' ' + (METRIC_UNITS[g.metric] || '') + ' reached.';
+        } else if (status === 'at_risk') {
+          alertType = 'at_risk';
+          message = '⚠️ At risk: "' + escapeHtml(g.label) + '" is at ' + (g.pct || 0) + '% of target (' + formatGoalNumber(g.actual, g.metric) + '/' + formatGoalNumber(g.target, g.metric) + ' ' + (METRIC_UNITS[g.metric] || '') + ').';
+        } else if (status === 'behind') {
+          alertType = 'behind';
+          message = '🔴 Behind: "' + escapeHtml(g.label) + '" is only at ' + (g.pct || 0) + '% of target. Urgent action is recommended.';
+        } else if (status === 'on_track') {
+          alertType = 'on_track';
+          message = '🟣 On track: "' + escapeHtml(g.label) + '" is progressing well at ' + (g.pct || 0) + '% of target.';
+        }
+
+        if (message) {
+          alerts.push({ key: key, type: alertType, msg: message });
+        }
+      });
+
+      var alertOrder = { behind: 0, at_risk: 1, achieved: 2, on_track: 3 };
+      alerts.sort(function(a, b) {
+        return (alertOrder[a.type] || 4) - (alertOrder[b.type] || 4);
+      });
+
+      if (alerts.length === 0) {
+        container.innerHTML = '<div class="alert-bar alert-on_track alerts-empty">No active alerts right now.</div>';
+        return;
+      }
+
+      container.innerHTML = alerts.map(function(a) {
+        return `<div class="alert-bar alert-${a.type}" id="alertBar_${a.key}">
+          <span>${a.msg}</span>
+          <button class="alert-dismiss" onclick="dismissAlert('${a.key}')" title="Dismiss">×</button>
+        </div>`;
+      }).join('');
+    }
+
+    function dismissAlert(key) {
+      dismissedAlerts[key] = true;
+      localStorage.setItem('vmDismissedAlerts', JSON.stringify(dismissedAlerts));
+      var el = document.getElementById('alertBar_' + key);
+      if (el) el.remove();
+      updateGoalsTabBadge();
+    }
+
+    function updateGoalsTabBadge() {
+      var tab = document.getElementById('goalsTab');
+      if (!tab) return;
+      var urgent = goalsProgress.filter(function(g) {
+        var key = 'alert_' + g._id + '_' + g.status;
+        return (g.status === 'at_risk' || g.status === 'behind') && !dismissedAlerts[key];
+      }).length;
+
+      var existing = tab.querySelector('.tab-badge');
+      if (existing) existing.remove();
+      if (urgent > 0) {
+        var badge = document.createElement('span');
+        badge.className = 'tab-badge';
+        badge.textContent = urgent;
+        tab.appendChild(badge);
+      }
+    }
+
+    // ─── Goal modal helpers ───────────────────────────────────────────────────
+
+    function openGoalModal(goalId) {
+      var modal = document.getElementById('goalModal');
+      var titleEl = document.getElementById('goalModalTitle');
+      var idEl = document.getElementById('editingGoalId');
+      var labelEl = document.getElementById('goalLabel');
+      var metricEl = document.getElementById('goalMetric');
+      var targetEl = document.getElementById('goalTarget');
+      var timeframeEl = document.getElementById('goalTimeframe');
+
+      if (goalId) {
+        var existing = goalsProgress.find(function(g) { return g._id === goalId; });
+        if (!existing) return;
+        titleEl.textContent = 'Edit Goal';
+        idEl.value = goalId;
+        labelEl.value = existing.label || '';
+        metricEl.value = existing.metric || 'accuracy';
+        targetEl.value = existing.target || '';
+        timeframeEl.value = existing.timeframe || 'monthly';
+      } else {
+        titleEl.textContent = 'New Goal';
+        idEl.value = '';
+        labelEl.value = '';
+        metricEl.value = 'accuracy';
+        targetEl.value = '';
+        timeframeEl.value = 'monthly';
+      }
+
+      updateGoalTargetHint();
+      modal.classList.add('open');
+      setTimeout(function() { labelEl.focus(); }, 100);
+    }
+
+    function closeGoalModal() {
+      document.getElementById('goalModal').classList.remove('open');
+    }
+
+    function updateGoalTargetHint() {
+      var metric = document.getElementById('goalMetric').value;
+      var hintEl = document.getElementById('goalTargetHint');
+      var currentHintBox = document.getElementById('goalCurrentHint');
+      var currentValEl = document.getElementById('goalCurrentValue');
+
+      var hints = {
+        accuracy: '(0–100)',
+        avgXP: '(e.g. 500)',
+        sessions: '(e.g. 10)',
+        streak: '(days, e.g. 7)',
+        activeRate: '(0–100)',
+        wordsLearned: '(e.g. 20)',
+      };
+      hintEl.textContent = hints[metric] || '';
+
+      // Show current class value if we have cohortAnalytics
+      if (cohortAnalytics) {
+        var current = getCurrentMetricValue(metric, cohortAnalytics);
+        if (current !== null) {
+          var unit = METRIC_UNITS[metric] || '';
+          currentValEl.textContent = current + ' ' + unit;
+          currentHintBox.style.display = 'block';
+        } else {
+          currentHintBox.style.display = 'none';
+        }
+      }
+    }
+
+    function getCurrentMetricValue(metric, analytics) {
+      if (!analytics) return null;
+      var ov = analytics.overview || {};
+      switch (metric) {
+        case 'accuracy': return ov.avgAccuracy || 0;
+        case 'avgXP': return ov.avgXP || 0;
+        case 'sessions': return ov.avgSessions || 0;
+        case 'streak': return (analytics.vocabularyMetadata && analytics.vocabularyMetadata.bestStreak) || 0;
+        case 'activeRate': return ov.totalStudents > 0 ? Math.round((ov.activeStudents / ov.totalStudents) * 100) : 0;
+        case 'wordsLearned': return null; // not directly available
+        default: return null;
+      }
+    }
+
+    async function saveGoal() {
+      var goalId = document.getElementById('editingGoalId').value;
+      var label = document.getElementById('goalLabel').value.trim();
+      var metric = document.getElementById('goalMetric').value;
+      var target = parseFloat(document.getElementById('goalTarget').value);
+      var timeframe = document.getElementById('goalTimeframe').value;
+
+      if (!label) { showToast('Goal label is required.', 'error'); return; }
+      if (!target || isNaN(target) || target <= 0) { showToast('Target must be a positive number.', 'error'); return; }
+
+      try {
+        if (goalId) {
+          await api.put('/creator/goals/' + goalId, { label, metric, target, timeframe });
+          showToast('Goal updated!', 'success');
+        } else {
+          await api.post('/creator/goals', { label, metric, target, timeframe });
+          showToast('Goal created!', 'success');
+        }
+        closeGoalModal();
+        await loadGoalsProgress();
+      } catch (err) {
+        showToast(err.message || 'Failed to save goal.', 'error');
+      }
+    }
+
+    async function deleteGoal(goalId) {
+      if (!confirm('Delete this goal?')) return;
+      try {
+        await api.delete('/creator/goals/' + goalId);
+        showToast('Goal deleted.', 'success');
+        // Clear any dismissed alerts for this goal
+        Object.keys(dismissedAlerts).forEach(function(k) {
+          if (k.startsWith('alert_' + goalId)) delete dismissedAlerts[k];
+        });
+        localStorage.setItem('vmDismissedAlerts', JSON.stringify(dismissedAlerts));
+        await loadGoalsProgress();
+      } catch (err) {
+        showToast(err.message || 'Failed to delete goal.', 'error');
+      }
+    }
+
+    function escapeHtml(str) {
+      return String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    init();
+  </script>
+  
+  <!-- PDF Export Libraries -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</body>
+</html>

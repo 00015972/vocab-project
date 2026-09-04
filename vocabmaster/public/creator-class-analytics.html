@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Class Analytics - Taleem Lexicon</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --emerald: #50C878;
+      --emerald-dark: #2d7a5c;
+      --gold: #D4AF37;
+      --ink: #0f172a;
+      --slate: #334155;
+      --muted: #64748b;
+      --panel: rgba(255,255,255,0.92);
+      --line: rgba(15,23,42,0.10);
+      --red: #dc2626;
+      --orange: #f97316;
+      --blue: #3b82f6;
+      --bg: #f0fdf4;
+    }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      min-height: 100vh;
+    }
+
+    /* NAV */
+    .topbar {
+      background: var(--panel);
+      border-bottom: 1px solid var(--line);
+      padding: 0 28px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(10px);
+    }
+    .topbar-brand {
+      font-weight: 800;
+      font-size: 18px;
+      color: var(--emerald);
+      text-decoration: none;
+    }
+    .topbar-actions { display: flex; gap: 10px; align-items: center; }
+    .btn {
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .btn-outline {
+      background: transparent;
+      border: 1px solid var(--line);
+      color: var(--slate);
+    }
+    .btn-outline:hover { background: rgba(80,200,120,0.08); border-color: var(--emerald); color: var(--emerald); }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--emerald) 0%, var(--emerald-dark) 100%);
+      color: white;
+    }
+    .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(80,200,120,0.3); }
+
+    /* HERO */
+    .hero {
+      background: linear-gradient(135deg, #0f172a 0%, #1e3a2e 50%, #0f2d1a 100%);
+      color: white;
+      padding: 40px 28px 36px;
+    }
+    .hero-inner { max-width: 1200px; margin: 0 auto; }
+    .hero-label {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--emerald);
+      margin-bottom: 8px;
+    }
+    .hero h1 { font-size: clamp(22px, 4vw, 32px); font-weight: 800; margin-bottom: 6px; }
+    .hero p { font-size: 14px; color: rgba(255,255,255,0.6); margin-bottom: 20px; }
+    .hero-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 16px;
+      margin-top: 24px;
+    }
+    .hero-stat {
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 14px;
+      padding: 16px;
+      text-align: center;
+    }
+    .hero-stat-value { font-size: 26px; font-weight: 800; color: var(--emerald); }
+    .hero-stat-label { font-size: 11px; color: rgba(255,255,255,0.55); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+    /* LAYOUT */
+    .page-body { max-width: 1200px; margin: 0 auto; padding: 28px; }
+    .card {
+      background: var(--panel);
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      box-shadow: 0 4px 20px rgba(15,23,42,0.06);
+      overflow: hidden;
+    }
+    .card-header {
+      padding: 20px 24px 16px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .card-header h2 { font-size: 16px; font-weight: 700; color: var(--ink); }
+    .card-header p { font-size: 12px; color: var(--muted); margin-top: 2px; }
+    .card-body { padding: 20px 24px; }
+
+    /* GRID */
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    @media (max-width: 900px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
+
+    /* STUDENT TABLE */
+    .student-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .student-table th {
+      padding: 10px 12px;
+      text-align: left;
+      background: rgba(80,200,120,0.08);
+      color: var(--slate);
+      font-weight: 700;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .student-table th:hover { background: rgba(80,200,120,0.14); }
+    .student-table th.sorted { color: var(--emerald); }
+    .student-table td { padding: 12px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+    .student-table tr:last-child td { border-bottom: none; }
+    .student-table tr:hover td { background: rgba(80,200,120,0.03); }
+    .acc-badge {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 12px;
+    }
+    .acc-high { background: rgba(80,200,120,0.12); color: #1a7a4a; }
+    .acc-mid { background: rgba(249,115,22,0.12); color: #b45309; }
+    .acc-low { background: rgba(220,38,38,0.12); color: #991b1b; }
+    .acc-none { background: rgba(100,116,139,0.1); color: var(--muted); }
+    .student-name { font-weight: 600; color: var(--ink); }
+    .student-email { font-size: 11px; color: var(--muted); }
+
+    /* SKILL GAP CARDS */
+    .gap-card {
+      padding: 14px 16px;
+      border-radius: 10px;
+      border-left: 4px solid;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .gap-card.high { background: rgba(220,38,38,0.08); border-color: var(--red); }
+    .gap-card.medium { background: rgba(249,115,22,0.08); border-color: var(--orange); }
+    .gap-label { font-size: 13px; font-weight: 600; }
+    .gap-label .sub { font-size: 11px; font-weight: 400; color: var(--muted); margin-top: 2px; }
+    .gap-stat { text-align: right; }
+    .gap-stat .val { font-size: 15px; font-weight: 700; }
+    .gap-stat .sub { font-size: 11px; color: var(--muted); }
+
+    /* TOP PERFORMERS */
+    .performer-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--line);
+    }
+    .performer-row:last-child { border-bottom: none; }
+    .performer-rank {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: rgba(80,200,120,0.12);
+      color: var(--emerald);
+      font-weight: 800;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .performer-rank.gold { background: rgba(212,175,55,0.15); color: var(--gold); }
+    .performer-rank.silver { background: rgba(148,163,184,0.15); color: #94a3b8; }
+    .performer-rank.bronze { background: rgba(180,100,30,0.12); color: #b45309; }
+    .performer-info { flex: 1; }
+    .performer-name { font-weight: 600; font-size: 13px; }
+    .performer-meta { font-size: 11px; color: var(--muted); }
+    .performer-xp { font-weight: 700; color: var(--emerald); font-size: 14px; }
+
+    /* STRUGGLING */
+    .struggling-row {
+      padding: 10px 14px;
+      background: rgba(220,38,38,0.06);
+      border-left: 3px solid var(--red);
+      border-radius: 6px;
+      margin-bottom: 8px;
+      font-size: 13px;
+    }
+    .struggling-row .name { font-weight: 600; color: var(--ink); }
+    .struggling-row .reason { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+    /* FILTER BAR */
+    .filter-bar {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+      padding: 14px 24px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(80,200,120,0.03);
+    }
+    .filter-bar input, .filter-bar select {
+      padding: 7px 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      font-size: 13px;
+      font-family: 'Poppins', sans-serif;
+      background: white;
+      color: var(--ink);
+    }
+    .filter-bar input:focus, .filter-bar select:focus { outline: none; border-color: var(--emerald); }
+    .filter-label { font-size: 12px; font-weight: 600; color: var(--muted); }
+
+    /* STATUS */
+    .loading-msg { padding: 32px; text-align: center; color: var(--muted); font-size: 14px; }
+    .empty-msg { padding: 28px 20px; text-align: center; color: var(--muted); font-size: 13px; background: rgba(100,116,139,0.05); border-radius: 10px; }
+    .sort-icon { font-size: 10px; margin-left: 4px; opacity: 0.5; }
+    .sort-icon.active { opacity: 1; }
+    .activity-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 6px; }
+    .active-dot { background: var(--emerald); }
+    .inactive-dot { background: #cbd5e1; }
+
+    /* SECTION HEADING */
+    .section-row { margin: 28px 0 16px; display: flex; align-items: center; justify-content: space-between; }
+    .section-row h2 { font-size: 16px; font-weight: 700; color: var(--ink); }
+    .section-row p { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+    /* CREATOR ACCESS BANNER */
+    .access-banner {
+      padding: 40px 28px;
+      text-align: center;
+      display: none;
+    }
+    .access-banner h2 { font-size: 22px; font-weight: 700; margin-bottom: 8px; color: var(--ink); }
+    .access-banner p { color: var(--muted); margin-bottom: 20px; }
+  </style>
+</head>
+<body>
+
+  <!-- TOPBAR -->
+  <nav class="topbar">
+    <a href="/creator-dashboard-v3.html" class="topbar-brand">Taleem Lexicon</a>
+    <div class="topbar-actions">
+      <a href="/creator-dashboard-v3.html" class="btn btn-outline">← Dashboard</a>
+      <button class="btn btn-primary" id="exportCsvBtn">⬇️ Export CSV</button>
+    </div>
+  </nav>
+
+  <!-- ACCESS DENIED (shown if not creator) -->
+  <div class="access-banner" id="accessBanner">
+    <h2>🔒 Creator Access Required</h2>
+    <p>This analytics page is only available to creators. Please log in as a creator to view class-level analytics.</p>
+    <a href="creator-portal.html" class="btn btn-primary">Enter Creator Portal</a>
+  </div>
+
+  <!-- HERO -->
+  <div class="hero" id="heroSection">
+    <div class="hero-inner">
+      <div class="hero-label">Class Analytics</div>
+      <h1 id="heroTitle">Loading class data...</h1>
+      <p id="heroDesc">Cohort-level performance for all your students.</p>
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <div class="hero-stat-value" id="statTotal">—</div>
+          <div class="hero-stat-label">Total Students</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-value" id="statActive">—</div>
+          <div class="hero-stat-label">Active Students</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-value" id="statAvgXP">—</div>
+          <div class="hero-stat-label">Avg XP / Student</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-value" id="statAvgAcc">—</div>
+          <div class="hero-stat-label">Class Avg Accuracy</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-value" id="statAvgSessions">—</div>
+          <div class="hero-stat-label">Avg Sessions</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-value" id="statTotalSessions">—</div>
+          <div class="hero-stat-label">Total Sessions</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE BODY -->
+  <div class="page-body" id="pageBody">
+
+    <!-- TOP PERFORMERS + STRUGGLING + SKILL GAPS -->
+    <div class="grid-3" style="margin-top: 0;">
+
+      <!-- Top Performers -->
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h2>🏆 Top Performers</h2>
+            <p>Highest XP earners in your class</p>
+          </div>
+        </div>
+        <div class="card-body" id="topPerformersList">
+          <div class="loading-msg">Loading...</div>
+        </div>
+      </div>
+
+      <!-- Struggling Students -->
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h2>🆘 Needs Attention</h2>
+            <p>Students with zero activity or low accuracy</p>
+          </div>
+        </div>
+        <div class="card-body" id="strugglingList">
+          <div class="loading-msg">Loading...</div>
+        </div>
+      </div>
+
+      <!-- Class Skill Gaps -->
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h2>🚨 Class Skill Gaps</h2>
+            <p>Exercise types where students are weakest</p>
+          </div>
+        </div>
+        <div class="card-body" id="classSkillGaps">
+          <div class="loading-msg">Loading...</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- STUDENT TABLE -->
+    <div class="card" style="margin-top: 24px;">
+      <div class="card-header">
+        <div>
+          <h2>👥 All Students</h2>
+          <p>Full class performance breakdown — click column headers to sort</p>
+        </div>
+      </div>
+      <div class="filter-bar">
+        <span class="filter-label">Filter:</span>
+        <input type="text" id="studentSearch" placeholder="Search by name or email..." style="width: 220px;">
+        <select id="activityFilter">
+          <option value="">All students</option>
+          <option value="active">Active only</option>
+          <option value="inactive">Inactive only</option>
+          <option value="struggling">Struggling (acc &lt; 70%)</option>
+        </select>
+      </div>
+      <div style="overflow-x: auto;">
+        <table class="student-table">
+          <thead>
+            <tr>
+              <th data-col="name">Student <span class="sort-icon" id="sort-name">↕</span></th>
+              <th data-col="totalXP" class="sorted">XP <span class="sort-icon active" id="sort-totalXP">↓</span></th>
+              <th data-col="sessionsCompleted">Sessions <span class="sort-icon" id="sort-sessionsCompleted">↕</span></th>
+              <th data-col="avgAccuracy">Accuracy <span class="sort-icon" id="sort-avgAccuracy">↕</span></th>
+              <th data-col="wordsLearned">Words <span class="sort-icon" id="sort-wordsLearned">↕</span></th>
+              <th data-col="streak">Streak <span class="sort-icon" id="sort-streak">↕</span></th>
+              <th data-col="lastActivityDate">Last Active <span class="sort-icon" id="sort-lastActivityDate">↕</span></th>
+            </tr>
+          </thead>
+          <tbody id="studentTableBody">
+            <tr><td colspan="7" class="loading-msg">Loading students...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div><!-- /page-body -->
+
+  <script>
+    // ── Auth Utilities ──────────────────────────────────────────────
+    function getUser() {
+      try { return JSON.parse(localStorage.getItem('user') || sessionStorage.getItem('user') || 'null'); } catch { return null; }
+    }
+    function getToken() {
+      return localStorage.getItem('token') || sessionStorage.getItem('token') || '';
+    }
+
+    const api = {
+      get: async (path) => {
+        const res = await fetch(`/api${path}`, {
+          headers: { Authorization: `Bearer ${getToken()}` }
+        });
+        if (!res.ok) throw new Error(`API error ${res.status}`);
+        return res.json();
+      }
+    };
+
+    function labelForMode(type) {
+      const map = {
+        flashcards: '🎴 Flashcards', quiz: '❓ Quiz', matching: '🎯 Matching',
+        spelling: '✏️ Spelling', listening: '🎧 Listening', speaking: '🗣️ Speaking',
+        other: '📝 Other', session: '📝 Session',
+      };
+      const t = String(type || 'other').toLowerCase().trim();
+      return map[t] || (t.charAt(0).toUpperCase() + t.slice(1));
+    }
+
+    function formatDate(val) {
+      if (!val) return 'Never';
+      const d = new Date(val);
+      if (isNaN(d)) return 'Never';
+      const now = new Date();
+      const diff = Math.floor((now - d) / (1000 * 60 * 60 * 24));
+      if (diff === 0) return 'Today';
+      if (diff === 1) return 'Yesterday';
+      if (diff < 7) return `${diff}d ago`;
+      return d.toLocaleDateString();
+    }
+
+    // ── State ───────────────────────────────────────────────────────
+    let allStudents = [];
+    let sortCol = 'totalXP';
+    let sortDir = 'desc';
+
+    // ── Render: Top Performers ──────────────────────────────────────
+    function renderTopPerformers(topPerformers) {
+      const el = document.getElementById('topPerformersList');
+      if (!topPerformers?.length) {
+        el.innerHTML = '<div class="empty-msg">No active students yet.</div>';
+        return;
+      }
+      const medals = ['gold', 'silver', 'bronze'];
+      const nums = ['1', '2', '3'];
+      el.innerHTML = topPerformers.map((s, i) => `
+        <div class="performer-row">
+          <div class="performer-rank ${medals[i] || ''}">${nums[i] || i + 1}</div>
+          <div class="performer-info">
+            <div class="performer-name">${s.name}</div>
+            <div class="performer-meta">${s.sessionsCompleted} sessions · ${s.avgAccuracy}% acc</div>
+          </div>
+          <div class="performer-xp">+${s.totalXP} XP</div>
+        </div>
+      `).join('');
+    }
+
+    // ── Render: Struggling ──────────────────────────────────────────
+    function renderStruggling(struggling) {
+      const el = document.getElementById('strugglingList');
+      if (!struggling?.length) {
+        el.innerHTML = '<div class="empty-msg" style="background:rgba(80,200,120,0.08);">✅ No struggling students right now!</div>';
+        return;
+      }
+      el.innerHTML = struggling.map((s) => {
+        const reason = s.totalXP === 0
+          ? 'No activity recorded yet'
+          : `Low accuracy: ${s.avgAccuracy}%`;
+        return `
+          <div class="struggling-row">
+            <div class="name">${s.name}</div>
+            <div class="reason">${reason} · ${s.sessionsCompleted} sessions</div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // ── Render: Class Skill Gaps ────────────────────────────────────
+    function renderClassSkillGaps(gaps) {
+      const el = document.getElementById('classSkillGaps');
+      if (!gaps?.length) {
+        el.innerHTML = '<div class="empty-msg" style="background:rgba(80,200,120,0.08);">✅ No class-wide skill gaps detected!</div>';
+        return;
+      }
+      el.innerHTML = gaps.map((g) => `
+        <div class="gap-card ${g.severity}" style="margin-bottom: 10px;">
+          <div class="gap-label">
+            ${labelForMode(g.type)}
+            <div class="sub">${g.studentCount} student${g.studentCount === 1 ? '' : 's'} · ${g.totalSessions} sessions</div>
+          </div>
+          <div class="gap-stat">
+            <div class="val" style="color:${g.severity === 'high' ? 'var(--red)' : 'var(--orange)'}">${g.avgAccuracy}%</div>
+            <div class="sub">class avg</div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // ── Render: Student Table ───────────────────────────────────────
+    function renderStudentTable() {
+      const search = document.getElementById('studentSearch').value.trim().toLowerCase();
+      const filter = document.getElementById('activityFilter').value;
+
+      let rows = [...allStudents];
+
+      // Filter
+      if (search) {
+        rows = rows.filter((s) =>
+          s.name.toLowerCase().includes(search) || s.email.toLowerCase().includes(search)
+        );
+      }
+      if (filter === 'active') rows = rows.filter((s) => s.totalXP > 0 || s.sessionsCompleted > 0);
+      if (filter === 'inactive') rows = rows.filter((s) => s.totalXP === 0 && s.sessionsCompleted === 0);
+      if (filter === 'struggling') rows = rows.filter((s) => s.sessionsCompleted > 0 && s.avgAccuracy < 70);
+
+      // Sort
+      rows.sort((a, b) => {
+        let av = a[sortCol], bv = b[sortCol];
+        if (sortCol === 'name') { av = av?.toLowerCase() || ''; bv = bv?.toLowerCase() || ''; }
+        if (sortCol === 'lastActivityDate') { av = av ? new Date(av).getTime() : 0; bv = bv ? new Date(bv).getTime() : 0; }
+        if (sortDir === 'asc') return av > bv ? 1 : av < bv ? -1 : 0;
+        return av < bv ? 1 : av > bv ? -1 : 0;
+      });
+
+      const tbody = document.getElementById('studentTableBody');
+      if (!rows.length) {
+        tbody.innerHTML = '<tr><td colspan="7" style="padding:20px;text-align:center;color:var(--muted);">No students match the filter.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = rows.map((s) => {
+        const isActive = s.totalXP > 0 || s.sessionsCompleted > 0;
+        const accClass = s.sessionsCompleted === 0 ? 'acc-none'
+          : s.avgAccuracy >= 80 ? 'acc-high'
+          : s.avgAccuracy >= 65 ? 'acc-mid' : 'acc-low';
+        const accLabel = s.sessionsCompleted === 0 ? '—' : `${s.avgAccuracy}%`;
+        return `
+          <tr>
+            <td>
+              <span class="activity-dot ${isActive ? 'active-dot' : 'inactive-dot'}"></span>
+              <span class="student-name">${s.name}</span>
+              <div class="student-email">${s.email}</div>
+            </td>
+            <td style="font-weight:700;color:var(--emerald);">${s.totalXP}</td>
+            <td style="color:var(--slate);">${s.sessionsCompleted}</td>
+            <td><span class="acc-badge ${accClass}">${accLabel}</span></td>
+            <td style="color:var(--slate);">${s.wordsLearned}</td>
+            <td style="color:var(--slate);">${s.streak > 0 ? s.streak + 'd' : '—'}</td>
+            <td style="color:var(--muted);font-size:12px;">${formatDate(s.lastActivityDate)}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // ── Sort Headers ────────────────────────────────────────────────
+    document.querySelectorAll('.student-table th[data-col]').forEach((th) => {
+      th.addEventListener('click', () => {
+        const col = th.dataset.col;
+        if (sortCol === col) {
+          sortDir = sortDir === 'desc' ? 'asc' : 'desc';
+        } else {
+          sortCol = col;
+          sortDir = 'desc';
+        }
+
+        // Update header styles
+        document.querySelectorAll('.student-table th').forEach((h) => h.classList.remove('sorted'));
+        document.querySelectorAll('.sort-icon').forEach((ic) => { ic.textContent = '↕'; ic.classList.remove('active'); });
+        th.classList.add('sorted');
+        const icon = document.getElementById(`sort-${col}`);
+        if (icon) { icon.textContent = sortDir === 'desc' ? '↓' : '↑'; icon.classList.add('active'); }
+
+        renderStudentTable();
+      });
+    });
+
+    // Filter events
+    document.getElementById('studentSearch').addEventListener('input', renderStudentTable);
+    document.getElementById('activityFilter').addEventListener('change', renderStudentTable);
+
+    // ── Export CSV ──────────────────────────────────────────────────
+    document.getElementById('exportCsvBtn').addEventListener('click', async () => {
+      try {
+        const res = await fetch('/api/creator/export-progress', {
+          headers: { Authorization: `Bearer ${getToken()}` }
+        });
+        if (!res.ok) throw new Error('Export failed');
+        const blob = await res.blob();
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `class-analytics-${new Date().toISOString().split('T')[0]}.csv`;
+        a.click();
+        URL.revokeObjectURL(url);
+      } catch (e) {
+        alert('Export failed. Please try again.');
+      }
+    });
+
+    // ── Init ────────────────────────────────────────────────────────
+    async function init() {
+      const user = getUser();
+
+      if (!user) {
+        window.location.replace('creator-portal.html');
+        return;
+      }
+
+      if (user.role !== 'creator') {
+        document.getElementById('heroSection').style.display = 'none';
+        document.getElementById('pageBody').style.display = 'none';
+        document.getElementById('accessBanner').style.display = 'block';
+        return;
+      }
+
+      try {
+        const data = await api.get('/creator/cohort-analytics');
+
+        // Hero overview
+        const ov = data.overview || {};
+        document.getElementById('heroTitle').textContent = `${user.name}'s Class Analytics`;
+        document.getElementById('heroDesc').textContent = `Real-time performance overview for all ${ov.totalStudents || 0} students.`;
+        document.getElementById('statTotal').textContent = ov.totalStudents ?? '—';
+        document.getElementById('statActive').textContent = ov.activeStudents ?? '—';
+        document.getElementById('statAvgXP').textContent = ov.avgXP ?? '—';
+        document.getElementById('statAvgAcc').textContent = ov.avgAccuracy != null ? `${ov.avgAccuracy}%` : '—';
+        document.getElementById('statAvgSessions').textContent = ov.avgSessions ?? '—';
+        document.getElementById('statTotalSessions').textContent = ov.totalSessionsAll ?? '—';
+
+        // Store and render
+        allStudents = Array.isArray(data.students) ? data.students : [];
+        renderTopPerformers(data.topPerformers);
+        renderStruggling(data.struggling);
+        renderClassSkillGaps(data.classSkillGaps);
+        renderStudentTable();
+
+      } catch (err) {
+        console.error('Failed to load cohort analytics:', err);
+        document.getElementById('pageBody').innerHTML = `
+          <div style="padding:48px; text-align:center; color:var(--muted);">
+            <div style="font-size:40px;margin-bottom:12px;">⚠️</div>
+            <p style="font-size:15px;">Failed to load class analytics. Make sure you are logged in as a creator.</p>
+            <a href="creator-portal.html" class="btn btn-primary" style="margin-top:16px;">Open Creator Portal</a>
+          </div>`;
+      }
+    }
+
+    init();
+  </script>
+
+</body>
+</html>

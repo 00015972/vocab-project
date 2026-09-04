@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Statistics — VocabMaster</title>
+  <script>
+    window.location.replace('/statistics-ultra.html');
+  </script>
+  <link rel="stylesheet" href="/css/main.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root {
+      --primary: #6c63ff;
+      --primary-light: #a78bfa;
+      --success: #10b981;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --bg: #0f1117;
+      --bg-secondary: #1a1d27;
+      --text: #e2e8f0;
+      --text-muted: #94a3b8;
+      --border: #2e3250;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    .stats-container {
+      min-height: 100vh;
+      background: linear-gradient(135deg, rgba(108, 99, 255, 0.1), rgba(167, 139, 250, 0.05));
+    }
+
+    .header {
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border);
+      padding: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header-left h1 {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .header-left p {
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 12px;
+    }
+
+    .btn {
+      padding: 10px 16px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text);
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+
+    .btn:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    .btn-primary:hover {
+      background: #7c73ff;
+    }
+
+    .content {
+      padding: 32px 24px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .stat-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .stat-icon {
+      font-size: 32px;
+      margin-bottom: 8px;
+    }
+
+    .stat-value {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 4px;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .charts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+      gap: 24px;
+      margin-bottom: 32px;
+    }
+
+    .chart-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+    }
+
+    .chart-title {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+
+    .chart-container {
+      position: relative;
+      height: 300px;
+      width: 100%;
+    }
+
+    .table-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .table-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .table-header h3 {
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 12px 24px;
+      text-align: left;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    td {
+      padding: 16px 24px;
+      border-top: 1px solid var(--border);
+    }
+
+    tr:hover {
+      background: rgba(108, 99, 255, 0.05);
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .badge-success {
+      background: rgba(16, 185, 129, 0.2);
+      color: #86efac;
+    }
+
+    .badge-warning {
+      background: rgba(245, 158, 11, 0.2);
+      color: #fbbf24;
+    }
+
+    .badge-danger {
+      background: rgba(239, 68, 68, 0.2);
+      color: #fca5a5;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 32px;
+      color: var(--text-muted);
+    }
+
+    .spinner {
+      display: inline-block;
+      width: 32px;
+      height: 32px;
+      border: 3px solid rgba(255, 255, 255, 0.2);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+      margin-right: 12px;
+      vertical-align: middle;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .no-data {
+      text-align: center;
+      padding: 40px;
+      color: var(--text-muted);
+    }
+
+    @media (max-width: 768px) {
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .charts-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .header {
+        flex-direction: column;
+        gap: 16px;
+        align-items: flex-start;
+      }
+
+      table {
+        font-size: 12px;
+      }
+
+      th,
+      td {
+        padding: 8px 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="stats-container">
+  <div class="header">
+    <div class="header-left">
+      <div style="display:flex; align-items:center; gap:12px; margin-bottom:10px;">
+        <img src="https://www.image2url.com/r2/default/images/1784112907446-0463de99-8cb2-4889-82b8-3e0c5207bc0d.jpg" alt="Taleem Lexicon" style="width:40px; height:40px; border-radius:50%;">
+        <span style="font-size:1.1rem; font-weight:bold; color:#e2e8f0;">Taleem Lexicon</span>
+      </div>
+      <h1>Your Statistics</h1>
+      <p>Track your learning progress and achievements</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn" onclick="location.href='/student-learn.html'">← Back</button>
+      <button class="btn btn-primary" onclick="downloadReport()">📥 Download</button>
+    </div>
+  </div>
+
+  <div class="content">
+    <!-- QUICK STATS -->
+    <div class="stats-grid" id="statsGrid">
+      <div class="stat-card">
+        <div class="stat-icon">⭐</div>
+        <div class="stat-value" id="totalXP">0</div>
+        <div class="stat-label">Total XP</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">🔥</div>
+        <div class="stat-value" id="currentStreak">0</div>
+        <div class="stat-label">Day Streak</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">📚</div>
+        <div class="stat-value" id="wordsLearned">0</div>
+        <div class="stat-label">Words Learned</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">✓</div>
+        <div class="stat-value" id="avgAccuracy">0%</div>
+        <div class="stat-label">Avg. Accuracy</div>
+      </div>
+    </div>
+
+    <!-- CHARTS -->
+    <div class="charts-grid">
+      <div class="chart-card">
+        <div class="chart-title">Learning Trend (7 Days)</div>
+        <div class="chart-container">
+          <canvas id="trendChart"></canvas>
+        </div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">Mode Performance</div>
+        <div class="chart-container">
+          <canvas id="modeChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- RECENT SESSIONS TABLE -->
+    <div class="table-card">
+      <div class="table-header">
+        <h3>Recent Sessions</h3>
+      </div>
+      <div id="sessionsTableContainer">
+        <div class="loading">
+          <span class="spinner"></span>
+          Loading sessions...
+        </div>
+      </div>
+    </div>
+
+    <!-- TOP WORDS TABLE -->
+    <div class="table-card" style="margin-top: 24px;">
+      <div class="table-header">
+        <h3>Words by Mastery</h3>
+      </div>
+      <div id="wordsTableContainer">
+        <div class="loading">
+          <span class="spinner"></span>
+          Loading words...
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="/js/api.js"></script>
+<script>
+redirectIfAuth();
+checkStudentRole();
+
+let trendChart, modeChart;
+
+async function loadStats() {
+  try {
+    const user = getUser();
+    const stats = JSON.parse(localStorage.getItem('userStats') || '{}');
+    const progress = JSON.parse(localStorage.getItem('studentProgress') || '{}');
+
+    // Calculate stats
+    const wordsLearned = Object.values(progress).filter(p => p.status === 'learned').length;
+    const totalWords = Object.keys(progress).length;
+
+    document.getElementById('totalXP').textContent = (stats.points || 0).toLocaleString();
+    document.getElementById('currentStreak').textContent = (stats.streak || 0);
+    document.getElementById('wordsLearned').textContent = wordsLearned;
+
+    // Calculate accuracy from sessions
+    let totalCorrect = 0;
+    let totalAnswers = 0;
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key && key.startsWith('session_')) {
+        try {
+          const session = JSON.parse(localStorage.getItem(key));
+          if (session.correct !== undefined && session.total !== undefined) {
+            totalCorrect += session.correct;
+            totalAnswers += session.total;
+          }
+        } catch (e) {}
+      }
+    }
+    const avgAccuracy = totalAnswers > 0 ? Math.round((totalCorrect / totalAnswers) * 100) : 0;
+    document.getElementById('avgAccuracy').textContent = avgAccuracy + '%';
+
+    // Chart data (mock - in production would be from backend)
+    const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    const xpPerDay = [120, 180, 150, 200, 160, 140, 100];
+
+    drawTrendChart(days, xpPerDay);
+    drawModeChart();
+    loadSessions();
+    loadWords();
+  } catch (err) {
+    console.error('Load stats error:', err);
+  }
+}
+
+function drawTrendChart(days, xpPerDay) {
+  const ctx = document.getElementById('trendChart').getContext('2d');
+  trendChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: days,
+      datasets: [
+        {
+          label: 'XP Earned',
+          data: xpPerDay,
+          borderColor: '#6c63ff',
+          backgroundColor: 'rgba(108, 99, 255, 0.1)',
+          tension: 0.4,
+          fill: true,
+          pointBackgroundColor: '#6c63ff',
+          pointBorderColor: '#1a1d27',
+          pointRadius: 5,
+          pointHoverRadius: 7,
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          display: true,
+          labels: { color: '#e2e8f0', font: { size: 12 } },
+        },
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: { color: '#94a3b8' },
+          grid: { color: '#2e3250' },
+        },
+        x: {
+          ticks: { color: '#94a3b8' },
+          grid: { color: '#2e3250' },
+        },
+      },
+    },
+  });
+}
+
+function drawModeChart() {
+  const ctx = document.getElementById('modeChart').getContext('2d');
+  modeChart = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: ['Flashcards', 'Quiz', 'Matching'],
+      datasets: [
+        {
+          data: [45, 30, 25],
+          backgroundColor: ['#6c63ff', '#10b981', '#f59e0b'],
+          borderColor: '#1a1d27',
+          borderWidth: 2,
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          display: true,
+          labels: { color: '#e2e8f0', font: { size: 12 } },
+          position: 'bottom',
+        },
+      },
+    },
+  });
+}
+
+function loadSessions() {
+  const container = document.getElementById('sessionsTableContainer');
+  const sessions = [];
+
+  // Load from localStorage
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    if (key && key.startsWith('session_')) {
+      try {
+        const session = JSON.parse(localStorage.getItem(key));
+        sessions.push(session);
+      } catch (e) {}
+    }
+  }
+
+  if (sessions.length === 0) {
+    container.innerHTML = '<div class="no-data">No sessions yet. Start learning!</div>';
+    return;
+  }
+
+  const html = `
+    <table>
+      <thead>
+        <tr>
+          <th>Mode</th>
+          <th>Date</th>
+          <th>Accuracy</th>
+          <th>XP</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${sessions.slice(0, 10).map(s => {
+          const accuracy = s.total > 0 ? Math.round((s.correct / s.total) * 100) : 0;
+          const badge = accuracy >= 80 ? 'badge-success' : accuracy >= 60 ? 'badge-warning' : 'badge-danger';
+          return `
+            <tr>
+              <td>${s.mode || 'Quiz'}</td>
+              <td>${new Date(s.date).toLocaleDateString()}</td>
+              <td><span class="badge ${badge}">${accuracy}%</span></td>
+              <td>${s.xp || 0} XP</td>
+            </tr>
+          `;
+        }).join('')}
+      </tbody>
+    </table>
+  `;
+  container.innerHTML = html;
+}
+
+function loadWords() {
+  const container = document.getElementById('wordsTableContainer');
+  const progress = JSON.parse(localStorage.getItem('studentProgress') || '{}');
+
+  if (Object.keys(progress).length === 0) {
+    container.innerHTML = '<div class="no-data">No words yet. Start a learning session!</div>';
+    return;
+  }
+
+  const words = Object.entries(progress)
+    .sort((a, b) => (b[1].mastery || 0) - (a[1].mastery || 0))
+    .slice(0, 15);
+
+  const html = `
+    <table>
+      <thead>
+        <tr>
+          <th>Word</th>
+          <th>Status</th>
+          <th>Mastery</th>
+          <th>Attempts</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${words.map(([wordId, data]) => {
+          const badge =
+            data.status === 'learned'
+              ? 'badge-success'
+              : data.status === 'learning'
+                ? 'badge-warning'
+                : 'badge-danger';
+          return `
+            <tr>
+              <td>${wordId.substring(0, 30)}</td>
+              <td><span class="badge ${badge}">${data.status}</span></td>
+              <td>${Math.round((data.mastery || 0) * 20)}%</td>
+              <td>${data.attempts || 0}</td>
+            </tr>
+          `;
+        }).join('')}
+      </tbody>
+    </table>
+  `;
+  container.innerHTML = html;
+}
+
+function downloadReport() {
+  const stats = JSON.parse(localStorage.getItem('userStats') || '{}');
+  const progress = JSON.parse(localStorage.getItem('studentProgress') || '{}');
+
+  const csv = [
+    ['VocabMaster Learning Report'],
+    ['Generated:', new Date().toLocaleString()],
+    [''],
+    ['Statistics'],
+    ['Total XP', stats.points || 0],
+    ['Current Streak', stats.streak || 0],
+    [''],
+    ['Word Progress'],
+    ['Word ID', 'Status', 'Mastery', 'Attempts'],
+    ...Object.entries(progress).map(([id, data]) => [id, data.status, data.mastery || 0, data.attempts || 0]),
+  ];
+
+  const csvContent = csv.map(row => row.join(',')).join('\n');
+  const blob = new Blob([csvContent], { type: 'text/csv' });
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `vocab-report-${new Date().toISOString().split('T')[0]}.csv`;
+  a.click();
+}
+
+function checkStudentRole() {
+  const user = getUser();
+  if (!user || user.role !== 'student') {
+    location.href = '/login.html?role=student';
+  }
+}
+
+loadStats();
+</script>
+</body>
+</html>

@@ -1,0 +1,27 @@
+CLASS ANALYTICS SNAPSHOT
+Export Date,"2026-07-18 17:34:02"
+Creator Class,"DEMO01"
+Period,"All Time"
+
+OVERVIEW METRICS
+Metric,Value,Note
+Total Students,1,
+Active Students,1,"100% engagement"
+Average XP,250,"Per student"
+Class Accuracy,87%,"Average across sessions"
+Avg Sessions per Student,3,
+Total Sessions,3,"Across entire class"
+
+TOP PERFORMERS
+Rank,Student Name,Total XP
+1,"Demo Student",250
+
+VOCABULARY METADATA
+Metric,Value
+Average Word Difficulty,3.0
+Words Added This Week,4
+Best Student Streak,4
+
+EXPORT INFORMATION
+Generated,"2026-07-18T12:34:02.474Z"
+VocabMaster Analytics Export,v1.0

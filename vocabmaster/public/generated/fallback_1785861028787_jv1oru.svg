@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-label="Fallback image for deforestation">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#1e293b"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" fill="url(#bg)"/>
+  <circle cx="430" cy="82" r="58" fill="#334155" opacity="0.5"/>
+  <circle cx="94" cy="430" r="72" fill="#1d4ed8" opacity="0.18"/>
+  <text x="36" y="210" fill="#e2e8f0" font-size="44" font-family="Segoe UI, Arial, sans-serif" font-weight="700">deforestation</text>
+  <text x="36" y="250" fill="#93c5fd" font-size="18" font-family="Segoe UI, Arial, sans-serif">AI preview unavailable</text>
+  <foreignObject x="36" y="276" width="440" height="180">
+    <div xmlns="http://www.w3.org/1999/xhtml" style="color:#94a3b8;font:14px 'Segoe UI',Arial,sans-serif;line-height:1.35;">trees being cut down in forest</div>
+  </foreignObject>
+</svg>

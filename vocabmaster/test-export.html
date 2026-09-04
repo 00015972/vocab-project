@@ -1,0 +1,166 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #1f2937; line-height: 1.6; }
+    .page { width: 210mm; height: 297mm; padding: 20mm; background: white; }
+    .header { text-align: center; border-bottom: 3px solid #6c63ff; padding-bottom: 15px; margin-bottom: 20px; }
+    .header h1 { color: #6c63ff; font-size: 28px; margin: 10px 0; }
+    .header-meta { color: #6b7280; font-size: 11px; margin: 5px 0; }
+    .section { margin-bottom: 20px; page-break-inside: avoid; }
+    .section-title { color: #1f2937; font-size: 16px; font-weight: bold; border-bottom: 2px solid #e5e7eb; padding-bottom: 8px; margin-bottom: 12px; }
+    
+    .overview-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 15px; }
+    .stat-card { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 6px; padding: 12px; text-align: center; }
+    .stat-value { font-size: 24px; font-weight: bold; color: #6c63ff; }
+    .stat-label { font-size: 11px; color: #6b7280; text-transform: uppercase; margin: 5px 0; }
+    .stat-subtext { font-size: 10px; color: #9ca3af; }
+    
+    .skills-table { width: 100%; border-collapse: collapse; font-size: 11px; margin-bottom: 10px; }
+    .skills-table th { background: #f3f4f6; padding: 8px; text-align: left; font-weight: bold; border-bottom: 1px solid #d1d5db; }
+    .skills-table td { padding: 8px; border-bottom: 1px solid #e5e7eb; }
+    .severity-badge { display: inline-block; padding: 2px 6px; border-radius: 3px; font-size: 10px; font-weight: bold; }
+    
+    .performers-list { margin-top: 10px; }
+    .performer-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #e5e7eb; font-size: 11px; }
+    .performer-rank { font-weight: bold; color: #6c63ff; margin-right: 10px; min-width: 20px; }
+    .performer-name { flex: 1; }
+    .performer-xp { color: #6b7280; font-weight: bold; }
+    
+    .struggling-list { margin-top: 10px; }
+    .student-item { padding: 8px 0; border-bottom: 1px solid #e5e7eb; font-size: 11px; }
+    .student-name { font-weight: bold; color: #1f2937; }
+    .student-status { color: #ef4444; font-size: 10px; margin-top: 2px; }
+    
+    .empty-state { color: #9ca3af; font-style: italic; text-align: center; padding: 20px 10px; }
+    
+    .metadata-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    .metadata-item { background: #f9fafb; padding: 10px; border-radius: 4px; text-align: center; }
+    .metadata-value { font-size: 18px; font-weight: bold; color: #6c63ff; }
+    .metadata-label { font-size: 10px; color: #6b7280; text-transform: uppercase; margin-top: 3px; }
+    
+    .footer { margin-top: 20px; padding-top: 10px; border-top: 1px solid #e5e7eb; text-align: center; font-size: 9px; color: #9ca3af; }
+    
+    @media print {
+      body { margin: 0; padding: 0; }
+      .page { width: auto; height: auto; padding: 20px; margin: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <!-- Header -->
+    <div class="header">
+      <div style="font-weight: bold; font-size: 18px; color: #6c63ff;">VocabMaster</div>
+      <h1>Class Analytics Report</h1>
+      <div class="header-meta">
+        <div><strong>Demo Creator</strong> (Class: DEMO01)</div>
+        <div>18.07.2026 at 17:34:02</div>
+      </div>
+    </div>
+
+    <!-- Overview Stats -->
+    <div class="section">
+      <div class="section-title">Class Overview</div>
+      <div class="overview-grid">
+        
+        <div class="stat-card">
+          <div class="stat-value">1</div>
+          <div class="stat-label">Total Students</div>
+          <div class="stat-subtext">100% active</div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-value">1</div>
+          <div class="stat-label">Active Students</div>
+          <div class="stat-subtext">Engaged students</div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-value">250</div>
+          <div class="stat-label">Avg XP per Student</div>
+          <div class="stat-subtext">Experience points</div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-value">87%</div>
+          <div class="stat-label">Class Accuracy</div>
+          <div class="stat-subtext">Average performance</div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-value">3</div>
+          <div class="stat-label">Avg Sessions/Student</div>
+          <div class="stat-subtext">Learning sessions</div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-value">3</div>
+          <div class="stat-label">Total Sessions</div>
+          <div class="stat-subtext">Class wide</div>
+        </div>
+        
+      </div>
+    </div>
+
+    <!-- Skill Gaps -->
+    
+
+    <!-- Top Performers and Struggling Students (side by side) -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+      <!-- Top Performers -->
+      
+      <div class="section">
+        <div class="section-title">Top Performers</div>
+        <div class="performers-list">
+          
+          <div class="performer-item">
+            <span class="performer-rank">#1</span>
+            <span class="performer-name">Demo Student</span>
+            <span class="performer-xp">250 XP</span>
+          </div>
+          
+        </div>
+      </div>
+      
+
+      <!-- Struggling Students -->
+      
+      <div class="section">
+        <div class="section-title">Struggling Students</div>
+        <div class="empty-state">All students performing well</div>
+      </div>
+      
+    </div>
+
+    <!-- Vocabulary Metadata -->
+    <div class="section" style="margin-top: 20px;">
+      <div class="section-title">Vocabulary Metadata</div>
+      <div class="metadata-grid">
+        <div class="metadata-item">
+          <div class="metadata-value">3.0</div>
+          <div class="metadata-label">Avg Difficulty</div>
+        </div>
+        <div class="metadata-item">
+          <div class="metadata-value">4</div>
+          <div class="metadata-label">Words This Week</div>
+        </div>
+        <div class="metadata-item">
+          <div class="metadata-value">4</div>
+          <div class="metadata-label">Best Streak</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <p>Generated by VocabMaster Analytics Export | 2026-07-18T12:34:02.568Z</p>
+      <p>This report contains confidential class performance data. Handle with care.</p>
+    </div>
+  </div>
+</body>
+</html>
+  

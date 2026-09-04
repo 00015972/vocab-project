@@ -1,0 +1,1888 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flashcards - VocabMaster</title>
+    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #50C878;
+            --secondary: #D4AF37;
+            --success: #50C878;
+            --danger: #EF4444;
+            --neutral-50: #F9FAFB;
+            --neutral-900: #111827;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: url('https://images8.alphacoders.com/386/thumb-1920-386793.jpg') center/cover no-repeat fixed;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .session-container {
+            max-width: 800px;
+            width: 100%;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Header */
+        .session-header {
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.34);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.28);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--neutral-900);
+        }
+
+        .session-info {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .info-item {
+            text-align: center;
+        }
+
+        .info-label {
+            font-size: 0.75rem;
+            color: #999;
+            text-transform: uppercase;
+        }
+
+        .info-value {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.45rem;
+        }
+
+        .stat-number {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary);
+            line-height: 1;
+        }
+
+                .exit-btn {
+            padding: 0.8em 1.6em;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 600;
+            color: #000;
+            background-color: #fff;
+            border: none;
+            border-radius: 30px;
+            box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease 0s;
+            cursor: pointer;
+            outline: none;
+            min-width: 128px;
+        }
+
+        .exit-btn:hover {
+            background-color: #23c483;
+            box-shadow: 0px 15px 20px rgba(46, 229, 157, 0.4);
+            color: #fff;
+            transform: translateY(-7px);
+        }
+
+        .exit-btn:active {
+            transform: translateY(-1px);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .mode-spotlight {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.28);
+            border-radius: 14px;
+            padding: 1rem 1.1rem;
+            margin-bottom: 1.2rem;
+            color: white;
+            backdrop-filter: blur(8px);
+        }
+
+        .mode-spotlight .tag {
+            display: inline-flex;
+            padding: 0.25rem 0.65rem;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.18);
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-bottom: 0.55rem;
+        }
+
+        .mode-spotlight h2 {
+            font-size: 1.2rem;
+            margin-bottom: 0.35rem;
+        }
+
+        .mode-spotlight p {
+            font-size: 0.9rem;
+            opacity: 0.92;
+            line-height: 1.5;
+        }
+
+        .reward-strip {
+            margin-top: 0.8rem;
+            display: grid;
+            gap: 0.6rem;
+        }
+
+        .level-track {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 999px;
+            overflow: hidden;
+            height: 10px;
+        }
+
+        .level-fill {
+            height: 100%;
+            width: 0%;
+            border-radius: 999px;
+            background: linear-gradient(90deg, #ffd166, #fca311);
+            transition: width 0.35s ease;
+        }
+
+        .level-meta {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            font-size: 0.82rem;
+            opacity: 0.95;
+        }
+
+        .moment-banner {
+            display: none;
+            margin-top: 0.75rem;
+            padding: 0.6rem 0.8rem;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.35);
+            background: rgba(255, 255, 255, 0.12);
+            color: #ffffff;
+            font-size: 0.85rem;
+            line-height: 1.4;
+        }
+
+        .moment-banner.show {
+            display: block;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        /* Progress Bar */
+        .progress-section {
+            margin-bottom: 2rem;
+        }
+
+        .progress-text {
+            color: white;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #50C878, #D4AF37);
+            transition: width 0.4s ease;
+        }
+
+        /* Flashcard */
+        .flashcard-container {
+            perspective: 1000px;
+            margin-bottom: 2rem;
+            min-height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .flashcard {
+            width: 100%;
+            height: 400px;
+            position: relative;
+            transition: transform 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            transform-style: preserve-3d;
+            cursor: pointer;
+        }
+
+        .flashcard.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 16px;
+            padding: 3rem 2rem;
+            color: white;
+            font-weight: 600;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideInScale 0.6s ease-out;
+        }
+
+        @keyframes slideInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .flashcard-front {
+            background: rgba(255, 255, 255, 0.96);
+            border: 2px solid rgba(255, 255, 255, 0.75);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.22);
+            color: #1e293b;
+        }
+
+        .flashcard-back {
+            background: linear-gradient(135deg, #f8d9c7 0%, #f4c2a8 100%);
+            border: 2px solid rgba(139, 69, 19, 0.12);
+            transform: rotateY(180deg);
+            color: #3b2b2b;
+        }
+
+        .flashcard-word {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .flashcard-hint {
+            font-size: 0.875rem;
+            opacity: 0.7;
+            text-align: center;
+        }
+
+        .flashcard-audio {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 1.5rem;
+            opacity: 0.9;
+        }
+
+        .flashcard-audio button {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .flashcard-audio button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+
+        .flashcard-definition {
+            font-size: 1.75rem;
+            text-align: center;
+            line-height: 1.6;
+        }
+
+        .flashcard-content {
+            display: grid;
+            grid-template-columns: minmax(220px, 1.05fr) minmax(240px, 0.95fr);
+            gap: 1.25rem;
+            align-items: center;
+            width: 100%;
+            max-width: 760px;
+            margin: 0 auto;
+        }
+
+        .flashcard-media-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 0.9rem;
+            align-items: center;
+            justify-content: center;
+            min-height: 100%;
+        }
+
+        .flashcard-image-wrap {
+            width: 100%;
+            max-height: 170px;
+            margin-bottom: 1.2rem;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.35);
+            background: rgba(255, 255, 255, 0.12);
+            display: none;
+        }
+
+        .flashcard-image-wrap.show {
+            display: block;
+        }
+
+        .flashcard-image {
+            width: 100%;
+            height: 170px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .flashcard-front .flashcard-image-wrap {
+            max-height: 200px;
+        }
+
+        .flashcard-front .flashcard-image {
+            height: 200px;
+        }
+
+        .flashcard-word-block {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0.7rem;
+            text-align: center;
+            min-height: 100%;
+            padding: 0.4rem 0;
+        }
+
+        .click-hint {
+            color: white;
+            opacity: 0.6;
+            font-size: 0.85rem;
+            margin-top: 1rem;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+
+        /* Feedback */
+        .feedback {
+            display: none;
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            padding: 1rem 1.5rem;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .feedback.show {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .feedback.success {
+            border-left: 4px solid var(--success);
+            color: var(--success);
+        }
+
+        .feedback.error {
+            border-left: 4px solid var(--danger);
+            color: var(--danger);
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 1rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-size: 0.95rem;
+            min-width: 120px;
+        }
+
+        .btn-again {
+            background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRE2zpjRczxQOfL184P2OV8hZIIwnXdAZYS5bfoPZnScg&s=10');
+            background-size: 72% auto;
+            background-position: center;
+            background-repeat: no-repeat;
+            color: transparent;
+            border: none;
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.18);
+            min-height: 62px;
+            border-radius: 14px;
+            text-shadow: none;
+            font-size: 0;
+            line-height: 0;
+        }
+
+        .btn-again:hover {
+            transform: translateY(-2px) scale(1.01);
+            box-shadow: 0 10px 22px rgba(0, 0, 0, 0.22);
+        }
+
+        .btn-hard {
+            background-image: url('https://t4.ftcdn.net/jpg/15/66/73/21/360_F_1566732154_DI05iUxyMJSkGpsD27WJK9ZOjFIRpnSc.jpg');
+            background-size: 72% auto;
+            background-position: center;
+            background-repeat: no-repeat;
+            color: transparent;
+            border: none;
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.18);
+            min-height: 62px;
+            border-radius: 14px;
+            text-shadow: none;
+            font-size: 0;
+            line-height: 0;
+        }
+
+        .btn-hard:hover {
+            transform: translateY(-2px) scale(1.01);
+            box-shadow: 0 10px 22px rgba(0, 0, 0, 0.22);
+        }
+
+        .btn-good {
+            background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRYZb_S6DxSHIMmlUcPkx9BwvJCwJtD2sbvWutQIKI7uw&s=10');
+            background-size: 72% auto;
+            background-position: center;
+            background-repeat: no-repeat;
+            color: transparent;
+            border: none;
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.18);
+            min-height: 62px;
+            border-radius: 14px;
+            text-shadow: none;
+            font-size: 0;
+            line-height: 0;
+        }
+
+        .btn-good:hover {
+            transform: translateY(-2px) scale(1.01);
+            box-shadow: 0 10px 22px rgba(0, 0, 0, 0.22);
+        }
+
+        .btn-easy {
+            background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR_4lAzLh9r1-3hDfUGOOxTAnI_6JmO5WhNBokPUUmXWw&s=10');
+            background-size: 72% auto;
+            background-position: center;
+            background-repeat: no-repeat;
+            color: transparent;
+            border: none;
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.18);
+            min-height: 62px;
+            border-radius: 14px;
+            text-shadow: none;
+            font-size: 0;
+            line-height: 0;
+        }
+
+        .btn-easy:hover {
+            transform: translateY(-2px) scale(1.01);
+            box-shadow: 0 10px 22px rgba(0, 0, 0, 0.22);
+        }
+
+        /* Session Summary */
+        .summary-screen {
+            display: none;
+            background: rgba(255, 255, 255, 0.44);
+            padding: 3rem 2rem;
+            border-radius: 18px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.75);
+            box-shadow: 0 20px 48px rgba(15, 23, 42, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.45);
+            backdrop-filter: blur(14px) saturate(150%);
+            -webkit-backdrop-filter: blur(14px) saturate(150%);
+        }
+
+        .summary-screen.show {
+            display: block;
+        }
+
+        .summary-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+
+        .summary-icon img {
+            width: 88px;
+            height: 88px;
+            object-fit: contain;
+            border-radius: 14px;
+            filter: drop-shadow(0 8px 16px rgba(15, 23, 42, 0.15));
+        }
+
+        @keyframes bounceIn {
+            0% {
+                opacity: 0;
+                transform: scale(0);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .summary-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--neutral-900);
+        }
+
+        .summary-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .summary-stat {
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.42);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35);
+        }
+
+        .summary-stat-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .summary-stat-label {
+            font-size: 0.875rem;
+            color: #999;
+            margin-top: 0.5rem;
+        }
+
+        .summary-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .summary-btn {
+            flex: 1;
+            padding: 0.875rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 120px;
+        }
+
+        .summary-btn-again {
+            display: inline-block;
+            transition: all 0.2s ease-in;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            color: #090909;
+            background: #e8e8e8;
+            border: 1px solid #e8e8e8;
+            border-radius: 0.5em;
+            box-shadow: 6px 6px 12px #c5c5c5, -6px -6px 12px #ffffff;
+            font-size: 18px;
+        }
+
+        .summary-btn-again:active {
+            color: #666;
+            box-shadow: inset 4px 4px 12px #c5c5c5, inset -4px -4px 12px #ffffff;
+        }
+
+        .summary-btn-again:before {
+            content: "";
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%) scaleY(1) scaleX(1.25);
+            top: 100%;
+            width: 140%;
+            height: 180%;
+            background-color: rgba(0, 0, 0, 0.05);
+            border-radius: 50%;
+            display: block;
+            transition: all 0.5s 0.1s cubic-bezier(0.55, 0, 0.1, 1);
+            z-index: -1;
+        }
+
+        .summary-btn-again:after {
+            content: "";
+            position: absolute;
+            left: 55%;
+            transform: translateX(-50%) scaleY(1) scaleX(1.45);
+            top: 180%;
+            width: 160%;
+            height: 190%;
+            background-color: #009087;
+            border-radius: 50%;
+            display: block;
+            transition: all 0.5s 0.1s cubic-bezier(0.55, 0, 0.1, 1);
+            z-index: -1;
+        }
+
+        .summary-btn-again:hover {
+            color: #ffffff;
+            border: 1px solid #009087;
+        }
+
+        .summary-btn-again:hover:before {
+            top: -35%;
+            background-color: #009087;
+            transform: translateX(-50%) scaleY(1.3) scaleX(0.8);
+        }
+
+        .summary-btn-again:hover:after {
+            top: -45%;
+            background-color: #009087;
+            transform: translateX(-50%) scaleY(1.3) scaleX(0.8);
+        }
+
+        .summary-btn-back {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.35rem;
+            height: 3em;
+            min-width: 120px;
+            letter-spacing: 1px;
+            cursor: pointer;
+            border: none;
+            border-radius: 3px;
+            background: #fff;
+            color: #111827;
+            transition: all 0.2s linear;
+        }
+
+        .summary-btn-back svg {
+            width: 18px;
+            height: 18px;
+            transition: all 0.4s ease-in;
+        }
+
+        .summary-btn-back:hover {
+            box-shadow: 9px 9px 33px #d1d1d1, -9px -9px 33px #ffffff;
+            transform: translateY(-2px);
+        }
+
+        .summary-btn-back:hover svg {
+            transform: translateX(-5px);
+        }
+
+        /* Confetti */
+        .confetti {
+            position: fixed;
+            pointer-events: none;
+            animation: confettiFall 3s ease-out forwards;
+        }
+
+        @keyframes confettiFall {
+            to {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            .flashcard {
+                height: 320px;
+            }
+
+            .flashcard-content {
+                grid-template-columns: 1fr;
+                gap: 0.9rem;
+            }
+
+            .flashcard-face {
+                padding: 2rem 1rem;
+            }
+
+            .flashcard-word {
+                font-size: 1.75rem;
+            }
+
+            .flashcard-definition {
+                font-size: 1.25rem;
+            }
+
+            .action-buttons {
+                gap: 0.5rem;
+            }
+
+            .btn {
+                padding: 0.75rem;
+                font-size: 0.85rem;
+                min-width: auto;
+            }
+
+            .summary-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .session-header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .header-left {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .session-info {
+                width: 100%;
+                justify-content: space-around;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="session-container">
+        <!-- Session Header -->
+        <div class="session-header">
+            <div class="header-left">
+                <div style="display:flex; align-items:center; gap:8px; margin-right:20px;">
+                  <img src="https://www.image2url.com/r2/default/images/1784112907446-0463de99-8cb2-4889-82b8-3e0c5207bc0d.jpg" alt="Taleem Lexicon" style="width:35px; height:35px; border-radius:50%;">
+                  <span style="font-weight:bold; color:#111827;">Taleem Lexicon</span>
+                </div>
+                <button class="close-btn" onclick="goBack()">←</button>
+                <div class="session-info">
+                    <div class="info-item">
+                        <div class="info-label">Streak</div>
+                        <div class="info-value" id="headerStreak">
+                            <img src="https://cdn-icons-gif.flaticon.com/17702/17702145.gif" alt="Streak" style="width: 26px; height: 26px; display: inline-block; object-fit: contain;">
+                            <span class="stat-number" id="streakValue">0</span>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">XP Earned</div>
+                        <div class="info-value" id="xpEarned">
+                            <img src="https://assets-v2.lottiefiles.com/a/dae9b8fa-118b-11ee-bc08-03b9537feb6f/7kpkJLke0c.gif" alt="XP Earned" style="width: 26px; height: 26px; display: inline-block; object-fit: contain;">
+                            <span class="stat-number" id="xpValue">0</span>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Level</div>
+                        <div class="info-value" id="headerLevel">
+                            <img src="https://cdn-icons-gif.flaticon.com/12764/12764417.gif" alt="Level" style="width: 26px; height: 26px; display: inline-block; object-fit: contain;">
+                            <span class="stat-number" id="levelValue">1</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button class="exit-btn" onclick="goBack()">Learning Hub</button>
+                <button class="exit-btn" onclick="exitSession()">Exit</button>
+            </div>
+        </div>
+
+        <section class="mode-spotlight">
+            <span class="tag">Exercise 01</span>
+            <h2>Flashcards Session</h2>
+            <p>Flip each card, understand the meaning, and lock in quick recall before moving to harder exercises.</p>
+            <div class="reward-strip">
+                <div class="level-track"><div class="level-fill" id="levelFill"></div></div>
+                <div class="level-meta">
+                    <span id="levelProgressLabel">Level 1 • 0% to next</span>
+                    <span id="xpToNextLabel">0 XP to next level</span>
+                </div>
+            </div>
+            <div class="moment-banner" id="momentBanner"></div>
+        </section>
+
+        <!-- Progress Bar -->
+        <div class="progress-section">
+            <div class="progress-text">
+                <span id="progressText">Card 1 of 10</span>
+                <span id="streakText">Streak: 0</span>
+                <span id="timeText">Time left: --</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+            </div>
+        </div>
+
+        <!-- Flashcard -->
+        <div class="flashcard-container">
+            <div class="flashcard" id="flashcard" onclick="flipCard()">
+                <div class="flashcard-face flashcard-front">
+                    <div class="flashcard-content">
+                    <div class="flashcard-media-stack">
+                        <div class="flashcard-image-wrap" id="cardImageWrap">
+                            <img class="flashcard-image" id="cardImage" alt="Word meaning visual">
+                        </div>
+                    </div>
+                    <div class="flashcard-word-block">
+                        <div class="flashcard-word" id="cardWord">Serendipity</div>
+                        <div class="flashcard-audio">
+                            <button onclick="pronounce(event)">🔊</button>
+                            <span>Tap to hear</span>
+                        </div>
+                        <div class="click-hint">Click card to reveal answer</div>
+                    </div>
+                </div>
+                </div>
+                <div class="flashcard-face flashcard-back">
+                    <div class="flashcard-definition" id="cardDefinition">Finding something good by chance</div>
+                    <div class="flashcard-hint" id="cardHint">Example: "By serendipity, I found the perfect book"</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons" id="actionButtons">
+            <button class="btn btn-again" onclick="answerCard(0)" aria-label="Again"></button>
+            <button class="btn btn-hard" onclick="answerCard(1)" aria-label="Hard"></button>
+            <button class="btn btn-good" onclick="answerCard(3)" aria-label="Good"></button>
+            <button class="btn btn-easy" onclick="answerCard(4)" aria-label="Easy"></button>
+        </div>
+
+        <!-- Session Summary -->
+        <div class="summary-screen" id="summaryScreen">
+            <div class="summary-icon">
+                <img src="https://i.pinimg.com/originals/4e/46/f4/4e46f40ba9bbf1e2c508fdd1967775ef.gif" alt="Celebration confetti">
+            </div>
+            <div class="summary-title">Session Complete!</div>
+            <div class="summary-stats">
+                <div class="summary-stat">
+                    <div class="summary-stat-value" id="totalCorrect">8</div>
+                    <div class="summary-stat-label">Correct Answers</div>
+                </div>
+                <div class="summary-stat">
+                    <div class="summary-stat-value" id="totalXP">+80 XP</div>
+                    <div class="summary-stat-label">Points Earned</div>
+                </div>
+                <div class="summary-stat">
+                    <div class="summary-stat-value" id="finalAccuracy">80%</div>
+                    <div class="summary-stat-label">Your Accuracy</div>
+                </div>
+                <div class="summary-stat">
+                    <div class="summary-stat-value" id="summaryLevel">Lvl 1</div>
+                    <div class="summary-stat-label">Current Level</div>
+                </div>
+                <div class="summary-stat">
+                    <div class="summary-stat-value" id="summaryStreak">0d</div>
+                    <div class="summary-stat-label">Daily Streak</div>
+                </div>
+                <div class="summary-stat">
+                    <div class="summary-stat-value" id="summaryBadges">0</div>
+                    <div class="summary-stat-label">Badges Unlocked</div>
+                </div>
+            </div>
+            <div class="summary-buttons">
+                <button class="summary-btn summary-btn-again" onclick="restartSession()">
+                    Study Again
+                </button>
+                <button class="summary-btn summary-btn-back" onclick="goBack()">
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
+                        <path d="M15 6L9 12L15 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    Back to Learning Hub
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Feedback Toast -->
+    <div class="feedback" id="feedbackToast"></div>
+
+    <script src="/js/api.js"></script>
+    <script src="/js/adaptiveQueue.js"></script>
+    <script src="/js/deckPracticeSession.js"></script>
+    <script>
+        const fallbackCards = [
+            { word: 'Serendipity', definition: 'Finding something good by chance', hint: '"By serendipity, I found the perfect book"' },
+            { word: 'Eloquent', definition: 'Fluent or persuasive in speaking', hint: '"She gave an eloquent speech that moved the audience"' },
+            { word: 'Ephemeral', definition: 'Lasting for a very short time', hint: '"Beauty is ephemeral and fleeting"' },
+            { word: 'Ubiquitous', definition: 'Present everywhere or in many places', hint: '"Smartphones are ubiquitous in modern society"' },
+            { word: 'Nostalgia', definition: 'Sentimental longing for the past', hint: '"The song triggered a wave of nostalgia"' },
+            { word: 'Pragmatic', definition: 'Dealing with things in a practical way', hint: '"We need a pragmatic approach to solve this"' },
+            { word: 'Benevolent', definition: 'Kind and generous', hint: '"The benevolent donor helped many charities"' },
+            { word: 'Quintessential', definition: 'Representing the perfect example', hint: '"He is the quintessential gentleman"' },
+            { word: 'Ambiguous', definition: 'Open to more than one interpretation', hint: '"The instructions were ambiguous and confusing"' },
+            { word: 'Meticulous', definition: 'Showing great attention to detail', hint: '"Her meticulous work was flawless"' }
+        ];
+
+        let cards = [];
+        let currentCardIndex = 0;
+        let isFlipped = false;
+        let correctAnswers = 0;
+        let totalXP = 0;
+        let currentStreak = 0;
+        let currentLevel = 1;
+        let totalAccountXP = 0;
+        let sessionAnswers = [];
+        let attemptTelemetry = [];
+        let cardStartTime = Date.now();
+        let timeStarted = Date.now();
+        let timeLimitSeconds = 0;
+        let timerInterval = null;
+        let sessionFinished = false;
+        let momentBannerTimer = null;
+        let retryQueueByBaseId = new Set();
+        const pageParams = new URLSearchParams(window.location.search);
+        const activeDeckId = String(pageParams.get('deckId') || '').trim();
+        const activeDeckName = String(pageParams.get('deckName') || '').trim();
+        const activeDeckSessionId = String(pageParams.get('deckSessionId') || '').trim();
+        const activeDeckSession = window.deckPracticeSession && typeof window.deckPracticeSession.getSession === 'function'
+            ? (activeDeckSessionId ? window.deckPracticeSession.getSession(activeDeckSessionId) : null)
+            : null;
+        const requestedTargetLevel = String(pageParams.get('targetLevel') || '').trim().toUpperCase();
+        const targetWordCount = Math.max(0, Math.min(60, parseInt(pageParams.get('wordCount'), 10) || 0));
+        const autoNextEnabled = String(pageParams.get('autoNext') || '').toLowerCase() === 'true'
+            && String(pageParams.get('guidedFlow') || '').toLowerCase() === 'weekly';
+        const flowModes = String(pageParams.get('flow') || '')
+            .split(',')
+            .map((mode) => String(mode || '').trim().toLowerCase())
+            .filter((mode) => ['flashcards', 'quiz', 'matching', 'spelling'].includes(mode));
+        const currentFlowMode = String(pageParams.get('mode') || 'flashcards').trim().toLowerCase() || 'flashcards';
+        const FLOW_PROGRESS_KEY = 'student_guided_flow_progress_v1';
+        let autoNextScheduled = false;
+
+        function formatTimeLeft(totalSeconds) {
+            const safeSeconds = Math.max(0, Math.floor(Number(totalSeconds) || 0));
+            const minutes = Math.floor(safeSeconds / 60);
+            const seconds = safeSeconds % 60;
+            return `${minutes}m ${String(seconds).padStart(2, '0')}s`;
+        }
+
+        function clearSessionTimer() {
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+            }
+        }
+
+        function updateTimeLeftDisplay() {
+            const elapsed = Math.floor((Date.now() - timeStarted) / 1000);
+            const remaining = Math.max(0, timeLimitSeconds - elapsed);
+            const node = document.getElementById('timeText');
+            if (node) node.textContent = `Time left: ${formatTimeLeft(remaining)}`;
+            return remaining;
+        }
+
+        function startSessionTimer(cardCount) {
+            clearSessionTimer();
+            const totalCards = Math.max(1, Number(cardCount) || 0);
+            timeLimitSeconds = totalCards * 20;
+            timeStarted = Date.now();
+            updateTimeLeftDisplay();
+
+            timerInterval = setInterval(() => {
+                const remaining = updateTimeLeftDisplay();
+                if (remaining > 0 || sessionFinished) return;
+                clearSessionTimer();
+                showSummary();
+            }, 1000);
+        }
+
+        function buildFlowSignatureFromParams() {
+            const count = Math.max(5, Math.min(60, parseInt(pageParams.get('wordCount'), 10) || 0));
+            const minDifficulty = Math.max(1, Math.min(5, parseInt(pageParams.get('minDifficulty'), 10) || 1));
+            const maxDifficulty = Math.max(minDifficulty, Math.min(5, parseInt(pageParams.get('maxDifficulty'), 10) || 5));
+            const targetLevel = String(pageParams.get('targetLevel') || 'AUTO').trim().toUpperCase() || 'AUTO';
+            return [activeDeckSessionId || '', targetLevel, count, minDifficulty, maxDifficulty, flowModes.join(',')].join('|');
+        }
+
+        function markGuidedModeComplete() {
+            if (!flowModes.length) return;
+            const activeMode = flowModes.includes(currentFlowMode) ? currentFlowMode : 'flashcards';
+            const idx = flowModes.indexOf(activeMode);
+            const completedModes = flowModes.slice(0, Math.max(0, idx) + 1);
+            const nextMode = idx >= 0 && idx < flowModes.length - 1 ? flowModes[idx + 1] : null;
+            const state = {
+                signature: buildFlowSignatureFromParams(),
+                flowModes: flowModes.slice(),
+                completedModes,
+                nextMode,
+                updatedAt: Date.now(),
+            };
+            try {
+                localStorage.setItem(FLOW_PROGRESS_KEY, JSON.stringify(state));
+            } catch (_err) {}
+        }
+
+        function resolveModePath(mode) {
+            return {
+                flashcards: 'flashcards-ultra.html',
+                quiz: 'quiz-ultra.html',
+                matching: 'matching-ultra.html',
+                spelling: 'spelling-ultra.html',
+            }[String(mode || '').toLowerCase()] || 'flashcards-ultra.html';
+        }
+
+        function modeLabel(mode) {
+            const key = String(mode || '').toLowerCase();
+            return key ? key.charAt(0).toUpperCase() + key.slice(1) : 'Practice';
+        }
+
+        function resolveNextExerciseUrl() {
+            if (!autoNextEnabled || !flowModes.length) return null;
+            const activeMode = flowModes.includes(currentFlowMode) ? currentFlowMode : 'flashcards';
+            const idx = flowModes.indexOf(activeMode);
+            if (idx < 0 || idx >= flowModes.length - 1) return null;
+            const nextMode = flowModes[idx + 1];
+            const nextParams = new URLSearchParams(pageParams.toString());
+            nextParams.set('mode', nextMode);
+            nextParams.set('autoNext', 'true');
+            nextParams.set('flow', flowModes.join(','));
+            return {
+                mode: nextMode,
+                url: `${resolveModePath(nextMode)}?${nextParams.toString()}`,
+            };
+        }
+
+        const autoNextTarget = resolveNextExerciseUrl();
+
+        function scheduleAutoNextTransition() {
+            if (!autoNextTarget || autoNextScheduled) return;
+            autoNextScheduled = true;
+            setMomentBanner('Up next: ' + modeLabel(autoNextTarget.mode) + '...');
+            setTimeout(function () {
+                window.location.href = autoNextTarget.url;
+            }, 2400);
+        }
+
+        function resolveTargetDifficultyRange(targetLevel) {
+            const normalized = String(targetLevel || '').trim().toUpperCase();
+            if (normalized === 'A1') return { min: 1, max: 2 };
+            if (normalized === 'A2') return { min: 2, max: 3 };
+            if (normalized === 'B1') return { min: 3, max: 4 };
+            if (normalized === 'B2') return { min: 3, max: 5 };
+            if (normalized === 'C1') return { min: 4, max: 5 };
+            if (normalized === 'C2') return { min: 5, max: 5 };
+            return null;
+        }
+        let minDifficultyParam = Math.max(1, Math.min(5, parseInt(pageParams.get('minDifficulty'), 10) || 1));
+        let maxDifficultyParam = Math.max(minDifficultyParam, Math.min(5, parseInt(pageParams.get('maxDifficulty'), 10) || 5));
+        if (!pageParams.has('minDifficulty') || !pageParams.has('maxDifficulty')) {
+            const mapped = resolveTargetDifficultyRange(requestedTargetLevel);
+            if (mapped) {
+                minDifficultyParam = mapped.min;
+                maxDifficultyParam = mapped.max;
+            }
+        }
+        const reviewWrongAnswers = String(pageParams.get('reviewWrong') || 'true').toLowerCase() !== 'false';
+
+        function escapeXml(value) {
+            return String(value || '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&apos;');
+        }
+
+        function tokenizeMeaning(text) {
+            return String(text || '')
+                .toLowerCase()
+                .replace(/[^a-z0-9\s]/g, ' ')
+                .split(/\s+/)
+                .map(function (token) { return token.trim(); })
+                .filter(Boolean);
+        }
+
+        // ── adaptive queue boot ─────────────────────────────────────────────────
+        // Routing order: planId param → start fresh queue;
+        //                queueId param → verify and load that specific queue;
+        //                neither       → load whatever is currently active.
+        async function tryLoadAdaptiveQueue() {
+            try {
+                const aqParams = adaptiveQueue.resolveQueueParams();
+                let queueResult = null;
+
+                if (aqParams.planId) {
+                    queueResult = await adaptiveQueue.loadPlanQueue(aqParams.planId);
+                } else if (aqParams.queueId) {
+                    try {
+                        queueResult = await adaptiveQueue.loadActiveQueue(aqParams.queueId);
+                    } catch (matchErr) {
+                        if (matchErr.code === 'QUEUE_MISMATCH') {
+                            console.warn('[flashcards] queueId mismatch — loading current active queue instead');
+                            queueResult = await adaptiveQueue.loadActiveQueue(null);
+                        } else {
+                            throw matchErr;
+                        }
+                    }
+                } else {
+                    try {
+                        queueResult = await adaptiveQueue.loadActiveQueue(null);
+                    } catch (noQueueErr) {
+                        if (noQueueErr.code !== 'NO_ACTIVE_QUEUE') throw noQueueErr;
+                        queueResult = await adaptiveQueue.loadPlanQueue(null);
+                    }
+                }
+
+                if (queueResult && queueResult.totalItems > 0) {
+                    const cursor = adaptiveQueue.getCachedCursor();
+                    const start = Math.max(0, cursor.nextIndex);
+                    const queueItems = [];
+                    for (let i = start; i < queueResult.totalItems; i += 1) {
+                        const item = adaptiveQueue.consumeQueueItem(queueResult.queueId, i);
+                        if (!item) break;
+                        queueItems.push(item);
+                    }
+                    if (!queueItems.length) return false;
+
+                    // Keep the consumed queue as the single source of truth. Mapping it
+                    // directly also makes it impossible for an intermediate collection
+                    // to get out of sync with the queue item metadata used by attempts.
+                    cards = queueItems.map((it) => ({
+                        baseId:     String(it && it.wordId || '').trim(),
+                        word:       String(it && it.word || '').trim(),
+                        definition: String(it && it.definition || '').trim(),
+                        hint:       String(it && it.hint || '').trim(),
+                        imageUrl:   resolveCardImageUrl({
+                            imageUrl: String(it && it.imageUrl || '').trim(),
+                            word: String(it && it.word || '').trim(),
+                            definition: String(it && it.definition || '').trim(),
+                        }),
+                        difficulty: Number(it && it.difficulty || 3),
+                        queueMeta:  it && it.queueMeta,
+                    })).filter((card) => card.word && card.definition);
+
+                    if (!cards.length) {
+                        console.warn('[flashcards] queue items missing required word/definition fields');
+                        return false;
+                    }
+                    return true;  // queue loaded successfully
+                }
+            } catch (err) {
+                if (err.code !== 'NO_ACTIVE_QUEUE') {
+                    console.warn('[flashcards] queue load error:', err.message || err);
+                }
+            }
+            return false;
+        }
+
+        function pickSemanticScene(word, definition, partOfSpeech) {
+            var joined = (String(word || '') + ' ' + String(definition || '')).toLowerCase();
+            var isAbstract = ['adjective', 'adverb'].includes(String(partOfSpeech || '').toLowerCase());
+            var rules = [
+                { keys: ['honest', 'honesty', 'truth'], motif: 'trust', caption: 'returning something valuable' },
+                { keys: ['kind', 'kindness', 'benevolent', 'generous'], motif: 'care', caption: 'helping another person' },
+                { keys: ['courage', 'brave', 'bravery'], motif: 'stage', caption: 'acting despite fear' },
+                { keys: ['anxiety', 'anxious', 'stress', 'worry'], motif: 'pressure', caption: 'tension before a challenge' },
+                { keys: ['freedom', 'liberty', 'independence'], motif: 'open-gate', caption: 'moving into open space' },
+                { keys: ['hope', 'optimism'], motif: 'sunrise', caption: 'looking forward with confidence' },
+                { keys: ['respect', 'courteous'], motif: 'listen', caption: 'listening with attention' },
+                { keys: ['resilient', 'resilience', 'recover', 'adapt'], motif: 'spring-back', caption: 'bending and recovering quickly' },
+                { keys: ['ambiguous', 'unclear', 'vague'], motif: 'crossroads', caption: 'more than one valid path' },
+                { keys: ['serendipity', 'chance'], motif: 'lucky-find', caption: 'a valuable discovery by chance' },
+                { keys: ['ephemeral', 'temporary', 'brief'], motif: 'fading', caption: 'something that does not last long' },
+                { keys: ['ubiquitous', 'everywhere'], motif: 'many-points', caption: 'appearing in many places' },
+                { keys: ['meticulous', 'detail'], motif: 'grid-check', caption: 'careful attention to detail' }
+            ];
+
+            for (var i = 0; i < rules.length; i += 1) {
+                if (rules[i].keys.some(function (k) { return joined.includes(k); })) {
+                    return rules[i];
+                }
+            }
+
+            var tokens = tokenizeMeaning(definition).filter(function (t) {
+                return t.length > 3 && !['with', 'from', 'that', 'this', 'have', 'into', 'about', 'after', 'before', 'through'].includes(t);
+            }).slice(0, 3);
+
+            return {
+                motif: isAbstract ? 'human-scene' : 'object-scene',
+                caption: tokens.length ? ('focus on ' + tokens.join(', ')) : 'clear visual scene for meaning'
+            };
+        }
+
+        function motifSvg(motif) {
+            var map = {
+                'trust': '<rect x="285" y="230" width="130" height="70" rx="12" fill="rgba(255,255,255,0.82)"/><circle cx="530" cy="258" r="34" fill="rgba(255,255,255,0.86)"/><rect x="470" y="286" width="140" height="18" rx="9" fill="rgba(255,255,255,0.72)"/>',
+                'care': '<circle cx="320" cy="250" r="38" fill="rgba(255,255,255,0.86)"/><circle cx="560" cy="250" r="38" fill="rgba(255,255,255,0.86)"/><path d="M340 300 Q450 360 540 300" stroke="rgba(255,255,255,0.88)" stroke-width="14" fill="none"/>',
+                'stage': '<rect x="270" y="300" width="360" height="36" rx="8" fill="rgba(255,255,255,0.82)"/><circle cx="450" cy="230" r="44" fill="rgba(255,255,255,0.88)"/><rect x="442" y="170" width="16" height="40" fill="rgba(255,255,255,0.88)"/>',
+                'pressure': '<circle cx="340" cy="250" r="42" fill="rgba(255,255,255,0.86)"/><rect x="430" y="220" width="150" height="64" rx="10" fill="rgba(255,255,255,0.78)"/><line x1="450" y1="235" x2="560" y2="270" stroke="rgba(17,24,39,0.55)" stroke-width="5"/>',
+                'open-gate': '<rect x="280" y="210" width="120" height="160" rx="8" fill="rgba(255,255,255,0.65)"/><path d="M410 210 L620 290 L410 370 Z" fill="rgba(255,255,255,0.86)"/>',
+                'sunrise': '<circle cx="450" cy="255" r="58" fill="rgba(255,255,255,0.88)"/><line x1="230" y1="330" x2="670" y2="330" stroke="rgba(255,255,255,0.8)" stroke-width="10"/>',
+                'listen': '<circle cx="330" cy="255" r="40" fill="rgba(255,255,255,0.84)"/><rect x="420" y="220" width="170" height="82" rx="12" fill="rgba(255,255,255,0.8)"/><circle cx="610" cy="262" r="24" fill="rgba(255,255,255,0.92)"/>',
+                'spring-back': '<path d="M260 320 C330 240 410 400 500 280 C560 220 620 290 650 250" stroke="rgba(255,255,255,0.9)" stroke-width="14" fill="none"/><circle cx="660" cy="250" r="16" fill="rgba(255,255,255,0.9)"/>',
+                'crossroads': '<line x1="450" y1="200" x2="450" y2="360" stroke="rgba(255,255,255,0.86)" stroke-width="14"/><line x1="300" y1="275" x2="600" y2="275" stroke="rgba(255,255,255,0.86)" stroke-width="14"/><path d="M300 275 L325 255 L325 295 Z" fill="rgba(255,255,255,0.86)"/><path d="M600 275 L575 255 L575 295 Z" fill="rgba(255,255,255,0.86)"/>',
+                'lucky-find': '<rect x="300" y="235" width="180" height="95" rx="12" fill="rgba(255,255,255,0.78)"/><circle cx="560" cy="260" r="42" fill="rgba(255,255,255,0.88)"/><path d="M560 220 L570 248 L600 248 L576 266 L585 294 L560 278 L535 294 L544 266 L520 248 L550 248 Z" fill="rgba(17,24,39,0.32)"/>',
+                'fading': '<circle cx="360" cy="260" r="58" fill="rgba(255,255,255,0.9)"/><circle cx="500" cy="260" r="38" fill="rgba(255,255,255,0.55)"/><circle cx="600" cy="260" r="24" fill="rgba(255,255,255,0.35)"/>',
+                'many-points': '<circle cx="300" cy="230" r="22" fill="rgba(255,255,255,0.9)"/><circle cx="450" cy="210" r="22" fill="rgba(255,255,255,0.9)"/><circle cx="600" cy="245" r="22" fill="rgba(255,255,255,0.9)"/><circle cx="360" cy="315" r="22" fill="rgba(255,255,255,0.9)"/><circle cx="530" cy="320" r="22" fill="rgba(255,255,255,0.9)"/>',
+                'grid-check': '<rect x="300" y="210" width="300" height="160" rx="10" fill="rgba(255,255,255,0.78)"/><line x1="400" y1="210" x2="400" y2="370" stroke="rgba(17,24,39,0.25)"/><line x1="500" y1="210" x2="500" y2="370" stroke="rgba(17,24,39,0.25)"/><line x1="300" y1="290" x2="600" y2="290" stroke="rgba(17,24,39,0.25)"/><path d="M520 322 L548 350 L588 300" stroke="rgba(17,24,39,0.5)" stroke-width="10" fill="none"/>',
+                'human-scene': '<circle cx="360" cy="255" r="42" fill="rgba(255,255,255,0.86)"/><circle cx="540" cy="255" r="42" fill="rgba(255,255,255,0.86)"/><rect x="390" y="300" width="120" height="20" rx="10" fill="rgba(255,255,255,0.72)"/>',
+                'object-scene': '<rect x="300" y="220" width="300" height="130" rx="16" fill="rgba(255,255,255,0.82)"/><circle cx="350" cy="285" r="22" fill="rgba(17,24,39,0.18)"/><circle cx="550" cy="285" r="22" fill="rgba(17,24,39,0.18)"/>'
+            };
+            return map[motif] || map['object-scene'];
+        }
+
+        function buildSemanticImageDataUrl(word, definition, partOfSpeech) {
+            var scene = pickSemanticScene(word, definition, partOfSpeech);
+            var title = escapeXml(String(word || '').trim() || 'Vocabulary');
+            var caption = escapeXml(scene.caption || 'visual meaning cue');
+            var seed = tokenizeMeaning(word + ' ' + definition).join('').length;
+            var hueA = 140 + (seed % 70);
+            var hueB = 220 + (seed % 45);
+            var colorA = 'hsl(' + hueA + ', 70%, 55%)';
+            var colorB = 'hsl(' + hueB + ', 70%, 45%)';
+
+            var svg = '' +
+                '<svg xmlns="http://www.w3.org/2000/svg" width="900" height="560" viewBox="0 0 900 560">' +
+                '<defs>' +
+                '<linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">' +
+                '<stop offset="0%" stop-color="' + colorA + '"/>' +
+                '<stop offset="100%" stop-color="' + colorB + '"/>' +
+                '</linearGradient>' +
+                '</defs>' +
+                '<rect width="900" height="560" rx="24" fill="url(#bg)"/>' +
+                '<rect x="70" y="76" width="760" height="408" rx="26" fill="rgba(255,255,255,0.18)" stroke="rgba(255,255,255,0.34)"/>' +
+                motifSvg(scene.motif) +
+                '<text x="450" y="418" text-anchor="middle" font-family="Arial, sans-serif" font-size="52" font-weight="700" fill="white">' + title + '</text>' +
+                '<text x="450" y="456" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" fill="rgba(255,255,255,0.95)">' + caption + '</text>' +
+                '</svg>';
+
+            return 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svg);
+        }
+
+        function resolveCardImageUrl(item) {
+            var savedImageUrl = String((item && item.imageUrl) || '').trim();
+            if (savedImageUrl) {
+                return savedImageUrl;
+            }
+            var wordValue = String((item && item.word) || '').trim().toLowerCase();
+            if (wordValue === 'resilient' || wordValue === 'resilience') {
+                return '/assets/resilient-reference.svg';
+            }
+            return buildSemanticImageDataUrl(item && item.word, item && item.definition, item && item.partOfSpeech);
+        }
+        function calculateLevelFromXPClient(totalXPValue) {
+            const xp = Math.max(Number(totalXPValue || 0), 0);
+            if (xp === 0) return 1;
+            return Math.min(100, Math.floor(Math.log10(xp / 10 + 1) * 20) + 1);
+        }
+
+        function normalizeWordToCard(item) {
+            const word = String(item.word || '').trim();
+            const definition = String(item.definition || '').trim();
+            const hint = item.example ? `"${String(item.example).trim()}"` : 'Think of a sentence using this word.';
+            if (!word || !definition) return null;
+            const imageUrl = resolveCardImageUrl(item);
+            const cardId = String(item._id || (word + '::' + definition)).trim();
+            const difficulty = Math.max(1, Math.min(5, parseInt(item.difficulty, 10) || 3));
+            const reviewed = Math.max(0, parseInt(item.timesReviewed, 10) || 0);
+            const correct = Math.max(0, parseInt(item.timesCorrect, 10) || 0);
+            const weakness = reviewed > 0 ? Math.max(0, 1 - (correct / reviewed)) : 0.6;
+            return { id: cardId, baseId: cardId, word, definition, hint, imageUrl, difficulty, reviewed, weakness };
+        }
+
+        function sortCardsForLearning(inputCards) {
+            const enriched = (inputCards || []).map((card) => ({ card, random: Math.random() }));
+            enriched.sort((a, b) => {
+                if (b.card.weakness !== a.card.weakness) return b.card.weakness - a.card.weakness;
+                if (a.card.reviewed !== b.card.reviewed) return a.card.reviewed - b.card.reviewed;
+                if (b.card.difficulty !== a.card.difficulty) return b.card.difficulty - a.card.difficulty;
+                return a.random - b.random;
+            });
+            return enriched.map((entry) => entry.card);
+        }
+
+        function scheduleRetryCard(card) {
+            if (!reviewWrongAnswers || !card) return;
+            const baseId = String(card.baseId || card.id || '').trim();
+            if (!baseId || retryQueueByBaseId.has(baseId)) return;
+
+            const retryCard = {
+                ...card,
+                id: baseId + ':retry:' + Date.now().toString(36),
+                baseId,
+                isRetry: true,
+            };
+
+            const insertAt = Math.min(cards.length, currentCardIndex + 3);
+            cards.splice(insertAt, 0, retryCard);
+            retryQueueByBaseId.add(baseId);
+        }
+
+        function updateCardImage(imageUrl, word) {
+            const wrap = document.getElementById('cardImageWrap');
+            const image = document.getElementById('cardImage');
+            if (!wrap || !image) return;
+
+            const src = String(imageUrl || '').trim();
+            if (!src) {
+                image.removeAttribute('src');
+                image.alt = 'Word meaning visual';
+                wrap.classList.remove('show');
+                return;
+            }
+
+            image.alt = word ? ('Visual for ' + word) : 'Word meaning visual';
+            image.src = src;
+            wrap.classList.add('show');
+        }
+
+        function setMomentBanner(message) {
+            const banner = document.getElementById('momentBanner');
+            if (!banner) return;
+            banner.textContent = message;
+            banner.classList.add('show');
+            clearTimeout(momentBannerTimer);
+            momentBannerTimer = setTimeout(function () {
+                banner.classList.remove('show');
+            }, 3200);
+        }
+
+        function updateHeaderStats() {
+            document.getElementById('xpValue').textContent = totalXP;
+            document.getElementById('streakValue').textContent = currentStreak;
+            document.getElementById('streakText').textContent = 'Session streak: ' + currentStreak;
+            document.getElementById('levelValue').textContent = currentLevel;
+        }
+
+        function applyLevelState(levelPayload) {
+            if (!levelPayload) return;
+            const level = Number(levelPayload.current || levelPayload.level || 1);
+            const progressPct = Number(levelPayload.progressPct || 0);
+            const xpToNextLevel = Number(levelPayload.xpToNextLevel || 0);
+            const totalXPValue = Number(levelPayload.totalXP || totalAccountXP || 0);
+
+            currentLevel = Math.max(1, level);
+            totalAccountXP = Math.max(0, totalXPValue);
+            document.getElementById('levelFill').style.width = Math.max(0, Math.min(100, progressPct)) + '%';
+            document.getElementById('levelProgressLabel').textContent = 'Level ' + currentLevel + ' • ' + Math.round(progressPct) + '% to next';
+            document.getElementById('xpToNextLabel').textContent = xpToNextLevel > 0 ? (xpToNextLevel + ' XP to next level') : 'Max level reached';
+            updateHeaderStats();
+        }
+
+        async function bootstrapSession() {
+            try {
+                sessionFinished = false;
+                const statsPromise = api.get('/progress/stats');
+                if (activeDeckSession && Array.isArray(activeDeckSession.words) && activeDeckSession.words.length) {
+                    const sessionCards = activeDeckSession.words.map(normalizeWordToCard).filter(Boolean);
+                    cards = targetWordCount > 0 ? sessionCards.slice(0, targetWordCount) : sessionCards.slice();
+                } else {
+                    const wordsPath = activeDeckId
+                        ? ('/words?deckId=' + encodeURIComponent(activeDeckId))
+                        : '/words?unassigned=true';
+                    const wordData = await api.get(wordsPath);
+                    const fetchedCards = Array.isArray(wordData.words)
+                        ? wordData.words.map(normalizeWordToCard).filter(Boolean)
+                        : [];
+                    const baseCards = fetchedCards;
+                    const byDifficulty = baseCards.filter((item) => item.difficulty >= minDifficultyParam && item.difficulty <= maxDifficultyParam);
+                    const prioritized = sortCardsForLearning(byDifficulty.length ? byDifficulty : baseCards);
+                    cards = targetWordCount > 0 ? prioritized.slice(0, targetWordCount) : prioritized;
+                }
+
+                const stats = await statsPromise;
+
+                totalAccountXP = Number(stats && stats.totalXP ? stats.totalXP : 0);
+                currentStreak = Number(stats && stats.streak ? stats.streak : 0);
+                const inferredLevel = calculateLevelFromXPClient(totalAccountXP);
+                currentLevel = Number(stats && stats.level && stats.level.level ? stats.level.level : inferredLevel);
+                applyLevelState((stats && stats.level) ? stats.level : {
+                    level: currentLevel,
+                    totalXP: totalAccountXP,
+                    progressPct: 0,
+                    xpToNextLevel: 0,
+                });
+                if (activeDeckSession && (activeDeckSession.deckName || activeDeckSession.deckTopic)) {
+                    const heading = document.querySelector('.mode-spotlight h2');
+                    const summary = document.querySelector('.mode-spotlight p');
+                    const label = activeDeckSession.deckName || activeDeckSession.deckTopic;
+                    if (heading) heading.textContent = label + ' Flashcards';
+                    if (summary) summary.textContent = 'Practice only the current words from this creator deck. Images and definitions are taken from the live deck resources.';
+                } else if (activeDeckName) {
+                    const heading = document.querySelector('.mode-spotlight h2');
+                    const summary = document.querySelector('.mode-spotlight p');
+                    if (heading) heading.textContent = activeDeckName + ' Flashcards';
+                    if (summary) summary.textContent = 'Review only the words from this deck and reinforce meaning through focused flashcard practice.';
+                }
+                if (requestedTargetLevel) {
+                    const summary = document.querySelector('.mode-spotlight p');
+                    if (summary) {
+                        summary.textContent = `Adaptive review for ${requestedTargetLevel} learners: ${minDifficultyParam}-${maxDifficultyParam} difficulty range with ${cards.length} cards ready.`;
+                    }
+                }
+                updateHeaderStats();
+                if (cards.length) {
+                    startSessionTimer(cards.length);
+                } else {
+                    clearSessionTimer();
+                    const timeNode = document.getElementById('timeText');
+                    if (timeNode) timeNode.textContent = 'Time left: --';
+                }
+                loadCard();
+            } catch (err) {
+                if (activeDeckId || activeDeckSessionId) {
+                    cards = [];
+                    showFeedback('Deck words could not be loaded. Please restart from Decks.', 'error');
+                    updateHeaderStats();
+                    loadCard();
+                    return;
+                }
+                cards = [];
+                showFeedback('Failed to load general vocabulary. ' + (err && err.message ? err.message : 'Please refresh and try again.'), 'error');
+                updateHeaderStats();
+                loadCard();
+            }
+        }
+
+        function loadCard() {
+            if (!cards.length) {
+                document.getElementById('cardWord').textContent = 'No words available';
+                document.getElementById('cardDefinition').textContent = 'Add words first from your dashboard.';
+                document.getElementById('cardHint').textContent = 'Then return to flashcards to practice.';
+                document.getElementById('progressText').textContent = 'Card 0 of 0';
+                updateProgress();
+                return;
+            }
+            const card = cards[currentCardIndex];
+            cardStartTime = Date.now();
+            document.getElementById('cardWord').textContent = card.word;
+            document.getElementById('cardDefinition').textContent = card.definition;
+            document.getElementById('cardHint').textContent = card.hint;
+            updateCardImage(card.imageUrl, card.word);
+            document.getElementById('progressText').textContent = `Card ${currentCardIndex + 1} of ${cards.length}`;
+            updateProgress();
+            resetFlip();
+        }
+
+        function flipCard() {
+            isFlipped = !isFlipped;
+            document.getElementById('flashcard').classList.toggle('flipped');
+        }
+
+        function resetFlip() {
+            isFlipped = false;
+            document.getElementById('flashcard').classList.remove('flipped');
+        }
+
+        async function pronounce(e) {
+            e.stopPropagation();
+            if (!cards.length) return;
+
+            const text = cards[currentCardIndex].word;
+            try {
+                const player = typeof playTTSAudio === 'function'
+                    ? playTTSAudio
+                    : null;
+                if (!player) {
+                    throw new Error('TTS helper unavailable');
+                }
+
+                const playback = await player(text, { rate: 0.9, allowBrowserFallback: true });
+                const via = playback && playback.source === 'api' ? 'AI voice' : 'browser voice';
+                showFeedback('Pronouncing via ' + via + '...', 'success');
+            } catch (err) {
+                console.log('Pronunciation failed:', err.message);
+                showFeedback('Pronunciation unavailable right now.', 'error');
+            }
+        }
+
+        function answerCard(quality) {
+            if (sessionFinished) return;
+            if (!cards.length) return;
+            const activeCard = cards[currentCardIndex];
+            const activeBaseId = String((activeCard && activeCard.baseId) || (activeCard && activeCard.id) || '');
+            const latencyMs = Math.max(250, Date.now() - cardStartTime);
+            attemptTelemetry.push({
+                wordId: activeBaseId,
+                latencyMs,
+                correctness: quality >= 3
+            });
+            if (quality >= 3) {
+                correctAnswers++;
+                currentStreak++;
+                const baseXP = Math.max(10, 10 + (currentStreak * 2));
+                const speedBonus = (Date.now() - cardStartTime < 5000) ? 5 : 0;
+                const xpGained = baseXP + speedBonus;
+                totalXP += xpGained;
+                if (activeBaseId) retryQueueByBaseId.delete(activeBaseId);
+                const label = speedBonus ? `✓ Correct! +${xpGained} XP ⚡ Speed!` : `✓ Correct! +${xpGained} XP`;
+                showFeedback(label, 'success');
+                if (currentStreak % 5 === 0) {
+                    createConfetti();
+                    setMomentBanner('Combo streak ' + currentStreak + '! Keep this momentum going.');
+                }
+            } else {
+                currentStreak = 0;
+                totalXP += 5;
+                scheduleRetryCard(activeCard);
+                if (typeof drainHeart === 'function') { drainHeart(); }
+                showFeedback('⏱️ Keep practicing!', 'error');
+            }
+
+            sessionAnswers.push(quality);
+            updateHeaderStats();
+
+            // record attempt via shared queue module
+            (async () => {
+                try {
+                    const meta = activeCard && activeCard.queueMeta;
+                    if (meta && meta.queueId && meta.queueItemId) {
+                        await adaptiveQueue.submitAttempt(meta.queueId, {
+                            queueItemId:      meta.queueItemId,
+                            mode:             'flashcards',
+                            correctness:      quality >= 3,
+                            latencyMs:        latencyMs,
+                            expectedVersion:  Number(meta.expectedVersion || 0),
+                            expectedPosition: Number(meta.expectedPosition || 0),
+                        });
+                    }
+                } catch (err) {
+                    console.warn('[flashcards] queue attempt failed:', err && err.message ? err.message : err);
+                }
+            })();
+
+            currentCardIndex++;
+
+            if (currentCardIndex < cards.length) {
+                setTimeout(loadCard, 800);
+            } else {
+                showSummary();
+            }
+        }
+
+        function updateProgress() {
+            const progress = cards.length ? ((currentCardIndex) / cards.length) * 100 : 0;
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+
+        function showFeedback(message, type) {
+            const toast = document.getElementById('feedbackToast');
+            toast.textContent = message;
+            toast.className = `feedback show ${type}`;
+            setTimeout(() => toast.classList.remove('show'), 2000);
+        }
+
+        function showSummary() {
+            if (sessionFinished) return;
+            sessionFinished = true;
+            clearSessionTimer();
+            document.getElementById('actionButtons').style.display = 'none';
+            const flashcardContainer = document.querySelector('.flashcard-container');
+            if (flashcardContainer) {
+                flashcardContainer.style.display = 'none';
+            }
+            const accuracyPct = cards.length ? Math.round((correctAnswers / cards.length) * 100) : 0;
+            document.getElementById('totalCorrect').textContent = correctAnswers;
+            document.getElementById('totalXP').textContent = '+' + totalXP + ' XP';
+            document.getElementById('finalAccuracy').textContent = accuracyPct + '%';
+            document.getElementById('summaryScreen').classList.add('show');
+            createConfetti();
+            
+            const durationSeconds = Math.round((Date.now() - timeStarted) / 1000);
+            // Save progress to API
+            const multipliedXP = typeof applyModeMultiplier === 'function' ? applyModeMultiplier(totalXP, 'flashcards') : totalXP;
+            const dailyBonus = typeof checkAndClaimDailyBonus === 'function' ? checkAndClaimDailyBonus() : 0;
+            const finalXP = multipliedXP + dailyBonus;
+            document.getElementById('totalXP').textContent = '+' + finalXP + ' XP' + (dailyBonus ? ' (🌟 +50 first study!)' : '');
+            if (activeDeckSession) {
+                saveSessionProgress('flashcards', finalXP, accuracyPct, cards.length, durationSeconds).then(() => {
+                    markGuidedModeComplete();
+                    scheduleAutoNextTransition();
+                }).catch((err) => {
+                    console.warn('[flashcards] deck session save failed:', err && err.message ? err.message : err);
+                    markGuidedModeComplete();
+                    scheduleAutoNextTransition();
+                });
+                return;
+            }
+            // Save progress and handle queue lifecycle via shared module
+            // allConsumed:true because showSummary is only reached when all cards are done
+            adaptiveQueue.onQueueComplete(adaptiveQueue.getCachedQueue()?.queueId || null, {
+                sessionType:    'flashcards',
+                xpEarned:       finalXP,
+                accuracy:       accuracyPct,
+                wordsCompleted: cards.length,
+                durationSeconds,
+                attempts:       attemptTelemetry,
+                allConsumed:    true,
+            }).then((res) => {
+                markGuidedModeComplete();
+                if (!res) {
+                    scheduleAutoNextTransition();
+                    return;
+                }
+                const result = res.progressResponse;
+                if (!result) {
+                    scheduleAutoNextTransition();
+                    return;
+                }
+                const gamification = result.gamification || null;
+                const levelPayload = result.level || (gamification ? gamification.level : null);
+                if (levelPayload) {
+                    applyLevelState(levelPayload);
+                    document.getElementById('summaryLevel').textContent = 'Lvl ' + (levelPayload.current || levelPayload.level || currentLevel);
+                }
+                if (gamification && gamification.streak) {
+                    currentStreak = Number(gamification.streak.current || currentStreak);
+                    document.getElementById('summaryStreak').textContent = currentStreak + 'd';
+                    updateHeaderStats();
+                    if (gamification.streak.milestone && gamification.streak.milestone.days) {
+                        setMomentBanner('🔥 ' + gamification.streak.milestone.days + '-day streak milestone reached!');
+                        createConfetti();
+                    }
+                }
+                scheduleAutoNextTransition();
+            }).catch((err) => {
+                console.warn('[flashcards] onQueueComplete failed:', err.message || err);
+                markGuidedModeComplete();
+                scheduleAutoNextTransition();
+            });
+        }
+        
+        async function saveSessionProgress(sessionType, xpEarned, accuracy, wordsCompleted, durationSeconds = 0) {
+            try {
+                const payload = {
+                    sessionType,
+                    xpEarned,
+                    accuracy,
+                    wordsCompleted,
+                    correctCount: correctAnswers,
+                    totalCount: cards.length,
+                    duration: durationSeconds,
+                    attempts: attemptTelemetry
+                };
+                const result = await api.post('/progress', payload);
+                const gamification = result && result.gamification ? result.gamification : null;
+                const levelPayload = result && result.level ? result.level : (gamification ? gamification.level : null);
+
+                if (levelPayload) {
+                    applyLevelState(levelPayload);
+                    document.getElementById('summaryLevel').textContent = 'Lvl ' + (levelPayload.current || levelPayload.level || currentLevel);
+                }
+
+                if (gamification && gamification.streak) {
+                    currentStreak = Number(gamification.streak.current || currentStreak);
+                    document.getElementById('summaryStreak').textContent = currentStreak + 'd';
+                    updateHeaderStats();
+
+                    if (gamification.streak.milestone && gamification.streak.milestone.days) {
+                        const milestoneDays = gamification.streak.milestone.days;
+                        setMomentBanner('🔥 ' + milestoneDays + '-day streak milestone reached!');
+                        createConfetti();
+                    }
+                }
+
+                if (gamification && gamification.level && gamification.level.leveledUp) {
+                    setMomentBanner('🎖️ Level up! You reached level ' + gamification.level.current + '.');
+                    createConfetti();
+                }
+
+                const newUnlocks = gamification && gamification.achievements && Array.isArray(gamification.achievements.newlyUnlocked)
+                    ? gamification.achievements.newlyUnlocked
+                    : [];
+                document.getElementById('summaryBadges').textContent = gamification && gamification.achievements
+                    ? Number(gamification.achievements.unlockedTotal || 0)
+                    : 0;
+
+                newUnlocks.forEach(function (item, idx) {
+                    setTimeout(function () {
+                        showFeedback('🏆 Achievement unlocked: ' + item.title, 'success');
+                        setMomentBanner('New badge unlocked: ' + item.title);
+                        createConfetti();
+                    }, idx * 800);
+                });
+
+                if (!newUnlocks.length && typeof detectNewAchievementUnlocks === 'function') {
+                    try {
+                        const fallbackUnlocks = await detectNewAchievementUnlocks();
+                        fallbackUnlocks.forEach(function (item, idx) {
+                            setTimeout(function () {
+                                showFeedback('🏆 Achievement unlocked: ' + item.title, 'success');
+                                createConfetti();
+                            }, idx * 700);
+                        });
+                    } catch (unlockErr) {
+                        console.log('Achievement check failed:', unlockErr.message);
+                    }
+                }
+            } catch (err) {
+                console.log('Error saving progress:', err.message);
+                setMomentBanner('Session saved locally, but sync failed. ' + err.message);
+            }
+        }
+
+        async function restartSession() {
+            currentCardIndex = 0;
+            correctAnswers = 0;
+            totalXP = 0;
+            sessionAnswers = [];
+            attemptTelemetry = [];
+            retryQueueByBaseId.clear();
+            sessionFinished = false;
+            document.getElementById('summaryScreen').classList.remove('show');
+            document.getElementById('actionButtons').style.display = 'flex';
+            const flashcardContainer = document.querySelector('.flashcard-container');
+            if (flashcardContainer) {
+                flashcardContainer.style.display = 'flex';
+            }
+            setMomentBanner('New session started. Keep your streak alive.');
+            updateHeaderStats();
+
+            if (!activeDeckSession) {
+                try {
+                    await adaptiveQueue.loadPlanQueue(null);
+                    const queueLoaded = await tryLoadAdaptiveQueue();
+                    if (queueLoaded) {
+                        startSessionTimer(cards.length);
+                        loadCard();
+                        return;
+                    }
+                } catch (err) {
+                    console.warn('[flashcards] failed to refresh adaptive queue on restart:', err && err.message ? err.message : err);
+                }
+                cards = [];
+                loadCard();
+                showFeedback('Unable to refresh queue. Please return to Learning Hub and start again.', 'error');
+                return;
+            }
+
+            startSessionTimer(cards.length);
+            loadCard();
+        }
+
+        function goBack() {
+            clearSessionTimer();
+            window.location.href = '/student-learn-v3.html';
+        }
+
+        function exitSession() {
+            if (confirm('Exit session? Your progress will not be saved.')) {
+                goBack();
+            }
+        }
+
+        function createConfetti() {
+            for (let i = 0; i < 30; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.textContent = ['🎉', '⭐', '✨', '🌟'][Math.floor(Math.random() * 4)];
+                confetti.style.left = Math.random() * 100 + '%';
+                confetti.style.top = '-10px';
+                confetti.style.fontSize = (Math.random() * 20 + 20) + 'px';
+                confetti.style.animation = `confettiFall ${Math.random() * 2 + 2}s ease-out forwards`;
+                document.body.appendChild(confetti);
+                setTimeout(() => confetti.remove(), 3000);
+            }
+        }
+
+        // Initialize — adaptive queue only source of truth for this mode
+       window.addEventListener('DOMContentLoaded', async function() {
+           // Check authentication
+           if (!requireAuth()) return;
+
+           if (typeof refreshHeartsUI === 'function') refreshHeartsUI();
+           if (activeDeckSession) {
+               await bootstrapSession();
+               return;
+           }
+           const queueLoaded = await tryLoadAdaptiveQueue();
+           if (queueLoaded) {
+               sessionFinished = false;
+               startSessionTimer(cards.length);
+               loadCard();
+               updateHeaderStats();
+           } else {
+               clearSessionTimer();
+               const timeNode = document.getElementById('timeText');
+               if (timeNode) timeNode.textContent = 'Time left: --';
+               cards = [];
+               loadCard();
+               showFeedback('No active adaptive queue. Start from Learn Hub to generate one.', 'error');
+           }
+       });
+    </script>
+</body>
+</html>

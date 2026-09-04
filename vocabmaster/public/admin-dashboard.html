@@ -1,0 +1,1124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard - Taleem Lexicon</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --primary: #50C878;
+      --secondary: #D4AF37;
+      --neutral-50: #F9FAFB;
+      --neutral-100: #F3F4F6;
+      --neutral-200: #E5E7EB;
+      --neutral-500: #6B7280;
+      --neutral-700: #374151;
+      --neutral-900: #111827;
+      --danger: #DC2626;
+    }
+
+    body {
+      font-family: 'Poppins', 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #f6fff8 0%, #fffaf0 100%);
+      color: var(--neutral-900);
+      min-height: 100vh;
+      padding: 24px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .topbar {
+      background: white;
+      border: 1px solid var(--neutral-200);
+      border-radius: 16px;
+      padding: 16px 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 10px 32px rgba(80, 200, 120, 0.08);
+      margin-bottom: 20px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .brand img {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+    }
+
+    .actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    button, .btn-link {
+      border: 0;
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), #3ea964);
+      color: white;
+    }
+
+    .btn-secondary {
+      background: linear-gradient(135deg, var(--secondary), #b9931f);
+      color: white;
+    }
+
+    .btn-ghost {
+      background: var(--neutral-100);
+      color: var(--neutral-700);
+    }
+
+    .btn-danger {
+      background: #fee2e2;
+      color: var(--danger);
+    }
+
+    .hero {
+      background: white;
+      border: 1px solid var(--neutral-200);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 10px 32px rgba(212, 175, 55, 0.12);
+    }
+
+    .hero h1 {
+      font-size: 28px;
+      margin-bottom: 8px;
+    }
+
+    .hero p {
+      color: var(--neutral-500);
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .stat {
+      background: linear-gradient(135deg, #f8fff9, #fff7e3);
+      border: 1px solid rgba(80, 200, 120, 0.2);
+      border-radius: 12px;
+      padding: 14px;
+    }
+
+    .stat .label {
+      color: var(--neutral-500);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      margin-bottom: 6px;
+    }
+
+    .stat .value {
+      font-size: 28px;
+      line-height: 1;
+      font-weight: 700;
+    }
+
+    .panel {
+      background: white;
+      border: 1px solid var(--neutral-200);
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.04);
+    }
+
+    .insights-panel {
+      margin-bottom: 20px;
+      background: white;
+      border: 1px solid var(--neutral-200);
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.04);
+    }
+
+    .insights-header p {
+      color: var(--neutral-500);
+      margin-top: 4px;
+      font-size: 13px;
+    }
+
+    .insights-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .insight-card {
+      border: 1px solid var(--neutral-200);
+      border-radius: 14px;
+      padding: 14px;
+      background: linear-gradient(135deg, #fbfffc, #fff9eb);
+    }
+
+    .insight-card .label {
+      color: var(--neutral-500);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      margin-bottom: 8px;
+    }
+
+    .insight-card .value {
+      font-size: 26px;
+      font-weight: 700;
+      line-height: 1.1;
+    }
+
+    .insight-card .note {
+      margin-top: 8px;
+      color: var(--neutral-500);
+      font-size: 12px;
+    }
+
+    .insight-list {
+      display: grid;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .insight-item {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      padding: 10px 12px;
+      border: 1px solid var(--neutral-200);
+      border-radius: 10px;
+      background: #fcfdfd;
+      font-size: 13px;
+      color: var(--neutral-700);
+    }
+
+    .insight-item span:last-child {
+      color: var(--neutral-500);
+      white-space: nowrap;
+    }
+
+    .filters {
+      display: grid;
+      grid-template-columns: 1fr 170px 170px 170px 130px;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    input, select {
+      width: 100%;
+      border: 1px solid var(--neutral-200);
+      border-radius: 10px;
+      padding: 10px 12px;
+      font: inherit;
+      outline: none;
+      background: white;
+    }
+
+    input:focus, select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(80, 200, 120, 0.15);
+    }
+
+    .table-wrap {
+      overflow: auto;
+      border: 1px solid var(--neutral-200);
+      border-radius: 12px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 900px;
+    }
+
+    th, td {
+      padding: 12px;
+      border-bottom: 1px solid var(--neutral-200);
+      text-align: left;
+      font-size: 14px;
+    }
+
+    th {
+      background: #f8fafc;
+      color: var(--neutral-700);
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+
+    .role {
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 5px 10px;
+      display: inline-block;
+      text-transform: capitalize;
+    }
+
+    .role.admin { background: #dcfce7; color: #166534; }
+    .role.creator { background: #fef3c7; color: #92400e; }
+    .role.student { background: #dbeafe; color: #1e40af; }
+
+    .verified {
+      font-weight: 600;
+      color: #16a34a;
+    }
+
+    .not-verified {
+      font-weight: 600;
+      color: #b45309;
+    }
+
+    .empty, .error {
+      text-align: center;
+      color: var(--neutral-500);
+      padding: 24px;
+    }
+
+    .error {
+      color: var(--danger);
+    }
+
+    .actions-cell {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .actions-cell .tiny {
+      border-radius: 8px;
+      border: 1px solid var(--neutral-200);
+      padding: 6px 8px;
+      font-size: 12px;
+      cursor: pointer;
+      background: white;
+    }
+
+    .active-yes {
+      font-weight: 600;
+      color: #166534;
+    }
+
+    .active-no {
+      font-weight: 600;
+      color: #b91c1c;
+    }
+
+    .pagination {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-top: 12px;
+      flex-wrap: wrap;
+      color: var(--neutral-500);
+      font-size: 13px;
+    }
+
+    .pager-buttons {
+      display: flex;
+      gap: 8px;
+    }
+
+    .pager-buttons button {
+      background: var(--neutral-100);
+      color: var(--neutral-700);
+      border: 1px solid var(--neutral-200);
+      border-radius: 8px;
+      padding: 8px 12px;
+    }
+
+    .pager-buttons button:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+
+    .bulk-bar {
+      display: grid;
+      grid-template-columns: 1fr 180px 160px 140px;
+      gap: 10px;
+      margin-bottom: 12px;
+      align-items: center;
+    }
+
+    .bulk-note {
+      color: var(--neutral-500);
+      font-size: 13px;
+    }
+
+    .tiny-select {
+      width: auto;
+      min-width: 110px;
+      padding: 8px;
+      font-size: 12px;
+    }
+
+    .audit-panel {
+      margin-top: 20px;
+      background: white;
+      border: 1px solid var(--neutral-200);
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.04);
+    }
+
+    .audit-list {
+      display: grid;
+      gap: 8px;
+      margin-top: 12px;
+      max-height: 300px;
+      overflow: auto;
+    }
+
+    .audit-toolbar {
+      display: grid;
+      grid-template-columns: 1fr 180px 140px 170px 170px 1fr;
+      gap: 10px;
+      align-items: center;
+      margin-top: 12px;
+    }
+
+    .audit-pagination {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-top: 12px;
+      flex-wrap: wrap;
+      color: var(--neutral-500);
+      font-size: 13px;
+    }
+
+    .audit-pager-buttons {
+      display: flex;
+      gap: 8px;
+    }
+
+    .audit-pager-buttons button {
+      background: var(--neutral-100);
+      color: var(--neutral-700);
+      border: 1px solid var(--neutral-200);
+      border-radius: 8px;
+      padding: 8px 12px;
+    }
+
+    .audit-pager-buttons button:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+
+    .audit-item {
+      border: 1px solid var(--neutral-200);
+      border-radius: 10px;
+      padding: 10px;
+      background: #fcfdfd;
+      font-size: 13px;
+      color: var(--neutral-700);
+    }
+
+    .audit-meta {
+      color: var(--neutral-500);
+      font-size: 12px;
+      margin-top: 4px;
+    }
+
+    @media (max-width: 860px) {
+      body { padding: 12px; }
+      .filters { grid-template-columns: 1fr; }
+      .bulk-bar { grid-template-columns: 1fr; }
+      .audit-toolbar { grid-template-columns: 1fr; }
+      .topbar { flex-direction: column; align-items: stretch; }
+      .actions { width: 100%; }
+      .actions > * { flex: 1; }
+      .hero h1 { font-size: 24px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="topbar">
+      <div class="brand">
+        <img src="https://www.image2url.com/r2/default/images/1784112907446-0463de99-8cb2-4889-82b8-3e0c5207bc0d.jpg" alt="Taleem Lexicon" />
+        <span>Taleem Lexicon Admin</span>
+      </div>
+      <div class="actions">
+        <button class="btn-primary" id="refreshBtn" type="button">Refresh</button>
+        <button class="btn-ghost" id="exportCsvBtn" type="button">Export CSV</button>
+        <a class="btn-link btn-secondary" href="/">Home</a>
+        <button class="btn-danger" id="logoutBtn" type="button">Logout</button>
+      </div>
+    </header>
+
+    <section class="hero">
+      <h1>Admin Dashboard</h1>
+      <p>Manage real users with role, verification, activation, bulk actions, CSV export, and audit analytics. Seed and demo accounts stay hidden from this view.</p>
+      <div class="stats">
+        <div class="stat">
+          <div class="label">Total Users</div>
+          <div class="value" id="statTotal">0</div>
+        </div>
+        <div class="stat">
+          <div class="label">Students</div>
+          <div class="value" id="statStudents">0</div>
+        </div>
+        <div class="stat">
+          <div class="label">Creators</div>
+          <div class="value" id="statCreators">0</div>
+        </div>
+        <div class="stat">
+          <div class="label">Admins</div>
+          <div class="value" id="statAdmins">0</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="insights-panel">
+      <div class="insights-header">
+        <div>
+          <h2 style="font-size: 18px;">Admin Insights</h2>
+          <p>Quick signals from the current user set and the currently loaded audit results.</p>
+        </div>
+      </div>
+      <div class="insights-grid">
+        <div class="insight-card">
+          <div class="label">Verified Rate</div>
+          <div class="value" id="insightVerifiedRate">0%</div>
+          <div class="note" id="insightVerifiedNote">0 verified of 0 users</div>
+        </div>
+        <div class="insight-card">
+          <div class="label">Active Rate</div>
+          <div class="value" id="insightActiveRate">0%</div>
+          <div class="note" id="insightActiveNote">0 active of 0 users</div>
+        </div>
+        <div class="insight-card">
+          <div class="label">Audit Events</div>
+          <div class="value" id="insightAuditCount">0</div>
+          <div class="note" id="insightAuditNote">0 shown in the current audit view</div>
+        </div>
+        <div class="insight-card">
+          <div class="label">Top Action</div>
+          <div class="value" id="insightTopAction">-</div>
+          <div class="note" id="insightTopActionNote">Most common action in the current audit view</div>
+        </div>
+      </div>
+      <div class="insight-list" id="insightList"></div>
+    </section>
+
+    <section class="panel">
+      <div class="bulk-bar">
+        <div class="bulk-note" id="selectedCount">0 selected</div>
+        <select id="bulkOperation">
+          <option value="">Bulk action...</option>
+          <option value="verify">Verify selected</option>
+          <option value="unverify">Unverify selected</option>
+          <option value="activate">Activate selected</option>
+          <option value="deactivate">Deactivate selected</option>
+          <option value="setRole">Set role for selected</option>
+        </select>
+        <select id="bulkRole" style="display:none;">
+          <option value="student">Student</option>
+          <option value="creator">Creator</option>
+          <option value="admin">Admin</option>
+        </select>
+        <button id="applyBulkBtn" type="button" class="btn-primary">Apply</button>
+      </div>
+
+      <div class="filters">
+        <input id="searchInput" type="text" placeholder="Search by name or email..." />
+        <select id="roleFilter">
+          <option value="">All roles</option>
+          <option value="student">Student</option>
+          <option value="creator">Creator</option>
+          <option value="admin">Admin</option>
+        </select>
+        <select id="verifyFilter">
+          <option value="">All verification states</option>
+          <option value="true">Verified</option>
+          <option value="false">Not verified</option>
+        </select>
+        <select id="activeFilter">
+          <option value="">All account states</option>
+          <option value="true">Active</option>
+          <option value="false">Inactive</option>
+        </select>
+        <select id="limitFilter">
+          <option value="10">10 / page</option>
+          <option value="20" selected>20 / page</option>
+          <option value="50">50 / page</option>
+        </select>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th><input type="checkbox" id="selectAllUsers" /></th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th>Verified</th>
+              <th>Active</th>
+              <th>Creator Code</th>
+              <th>Linked Creator</th>
+              <th>Created</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="usersBody">
+            <tr><td colspan="10" class="empty">Loading users...</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="pagination">
+        <div id="pageInfo">Page 1 of 1</div>
+        <div class="pager-buttons">
+          <button id="prevPageBtn" type="button">Previous</button>
+          <button id="nextPageBtn" type="button">Next</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="audit-panel">
+      <h2 style="font-size: 18px;">Recent Admin Activity</h2>
+      <div class="audit-toolbar">
+        <input id="auditSearchInput" type="text" placeholder="Search audit activity..." />
+        <select id="auditActionFilter">
+          <option value="">All actions</option>
+          <option value="users.bulk">Bulk actions</option>
+          <option value="users.export.csv">CSV exports</option>
+          <option value="user.role.update">Role changes</option>
+          <option value="user.status.update">Status changes</option>
+        </select>
+        <select id="auditLimitFilter">
+          <option value="10">10 / page</option>
+          <option value="20" selected>20 / page</option>
+          <option value="50">50 / page</option>
+        </select>
+        <input id="auditFromInput" type="date" />
+        <input id="auditToInput" type="date" />
+        <button id="refreshAuditBtn" type="button" class="btn-ghost">Refresh Audit</button>
+      </div>
+      <div class="audit-list" id="auditList">
+        <div class="empty">Loading audit events...</div>
+      </div>
+      <div class="audit-pagination">
+        <div id="auditPageInfo">Page 1 of 1</div>
+        <div class="audit-pager-buttons">
+          <button id="auditPrevPageBtn" type="button">Previous</button>
+          <button id="auditNextPageBtn" type="button">Next</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script>
+    let allUsers = [];
+    let currentPage = 1;
+    let totalPages = 1;
+    let searchTimer = null;
+    let auditSearchTimer = null;
+    let auditPage = 1;
+    let auditTotalPages = 1;
+    let selectedUserIds = new Set();
+    let lastSummary = null;
+    let lastTotalUsers = 0;
+    let lastAuditRows = [];
+    let lastAuditTotal = 0;
+
+    function fmtDate(input) {
+      if (!input) return '-';
+      const d = new Date(input);
+      if (Number.isNaN(d.getTime())) return '-';
+      return d.toLocaleString();
+    }
+
+    function esc(value) {
+      return String(value || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    function toSentence(v) {
+      return String(v || '')
+        .replace(/[_-]/g, ' ')
+        .trim();
+    }
+
+    function updateStats(summary, total) {
+      const counts = summary || {};
+      lastSummary = counts;
+      lastTotalUsers = total || 0;
+      document.getElementById('statTotal').textContent = total || 0;
+      document.getElementById('statStudents').textContent = counts.students || 0;
+      document.getElementById('statCreators').textContent = counts.creators || 0;
+      document.getElementById('statAdmins').textContent = counts.admins || 0;
+      renderInsights();
+    }
+
+    function percent(value, total) {
+      if (!total) return '0%';
+      return `${Math.round((value / total) * 100)}%`;
+    }
+
+    function renderInsights() {
+      const summary = lastSummary || {};
+      const total = lastTotalUsers || 0;
+      const verified = summary.verified || 0;
+      const active = summary.active || 0;
+      const rows = Array.isArray(lastAuditRows) ? lastAuditRows : [];
+
+      document.getElementById('insightVerifiedRate').textContent = percent(verified, total);
+      document.getElementById('insightVerifiedNote').textContent = `${verified} verified of ${total} users`;
+      document.getElementById('insightActiveRate').textContent = percent(active, total);
+      document.getElementById('insightActiveNote').textContent = `${active} active of ${total} users`;
+      document.getElementById('insightAuditCount').textContent = String(lastAuditTotal || 0);
+      document.getElementById('insightAuditNote').textContent = `${rows.length} shown in the current audit view`;
+
+      const actionCounts = rows.reduce((acc, item) => {
+        const action = String(item.action || 'unknown');
+        acc[action] = (acc[action] || 0) + 1;
+        return acc;
+      }, {});
+      const topActionEntry = Object.entries(actionCounts).sort((a, b) => b[1] - a[1])[0];
+      document.getElementById('insightTopAction').textContent = topActionEntry ? toSentence(topActionEntry[0]) : '-';
+      document.getElementById('insightTopActionNote').textContent = topActionEntry ? `${topActionEntry[1]} event${topActionEntry[1] === 1 ? '' : 's'} in the current audit view` : 'Most common action in the current audit view';
+
+      const insightList = document.getElementById('insightList');
+      const recent = rows.slice(0, 3);
+      if (!recent.length) {
+        insightList.innerHTML = '<div class="empty">No recent audit activity to summarize.</div>';
+        return;
+      }
+      insightList.innerHTML = recent.map((item) => {
+        const when = item.createdAt ? new Date(item.createdAt).toLocaleString() : '-';
+        return `<div class="insight-item"><span>${esc(toSentence(item.action))}</span><span>${esc(when)}</span></div>`;
+      }).join('');
+    }
+
+    function renderUsers() {
+      const body = document.getElementById('usersBody');
+      if (!allUsers.length) {
+        body.innerHTML = '<tr><td colspan="10" class="empty">No users match the selected filters.</td></tr>';
+        updateSelectedCount();
+        return;
+      }
+
+      body.innerHTML = allUsers.map((u) => {
+        const roleName = (u.role || 'student').toLowerCase();
+        const checked = selectedUserIds.has(String(u.id)) ? 'checked' : '';
+        return `
+          <tr>
+            <td><input type="checkbox" data-select-id="${esc(u.id)}" ${checked} /></td>
+            <td>${esc(u.name || '-')}</td>
+            <td>${esc(u.email || '-')}</td>
+            <td><span class="role ${esc(roleName)}">${esc(roleName)}</span></td>
+            <td class="${u.isVerified ? 'verified' : 'not-verified'}">${u.isVerified ? 'Yes' : 'No'}</td>
+            <td class="${u.isActive === false ? 'active-no' : 'active-yes'}">${u.isActive === false ? 'No' : 'Yes'}</td>
+            <td>${esc(u.creatorCode || '-')}</td>
+            <td>${esc(u.linkedCreatorCode || '-')}</td>
+            <td>${esc(fmtDate(u.createdAt))}</td>
+            <td>
+              <div class="actions-cell">
+                <select class="tiny" id="role-${esc(u.id)}">
+                  <option value="student" ${roleName === 'student' ? 'selected' : ''}>Student</option>
+                  <option value="creator" ${roleName === 'creator' ? 'selected' : ''}>Creator</option>
+                  <option value="admin" ${roleName === 'admin' ? 'selected' : ''}>Admin</option>
+                </select>
+                <button class="tiny" data-action="role" data-id="${esc(u.id)}">Save Role</button>
+                <button class="tiny" data-action="verify" data-id="${esc(u.id)}">${u.isVerified ? 'Unverify' : 'Verify'}</button>
+                <button class="tiny" data-action="active" data-id="${esc(u.id)}">${u.isActive === false ? 'Activate' : 'Deactivate'}</button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      document.getElementById('pageInfo').textContent = `Page ${currentPage} of ${totalPages}`;
+      document.getElementById('prevPageBtn').disabled = currentPage <= 1;
+      document.getElementById('nextPageBtn').disabled = currentPage >= totalPages;
+      updateSelectedCount();
+      syncSelectAll();
+    }
+
+    function updateSelectedCount() {
+      document.getElementById('selectedCount').textContent = `${selectedUserIds.size} selected`;
+    }
+
+    function resetSelection() {
+      selectedUserIds = new Set();
+      const selectAll = document.getElementById('selectAllUsers');
+      if (selectAll) {
+        selectAll.checked = false;
+      }
+      updateSelectedCount();
+    }
+
+    function syncSelectAll() {
+      const rows = allUsers.map((u) => String(u.id));
+      const allSelected = rows.length > 0 && rows.every((id) => selectedUserIds.has(id));
+      document.getElementById('selectAllUsers').checked = allSelected;
+    }
+
+    function buildQuery() {
+      const search = document.getElementById('searchInput').value.trim();
+      const role = document.getElementById('roleFilter').value;
+      const verified = document.getElementById('verifyFilter').value;
+      const active = document.getElementById('activeFilter').value;
+      const limit = document.getElementById('limitFilter').value;
+
+      const params = new URLSearchParams();
+      params.set('page', String(currentPage));
+      params.set('limit', String(limit));
+      if (search) params.set('search', search);
+      if (role) params.set('role', role);
+      if (verified) params.set('verified', verified);
+      if (active) params.set('active', active);
+      return params.toString();
+    }
+
+    function buildAuditQuery() {
+      const search = document.getElementById('auditSearchInput').value.trim();
+      const action = document.getElementById('auditActionFilter').value;
+      const limit = document.getElementById('auditLimitFilter').value;
+      const from = document.getElementById('auditFromInput').value;
+      const to = document.getElementById('auditToInput').value;
+
+      const params = new URLSearchParams();
+      params.set('page', String(auditPage));
+      params.set('limit', String(limit));
+      if (search) params.set('search', search);
+      if (action) params.set('action', action);
+      if (from) params.set('from', from);
+      if (to) params.set('to', to);
+      return params.toString();
+    }
+
+    async function loadUsers() {
+      const body = document.getElementById('usersBody');
+      body.innerHTML = '<tr><td colspan="10" class="empty">Loading users...</td></tr>';
+      try {
+        const data = await api.get(`/admin/users?${buildQuery()}`);
+        allUsers = Array.isArray(data.users) ? data.users : [];
+        currentPage = data.page || 1;
+        totalPages = data.pages || 1;
+        resetSelection();
+        updateStats(data.summary, data.total || 0);
+        renderUsers();
+        loadAudit();
+      } catch (err) {
+        if (String(err.message || '').toLowerCase().includes('admin access required')) {
+          body.innerHTML = '<tr><td colspan="10" class="error">Admin access required.</td></tr>';
+        } else {
+          body.innerHTML = `<tr><td colspan="10" class="error">${esc(err.message || 'Failed to load users')}</td></tr>`;
+        }
+      }
+    }
+
+    async function loadAudit() {
+      const wrap = document.getElementById('auditList');
+      wrap.innerHTML = '<div class="empty">Loading audit events...</div>';
+      try {
+        const data = await api.get(`/admin/audit?${buildAuditQuery()}`);
+        const rows = Array.isArray(data.audit) ? data.audit : [];
+        lastAuditRows = rows;
+        lastAuditTotal = data.total || 0;
+        auditPage = data.page || 1;
+        auditTotalPages = data.pages || 1;
+        document.getElementById('auditPageInfo').textContent = `Page ${auditPage} of ${auditTotalPages}`;
+        document.getElementById('auditPrevPageBtn').disabled = auditPage <= 1;
+        document.getElementById('auditNextPageBtn').disabled = auditPage >= auditTotalPages;
+        renderInsights();
+        if (!rows.length) {
+          wrap.innerHTML = '<div class="empty">No audit events yet.</div>';
+          return;
+        }
+        wrap.innerHTML = rows.map((item) => {
+          const at = item.createdAt ? new Date(item.createdAt).toLocaleString() : '-';
+          const details = item.details ? JSON.stringify(item.details) : '{}';
+          return `
+            <div class="audit-item">
+              <div><strong>${esc(toSentence(item.action))}</strong> by ${esc(item.adminEmail || 'unknown')}</div>
+              <div class="audit-meta">Target: ${esc(item.targetEmail || item.targetUserId || '-')} | ${esc(at)}</div>
+              <div class="audit-meta">Details: ${esc(details)}</div>
+            </div>
+          `;
+        }).join('');
+      } catch (err) {
+        wrap.innerHTML = `<div class="error">${esc(err.message || 'Failed to load audit events')}</div>`;
+      }
+    }
+
+    async function applyBulkAction() {
+      const operation = document.getElementById('bulkOperation').value;
+      if (!operation) {
+        alert('Select a bulk action first.');
+        return;
+      }
+      if (!selectedUserIds.size) {
+        alert('Select at least one user.');
+        return;
+      }
+
+      const payload = {
+        userIds: Array.from(selectedUserIds),
+        operation,
+      };
+      if (operation === 'setRole') {
+        payload.role = document.getElementById('bulkRole').value;
+      }
+
+      const btn = document.getElementById('applyBulkBtn');
+      btn.disabled = true;
+      try {
+        const result = await api.post('/admin/users/bulk', payload);
+        alert(`Bulk completed. Updated: ${result.updatedCount}, Skipped: ${result.skippedCount}, Failed: ${result.failedCount}`);
+        await loadUsers();
+        resetSelection();
+      } catch (err) {
+        alert(err.message || 'Bulk action failed');
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    async function exportUsersCsv() {
+      try {
+        const token = localStorage.getItem('token');
+        const res = await fetch(`/api/admin/users/export?${buildQuery()}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        if (!res.ok) {
+          const text = await res.text();
+          throw new Error(text || 'Export failed');
+        }
+        const blob = await res.blob();
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `admin-users-${Date.now()}.csv`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+        await loadAudit();
+      } catch (err) {
+        alert(err.message || 'Export failed');
+      }
+    }
+
+    async function updateRole(userId) {
+      const roleEl = document.getElementById(`role-${userId}`);
+      if (!roleEl) return;
+      const role = roleEl.value;
+      await api.patch(`/admin/users/${userId}/role`, { role });
+      await loadUsers();
+    }
+
+    async function toggleVerified(userId) {
+      const user = allUsers.find((u) => String(u.id) === String(userId));
+      if (!user) return;
+      await api.patch(`/admin/users/${userId}/status`, { isVerified: !user.isVerified });
+      await loadUsers();
+    }
+
+    async function toggleActive(userId) {
+      const user = allUsers.find((u) => String(u.id) === String(userId));
+      if (!user) return;
+      await api.patch(`/admin/users/${userId}/status`, { isActive: user.isActive === false });
+      await loadUsers();
+    }
+
+    function requireAdmin() {
+      const token = localStorage.getItem('token');
+      const userRaw = localStorage.getItem('user');
+      if (!token || !userRaw) {
+        window.location.replace('/login-ultra.html');
+        return false;
+      }
+      try {
+        const user = JSON.parse(userRaw);
+        const role = String(user.role || 'student').toLowerCase();
+        if (role !== 'admin') {
+          window.location.replace('/login-ultra.html');
+          return false;
+        }
+      } catch {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        window.location.replace('/login-ultra.html');
+        return false;
+      }
+      return true;
+    }
+
+    document.getElementById('refreshBtn').addEventListener('click', loadUsers);
+    document.getElementById('exportCsvBtn').addEventListener('click', exportUsersCsv);
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      window.location.replace('/login-ultra.html');
+    });
+
+    document.getElementById('searchInput').addEventListener('input', () => {
+      clearTimeout(searchTimer);
+      searchTimer = setTimeout(() => {
+        currentPage = 1;
+        loadUsers();
+      }, 250);
+    });
+    document.getElementById('roleFilter').addEventListener('change', () => {
+      currentPage = 1;
+      loadUsers();
+    });
+    document.getElementById('verifyFilter').addEventListener('change', () => {
+      currentPage = 1;
+      loadUsers();
+    });
+    document.getElementById('activeFilter').addEventListener('change', () => {
+      currentPage = 1;
+      loadUsers();
+    });
+    document.getElementById('limitFilter').addEventListener('change', () => {
+      currentPage = 1;
+      loadUsers();
+    });
+
+    document.getElementById('prevPageBtn').addEventListener('click', () => {
+      if (currentPage <= 1) return;
+      currentPage -= 1;
+      loadUsers();
+    });
+
+    document.getElementById('nextPageBtn').addEventListener('click', () => {
+      if (currentPage >= totalPages) return;
+      currentPage += 1;
+      loadUsers();
+    });
+
+    document.getElementById('usersBody').addEventListener('click', async (event) => {
+      const btn = event.target.closest('button[data-action]');
+      if (!btn) return;
+      const action = btn.getAttribute('data-action');
+      const userId = btn.getAttribute('data-id');
+      if (!action || !userId) return;
+
+      btn.disabled = true;
+      try {
+        if (action === 'role') await updateRole(userId);
+        if (action === 'verify') await toggleVerified(userId);
+        if (action === 'active') await toggleActive(userId);
+      } catch (err) {
+        alert(err.message || 'Action failed');
+      } finally {
+        btn.disabled = false;
+      }
+    });
+
+    document.getElementById('usersBody').addEventListener('change', (event) => {
+      const cb = event.target.closest('input[type="checkbox"][data-select-id]');
+      if (!cb) return;
+      const id = cb.getAttribute('data-select-id');
+      if (!id) return;
+      if (cb.checked) selectedUserIds.add(id);
+      else selectedUserIds.delete(id);
+      updateSelectedCount();
+      syncSelectAll();
+    });
+
+    document.getElementById('selectAllUsers').addEventListener('change', (event) => {
+      const shouldSelect = event.target.checked;
+      allUsers.forEach((u) => {
+        const id = String(u.id);
+        if (shouldSelect) selectedUserIds.add(id);
+        else selectedUserIds.delete(id);
+      });
+      renderUsers();
+    });
+
+    document.getElementById('bulkOperation').addEventListener('change', (event) => {
+      const showRole = event.target.value === 'setRole';
+      document.getElementById('bulkRole').style.display = showRole ? 'block' : 'none';
+    });
+
+    document.getElementById('auditSearchInput').addEventListener('input', () => {
+      clearTimeout(auditSearchTimer);
+      auditSearchTimer = setTimeout(() => {
+        auditPage = 1;
+        loadAudit();
+      }, 250);
+    });
+
+    document.getElementById('auditActionFilter').addEventListener('change', () => {
+      auditPage = 1;
+      loadAudit();
+    });
+
+    document.getElementById('auditLimitFilter').addEventListener('change', () => {
+      auditPage = 1;
+      loadAudit();
+    });
+
+    document.getElementById('auditFromInput').addEventListener('change', () => {
+      auditPage = 1;
+      loadAudit();
+    });
+
+    document.getElementById('auditToInput').addEventListener('change', () => {
+      auditPage = 1;
+      loadAudit();
+    });
+
+    document.getElementById('refreshAuditBtn').addEventListener('click', loadAudit);
+
+    document.getElementById('auditPrevPageBtn').addEventListener('click', () => {
+      if (auditPage <= 1) return;
+      auditPage -= 1;
+      loadAudit();
+    });
+
+    document.getElementById('auditNextPageBtn').addEventListener('click', () => {
+      if (auditPage >= auditTotalPages) return;
+      auditPage += 1;
+      loadAudit();
+    });
+
+    document.getElementById('applyBulkBtn').addEventListener('click', applyBulkAction);
+
+    if (requireAdmin()) {
+      loadUsers();
+    }
+  </script>
+</body>
+</html>

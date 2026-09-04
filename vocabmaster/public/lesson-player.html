@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Taleem Lexicon - Lesson Player</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --gold: #D4AF37;
+      --emerald: #50C878;
+      --white: #FFFFFF;
+      --dark: #1a1a1a;
+    }
+
+    * {
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #f0f9ff 0%, #f0fdf4 100%);
+      color: var(--dark);
+    }
+
+    /* Header */
+    .lesson-header {
+      background: linear-gradient(135deg, var(--emerald) 0%, #2d7a5c 100%);
+      color: white;
+      padding: 20px 0;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Progress Bar */
+    .progress-bar {
+      height: 6px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 10px;
+      overflow: hidden;
+      margin-top: 15px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--gold);
+      transition: width 0.3s ease;
+    }
+
+    /* Exercise Container */
+    .exercise-card {
+      background: white;
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+      margin: 30px 0;
+    }
+
+    .exercise-title {
+      font-size: 28px;
+      font-weight: 800;
+      margin-bottom: 20px;
+      background: linear-gradient(135deg, var(--gold) 0%, var(--emerald) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* Audio Playback */
+    .audio-section {
+      background: linear-gradient(135deg, rgba(80, 200, 120, 0.1) 0%, rgba(212, 175, 55, 0.1) 100%);
+      border-radius: 15px;
+      padding: 20px;
+      margin: 20px 0;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .audio-button {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--gold), var(--emerald));
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      transition: all 0.3s ease;
+      color: white;
+    }
+
+    .audio-button:hover {
+      transform: scale(1.1);
+      box-shadow: 0 8px 20px rgba(80, 200, 120, 0.3);
+    }
+
+    .audio-button.recording {
+      animation: pulse 1s infinite;
+      background: #ff6b6b;
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        box-shadow: 0 0 0 0 rgba(255, 107, 107, 0.7);
+      }
+      50% {
+        box-shadow: 0 0 0 15px rgba(255, 107, 107, 0);
+      }
+    }
+
+    .waveform-container {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      height: 40px;
+      overflow: hidden;
+    }
+
+    .waveform-bar {
+      width: 4px;
+      background: var(--emerald);
+      border-radius: 2px;
+      transition: height 0.1s ease;
+    }
+
+    /* Multiple Choice */
+    .option {
+      background: white;
+      border: 2px solid #e0e0e0;
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin: 10px 0;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-weight: 500;
+    }
+
+    .option:hover {
+      border-color: var(--emerald);
+      background: rgba(80, 200, 120, 0.05);
+    }
+
+    .option.selected {
+      border-color: var(--gold);
+      background: rgba(212, 175, 55, 0.1);
+    }
+
+    .option.correct {
+      border-color: #10b981;
+      background: rgba(16, 185, 129, 0.1);
+    }
+
+    .option.incorrect {
+      border-color: #ef4444;
+      background: rgba(239, 68, 68, 0.1);
+    }
+
+    /* Input Field */
+    .input-field {
+      width: 100%;
+      padding: 15px;
+      border: 2px solid #e0e0e0;
+      border-radius: 12px;
+      font-size: 16px;
+      margin: 15px 0;
+      font-family: 'Poppins', sans-serif;
+      transition: border-color 0.3s ease;
+    }
+
+    .input-field:focus {
+      outline: none;
+      border-color: var(--emerald);
+      box-shadow: 0 0 0 3px rgba(80, 200, 120, 0.1);
+    }
+
+    /* Buttons */
+    .btn-submit {
+      background: linear-gradient(135deg, var(--emerald) 0%, #2d7a5c 100%);
+      color: white;
+      padding: 14px 40px;
+      border-radius: 50px;
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 16px;
+    }
+
+    .btn-submit:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(80, 200, 120, 0.3);
+    }
+
+    .btn-submit:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-nav {
+      background: white;
+      border: 2px solid var(--emerald);
+      color: var(--emerald);
+      padding: 12px 30px;
+      border-radius: 50px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin: 0 5px;
+    }
+
+    .btn-nav:hover {
+      background: var(--emerald);
+      color: white;
+    }
+
+    /* Feedback */
+    .feedback {
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 12px;
+      display: none;
+    }
+
+    .feedback.show {
+      display: block;
+      animation: slideIn 0.3s ease;
+    }
+
+    .feedback.correct {
+      background: rgba(16, 185, 129, 0.1);
+      color: #059669;
+      border-left: 4px solid #10b981;
+    }
+
+    .feedback.incorrect {
+      background: rgba(239, 68, 68, 0.1);
+      color: #dc2626;
+      border-left: 4px solid #ef4444;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Pronunciation Score */
+    .score-display {
+      display: inline-block;
+      background: var(--gold);
+      color: var(--dark);
+      padding: 10px 20px;
+      border-radius: 50px;
+      font-weight: 700;
+      margin-top: 10px;
+    }
+
+    /* Confetti Animation */
+    .confetti {
+      position: fixed;
+      width: 10px;
+      height: 10px;
+      pointer-events: none;
+      animation: confettiFall 3s ease-out forwards;
+    }
+
+    @keyframes confettiFall {
+      to {
+        opacity: 0;
+        transform: translateY(100vh) rotate(360deg);
+      }
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+      .exercise-card {
+        padding: 20px;
+      }
+
+      .exercise-title {
+        font-size: 20px;
+      }
+
+      .audio-section {
+        flex-direction: column;
+      }
+
+      .waveform-container {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <div class="lesson-header">
+    <div class="max-w-7xl mx-auto px-4">
+      <div style="display:flex; align-items:center; gap:12px; margin-bottom:10px;">
+        <img src="https://www.image2url.com/r2/default/images/1784112907446-0463de99-8cb2-4889-82b8-3e0c5207bc0d.jpg" alt="Taleem Lexicon" style="width:40px; height:40px; border-radius:50%;">
+        <span style="font-size:1.1rem; font-weight:bold; color:white;">Taleem Lexicon</span>
+      </div>
+      <div class="flex justify-between items-center mb-4">
+        <div>
+          <h1 class="text-2xl font-800">Lesson: <span id="lessonTitle">Loading...</span></h1>
+          <p class="text-emerald-100 text-sm mt-2">Chapter: <span id="chapterTitle">Loading...</span></p>
+        </div>
+        <button onclick="window.history.back()" class="bg-white text-emerald-600 px-4 py-2 rounded-lg font-600 hover:bg-emerald-50">
+          ← Back
+        </button>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+      </div>
+      <p class="text-white text-sm mt-2">Exercise <span id="exerciseNum">1</span> of <span id="totalExercises">0</span></p>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="max-w-4xl mx-auto px-4 py-8">
+    <div class="exercise-card">
+      <!-- Exercise Title -->
+      <h2 class="exercise-title" id="exerciseTitle">Multiple Choice</h2>
+
+      <!-- Exercise Content -->
+      <div id="exerciseContent">
+        <!-- Dynamic content will be inserted here -->
+      </div>
+
+      <!-- Feedback -->
+      <div class="feedback" id="feedback">
+        <span id="feedbackText"></span>
+      </div>
+
+      <!-- Submit Button -->
+      <div class="flex gap-4 mt-8">
+        <button class="btn-nav" id="prevBtn" onclick="previousExercise()" style="display:none;">← Previous</button>
+        <button class="btn-submit" id="submitBtn" onclick="submitAnswer()">Submit Answer</button>
+        <button class="btn-nav" id="nextBtn" onclick="nextExercise()" style="display:none;">Next →</button>
+      </div>
+    </div>
+
+    <!-- Completion Card -->
+    <div id="completionCard" style="display:none;">
+      <div class="exercise-card text-center">
+        <p class="text-6xl mb-4">🎉</p>
+        <h2 class="text-4xl font-800 mb-4" style="background: linear-gradient(135deg, var(--gold) 0%, var(--emerald) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+          Lesson Complete!
+        </h2>
+        <p class="text-gray-600 text-lg mb-8">
+          Great job! You've completed all <span id="finalCount">0</span> exercises.
+        </p>
+        <div class="grid md:grid-cols-3 gap-6 mb-8">
+          <div>
+            <div style="font-size: 32px; font-weight: 800; color: var(--emerald);" id="statsXP">0</div>
+            <p class="text-gray-600">XP Earned</p>
+          </div>
+          <div>
+            <div style="font-size: 32px; font-weight: 800; color: var(--gold);" id="statsScore">0%</div>
+            <p class="text-gray-600">Accuracy</p>
+          </div>
+          <div>
+            <div style="font-size: 32px; font-weight: 800; color: var(--emerald);" id="statsTime">0m</div>
+            <p class="text-gray-600">Time Spent</p>
+          </div>
+        </div>
+        <button class="btn-submit" onclick="window.location.href='/student-dashboard.html'">
+          Back to Dashboard
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script>
+    // State Management
+    let currentExerciseIndex = 0;
+    let exercises = [];
+    let responses = [];
+    let startTime = Date.now();
+    let selectedAnswer = null;
+    let isRecording = false;
+    let mediaRecorder = null;
+    let audioChunks = [];
+    let userRecording = null;
+
+    const query = new URLSearchParams(window.location.search);
+    const lessonId = query.get('lessonId');
+    const courseId = query.get('courseId');
+    const isPreviewMode = query.get('preview') === '1';
+    const PREVIEW_STORAGE_KEY = 'lessonPreviewData';
+
+    // Initialize
+    async function initializeLesson() {
+      try {
+        if (isPreviewMode) {
+          const raw = sessionStorage.getItem(PREVIEW_STORAGE_KEY);
+          if (!raw) {
+            showError('No preview data found. Return to lesson builder and click Preview again.');
+            return;
+          }
+
+          let preview = null;
+          try {
+            preview = JSON.parse(raw);
+          } catch (err) {
+            showError('Preview data is invalid. Rebuild your preview from lesson builder.');
+            return;
+          }
+
+          const previewExercises = Array.isArray(preview?.exercises) ? preview.exercises : [];
+          if (!previewExercises.length) {
+            showError('Preview has no exercises. Add exercises in lesson builder first.');
+            return;
+          }
+
+          document.getElementById('lessonTitle').textContent = String(preview.title || 'Lesson Preview');
+          document.getElementById('chapterTitle').textContent = String(preview.chapterTitle || 'Preview Mode');
+          document.getElementById('totalExercises').textContent = previewExercises.length;
+
+          exercises = previewExercises;
+          responses = new Array(exercises.length).fill(null);
+          displayExercise(0);
+          return;
+        }
+
+        if (!lessonId) {
+          showError('Lesson ID not provided');
+          return;
+        }
+
+        // Fetch lesson data
+        const response = await fetch(`/api/cms/lessons/${lessonId}`, {
+          headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+        });
+
+        if (!response.ok) throw new Error('Failed to load lesson');
+
+        const lesson = await response.json();
+        document.getElementById('lessonTitle').textContent = lesson.title;
+        document.getElementById('chapterTitle').textContent = lesson.chapterTitle || 'Chapter';
+        document.getElementById('totalExercises').textContent = lesson.exercises.length;
+
+        exercises = lesson.exercises;
+        responses = new Array(exercises.length).fill(null);
+
+        displayExercise(0);
+      } catch (error) {
+        showError('Error loading lesson: ' + error.message);
+      }
+    }
+
+    // Display Exercise
+    function displayExercise(index) {
+      if (index < 0 || index >= exercises.length) return;
+
+      currentExerciseIndex = index;
+      const exercise = exercises[index];
+      selectedAnswer = null;
+      userRecording = null;
+
+      // Update progress
+      updateProgress();
+
+      // Render exercise
+      renderExerciseContent(exercise);
+
+      // Update navigation buttons
+      document.getElementById('prevBtn').style.display = index === 0 ? 'none' : 'block';
+      document.getElementById('nextBtn').style.display = index === exercises.length - 1 ? 'none' : 'block';
+
+      // Show submit button only if not answered
+      document.getElementById('submitBtn').style.display = responses[index] === null ? 'block' : 'none';
+      document.getElementById('feedback').classList.remove('show', 'correct', 'incorrect');
+    }
+
+    // Render Exercise Content
+    function renderExerciseContent(exercise) {
+      const content = document.getElementById('exerciseContent');
+      content.innerHTML = '';
+
+      switch (exercise.type) {
+        case 'multiple-choice':
+          renderMultipleChoice(exercise, content);
+          break;
+        case 'fill-blank':
+          renderFillBlank(exercise, content);
+          break;
+        case 'pronunciation':
+          renderPronunciation(exercise, content);
+          break;
+        case 'matching':
+          renderMatching(exercise, content);
+          break;
+        case 'essay':
+          renderEssay(exercise, content);
+          break;
+      }
+    }
+
+    // Multiple Choice
+    function renderMultipleChoice(exercise, container) {
+      document.getElementById('exerciseTitle').textContent = 'Multiple Choice';
+      
+      const question = document.createElement('div');
+      question.innerHTML = `
+        <p class="text-lg mb-6">${exercise.question}</p>
+        <div class="space-y-3">
+          ${exercise.options.map((option, i) => `
+            <div class="option" onclick="selectOption(${i})">
+              ${option}
+            </div>
+          `).join('')}
+        </div>
+      `;
+      container.appendChild(question);
+    }
+
+    // Fill in the Blank
+    function renderFillBlank(exercise, container) {
+      document.getElementById('exerciseTitle').textContent = 'Fill in the Blank';
+      
+      const question = document.createElement('div');
+      question.innerHTML = `
+        <p class="text-lg mb-6">${exercise.question}</p>
+        <input type="text" class="input-field" id="answerInput" placeholder="Enter your answer...">
+      `;
+      container.appendChild(question);
+    }
+
+    // Pronunciation Check
+    function renderPronunciation(exercise, container) {
+      document.getElementById('exerciseTitle').textContent = '🎤 Pronunciation Check';
+      
+      const section = document.createElement('div');
+      section.innerHTML = `
+        <p class="text-lg mb-6">Pronounce the word: <strong>${exercise.word}</strong></p>
+        <div class="audio-section">
+          <button class="audio-button" id="playBtn" onclick="playAudio('${exercise.audioUrl}')">
+            ▶
+          </button>
+          <div class="waveform-container" id="waveformReference"></div>
+          <span class="text-sm text-gray-600">Reference Audio</span>
+        </div>
+        <p class="text-gray-600 text-sm mt-6 mb-4">Now record your pronunciation:</p>
+        <div class="audio-section">
+          <button class="audio-button" id="recordBtn" onclick="toggleRecording()">
+            🎙️
+          </button>
+          <div class="waveform-container" id="waveformUser"></div>
+          <span class="text-sm text-gray-600" id="recordingStatus">Click to record</span>
+        </div>
+        <div id="pronunciationFeedback"></div>
+      `;
+      container.appendChild(section);
+    }
+
+    // Matching
+    function renderMatching(exercise, container) {
+      document.getElementById('exerciseTitle').textContent = 'Matching';
+      
+      const section = document.createElement('div');
+      section.innerHTML = `
+        <p class="text-lg mb-6">Match words with their definitions:</p>
+        <div class="grid md:grid-cols-2 gap-8">
+          <div>
+            <h3 class="font-700 mb-4">Words</h3>
+            <div id="wordsColumn" class="space-y-3">
+              ${exercise.words.map((word, i) => `
+                <div class="bg-emerald-50 p-4 rounded-lg cursor-move" draggable="true" ondragstart="dragStart(event, ${i})">
+                  ${word}
+                </div>
+              `).join('')}
+            </div>
+          </div>
+          <div>
+            <h3 class="font-700 mb-4">Definitions</h3>
+            <div id="definitionsColumn" class="space-y-3">
+              ${exercise.definitions.map((def, i) => `
+                <div class="bg-gold bg-opacity-10 p-4 rounded-lg" ondrop="dropDefinition(event, ${i})" ondragover="allowDrop(event)">
+                  ${def}
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+      `;
+      container.appendChild(section);
+    }
+
+    // Essay
+    function renderEssay(exercise, container) {
+      document.getElementById('exerciseTitle').textContent = 'Write an Answer';
+      
+      const section = document.createElement('div');
+      section.innerHTML = `
+        <p class="text-lg mb-6">${exercise.question}</p>
+        <textarea id="essayInput" class="input-field" style="resize: vertical; min-height: 150px;" placeholder="Write your answer here..."></textarea>
+        <p class="text-sm text-gray-500 mt-2">Minimum 50 characters</p>
+      `;
+      container.appendChild(section);
+    }
+
+    // Recording Functions
+    async function toggleRecording() {
+      if (!isRecording) {
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+          mediaRecorder = new MediaRecorder(stream);
+          audioChunks = [];
+
+          mediaRecorder.ondataavailable = (e) => audioChunks.push(e.data);
+          mediaRecorder.onstop = async () => {
+            userRecording = new Blob(audioChunks, { type: 'audio/wav' });
+            await submitPronunciation();
+          };
+
+          mediaRecorder.start();
+          isRecording = true;
+          document.getElementById('recordBtn').classList.add('recording');
+          document.getElementById('recordingStatus').textContent = 'Recording... Click to stop';
+        } catch (error) {
+          showError('Microphone access denied');
+        }
+      } else {
+        mediaRecorder.stop();
+        isRecording = false;
+        document.getElementById('recordBtn').classList.remove('recording');
+        document.getElementById('recordingStatus').textContent = 'Processing...';
+      }
+    }
+
+    async function submitPronunciation() {
+      const exercise = exercises[currentExerciseIndex];
+      const formData = new FormData();
+      formData.append('userAudio', userRecording);
+      formData.append('referenceUrl', exercise.audioUrl);
+      formData.append('language', exercise.language || 'en');
+
+      try {
+        const response = await fetch('/api/audio/check-pronunciation', {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` },
+          body: formData
+        });
+
+        const result = await response.json();
+        const feedback = document.getElementById('pronunciationFeedback');
+        feedback.innerHTML = `
+          <div class="score-display">Score: ${result.score}%</div>
+          <p class="mt-4 text-gray-700">${result.feedback}</p>
+        `;
+
+        responses[currentExerciseIndex] = result.score;
+      } catch (error) {
+        showError('Error checking pronunciation');
+      }
+    }
+
+    // Answer Selection
+    function selectOption(index) {
+      document.querySelectorAll('.option').forEach((el, i) => {
+        if (i === index) {
+          el.classList.add('selected');
+          selectedAnswer = index;
+        } else {
+          el.classList.remove('selected');
+        }
+      });
+    }
+
+    // Submit Answer
+    function submitAnswer() {
+      const exercise = exercises[currentExerciseIndex];
+      let isCorrect = false;
+
+      switch (exercise.type) {
+        case 'multiple-choice':
+          if (selectedAnswer === null) {
+            showError('Please select an option');
+            return;
+          }
+          isCorrect = selectedAnswer === exercise.correctIndex;
+          responses[currentExerciseIndex] = { type: 'multiple-choice', answer: selectedAnswer, correct: isCorrect };
+          break;
+
+        case 'fill-blank':
+          const answer = document.getElementById('answerInput').value.trim();
+          if (!answer) {
+            showError('Please enter an answer');
+            return;
+          }
+          isCorrect = answer.toLowerCase() === exercise.correctAnswer.toLowerCase();
+          responses[currentExerciseIndex] = { type: 'fill-blank', answer, correct: isCorrect };
+          break;
+
+        case 'essay':
+          const essay = document.getElementById('essayInput').value.trim();
+          if (essay.length < 50) {
+            showError('Answer must be at least 50 characters');
+            return;
+          }
+          responses[currentExerciseIndex] = { type: 'essay', answer: essay };
+          break;
+      }
+
+      // Show feedback
+      const feedback = document.getElementById('feedback');
+      const feedbackText = document.getElementById('feedbackText');
+
+      if (isCorrect) {
+        feedback.classList.add('show', 'correct');
+        feedbackText.textContent = '✓ Correct! Great job!';
+        triggerConfetti();
+      } else if (isCorrect === false) {
+        feedback.classList.add('show', 'incorrect');
+        feedbackText.textContent = `✗ Incorrect. The correct answer is: ${exercise.explanation || exercise.correctAnswer}`;
+      }
+
+      // Hide submit, show next
+      document.getElementById('submitBtn').style.display = 'none';
+      if (currentExerciseIndex < exercises.length - 1) {
+        document.getElementById('nextBtn').style.display = 'block';
+      } else {
+        showCompletion();
+      }
+    }
+
+    // Navigation
+    function nextExercise() {
+      if (currentExerciseIndex < exercises.length - 1) {
+        displayExercise(currentExerciseIndex + 1);
+      }
+    }
+
+    function previousExercise() {
+      if (currentExerciseIndex > 0) {
+        displayExercise(currentExerciseIndex - 1);
+      }
+    }
+
+    // Progress Update
+    function updateProgress() {
+      const progress = ((currentExerciseIndex + 1) / exercises.length) * 100;
+      document.getElementById('progressFill').style.width = progress + '%';
+      document.getElementById('exerciseNum').textContent = currentExerciseIndex + 1;
+    }
+
+    // Completion
+    function showCompletion() {
+      document.getElementById('exerciseContent').innerHTML = '';
+      document.getElementById('submitBtn').style.display = 'none';
+      document.getElementById('prevBtn').style.display = 'none';
+      document.getElementById('nextBtn').style.display = 'none';
+      document.getElementById('completionCard').style.display = 'block';
+
+      // Calculate stats
+      const correctCount = responses.filter(r => r && r.correct).length;
+      const accuracy = Math.round((correctCount / exercises.length) * 100);
+      const timeSpent = Math.floor((Date.now() - startTime) / 1000 / 60);
+      const xpEarned = accuracy * 10;
+
+      document.getElementById('finalCount').textContent = exercises.length;
+      document.getElementById('statsXP').textContent = xpEarned;
+      document.getElementById('statsScore').textContent = accuracy + '%';
+      document.getElementById('statsTime').textContent = timeSpent + 'm';
+
+      // Save progress
+      saveProgress(accuracy, xpEarned, timeSpent);
+    }
+
+    async function saveProgress(accuracy, xp, time) {
+      if (isPreviewMode || !lessonId) return;
+      try {
+        await fetch(`/api/study/session`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          },
+          body: JSON.stringify({
+            lessonId,
+            mode: 'lesson',
+            score: accuracy,
+            duration: time * 60,
+            responses
+          })
+        });
+      } catch (error) {
+        console.error('Failed to save progress:', error);
+      }
+    }
+
+    // Confetti
+    function triggerConfetti() {
+      for (let i = 0; i < 30; i++) {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti';
+        confetti.style.left = Math.random() * window.innerWidth + 'px';
+        confetti.style.background = Math.random() > 0.5 ? 'var(--gold)' : 'var(--emerald)';
+        confetti.style.delay = Math.random() * 0.5 + 's';
+        document.body.appendChild(confetti);
+        setTimeout(() => confetti.remove(), 3500);
+      }
+    }
+
+    // Utilities
+    function showError(message) {
+      alert(message);
+    }
+
+    function playAudio(url) {
+      const audio = new Audio(url);
+      audio.play().catch(() => showError('Could not play audio'));
+    }
+
+    // Initialize on load
+    document.addEventListener('DOMContentLoaded', initializeLesson);
+  </script>
+</body>
+</html>

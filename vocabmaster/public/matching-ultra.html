@@ -1,0 +1,1448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matching Mode - VocabMaster</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #50C878;
+            --secondary: #D4AF37;
+            --success: #10B981;
+            --danger: #EF4444;
+            --warning: #F59E0B;
+            --neutral-50: #F9FAFB;
+            --neutral-900: #111827;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: url('https://i.redd.it/p3eeuyckjefe1.jpeg') center/cover no-repeat fixed;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Header */
+        .session-header {
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.35);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.28);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .session-info {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .info-item {
+            text-align: center;
+        }
+
+        .info-label {
+            font-size: 0.75rem;
+            color: #999;
+            text-transform: uppercase;
+        }
+
+        .info-value {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .combo-badge {
+            background: linear-gradient(135deg, var(--warning), var(--secondary));
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            animation: scaleIn 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        @keyframes scaleIn {
+            from { transform: scale(0); }
+            to { transform: scale(1); }
+        }
+
+        .exit-btn {
+            padding: 0.8em 1.6em;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 600;
+            color: #000;
+            background-color: #fff;
+            border: none;
+            border-radius: 30px;
+            box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease 0s;
+            cursor: pointer;
+            outline: none;
+            min-width: 128px;
+        }
+
+        .exit-btn:hover {
+            background-color: #23c483;
+            box-shadow: 0px 15px 20px rgba(46, 229, 157, 0.4);
+            color: #fff;
+            transform: translateY(-7px);
+        }
+
+        .exit-btn:active {
+            transform: translateY(-1px);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .mode-spotlight {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.28);
+            border-radius: 14px;
+            padding: 1rem 1.1rem;
+            margin-bottom: 1.2rem;
+            color: white;
+            backdrop-filter: blur(8px);
+        }
+
+        .mode-spotlight .tag {
+            display: inline-flex;
+            padding: 0.25rem 0.65rem;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.18);
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-bottom: 0.55rem;
+        }
+
+        .mode-spotlight h2 {
+            font-size: 1.2rem;
+            margin-bottom: 0.35rem;
+        }
+
+        .mode-spotlight p {
+            font-size: 0.9rem;
+            opacity: 0.92;
+            line-height: 1.5;
+        }
+
+        /* Progress */
+        .progress-section {
+            margin-bottom: 2rem;
+        }
+
+        .progress-text {
+            color: white;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #10B981, #3B82F6);
+            transition: width 0.4s ease;
+        }
+
+        /* Main Game Area */
+        .game-area {
+            background: rgba(255, 255, 255, 0.10);
+            border: 1px solid rgba(255, 255, 255, 0.26);
+            box-shadow: 0 20px 40px rgba(15, 23, 42, 0.12);
+            backdrop-filter: blur(12px) saturate(140%);
+            -webkit-backdrop-filter: blur(12px) saturate(140%);
+            padding: 2rem;
+            border-radius: 18px;
+        }
+
+        .game-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: #ffffff;
+        }
+
+        .game-subtitle {
+            color: rgba(255, 255, 255, 0.82);
+            margin-bottom: 2rem;
+        }
+
+        .matching-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .column {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .column-title {
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.74);
+        }
+
+        /* Word Cards (Left) */
+        .word-card {
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 10px;
+            cursor: move;
+            transition: all 0.3s ease;
+            user-select: none;
+            font-weight: 600;
+            position: relative;
+            overflow: hidden;
+            color: #ffffff;
+        }
+
+        .word-card:hover {
+            background: rgba(255, 255, 255, 0.14);
+            border-color: rgba(255, 255, 255, 0.32);
+            transform: translateX(-4px);
+            box-shadow: 0 8px 20px rgba(15, 23, 42, 0.12);
+        }
+
+        .word-card.dragging {
+            opacity: 0.5;
+            transform: rotate(2deg) scale(0.95);
+        }
+
+        .word-card.matched {
+            background: rgba(16, 185, 129, 0.1);
+            border-color: var(--success);
+            color: var(--success);
+            cursor: default;
+        }
+
+        .word-card.matched::after {
+            content: '✓';
+            position: absolute;
+            right: 1rem;
+            opacity: 1;
+            color: var(--success);
+        }
+
+        /* Definition Cards (Right) */
+        .definition-card {
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px dashed rgba(255, 255, 255, 0.20);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.88);
+        }
+
+        .definition-card:hover {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.34);
+            transform: translateX(4px);
+        }
+
+        .definition-card.drag-over {
+            background: rgba(99, 102, 241, 0.1);
+            border-color: var(--primary);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+        }
+
+        .definition-card.matched {
+            background: rgba(16, 185, 129, 0.1);
+            border-color: var(--success);
+            border-style: solid;
+            color: var(--success);
+        }
+
+        .definition-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
+        .definition-text {
+            flex: 1;
+        }
+
+        .definition-checkmark {
+            font-size: 1.5rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .definition-card.matched .definition-checkmark {
+            opacity: 1;
+        }
+
+        /* Connection Lines */
+        .connection-line {
+            position: fixed;
+            height: 2px;
+            background: linear-gradient(90deg, var(--success), transparent);
+            pointer-events: none;
+            transform-origin: left center;
+            animation: drawLine 0.4s ease-out;
+        }
+
+        @keyframes drawLine {
+            from {
+                opacity: 0;
+                transform: scaleX(0);
+            }
+            to {
+                opacity: 1;
+                transform: scaleX(1);
+            }
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 0.875rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 100px;
+        }
+
+        .btn-undo {
+            padding: 15px 25px;
+            border: unset;
+            border-radius: 15px;
+            color: #212121;
+            z-index: 1;
+            background: #e8e8e8;
+            position: relative;
+            font-weight: 1000;
+            font-size: 17px;
+            -webkit-box-shadow: 4px 8px 19px -3px rgba(0,0,0,0.27);
+            box-shadow: 4px 8px 19px -3px rgba(0,0,0,0.27);
+            transition: all 250ms;
+            overflow: hidden;
+        }
+
+        .btn-undo::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 0;
+            border-radius: 15px;
+            background-color: #212121;
+            z-index: -1;
+            -webkit-box-shadow: 4px 8px 19px -3px rgba(0,0,0,0.27);
+            box-shadow: 4px 8px 19px -3px rgba(0,0,0,0.27);
+            transition: all 250ms;
+        }
+
+        .btn-undo:hover {
+            color: #e8e8e8;
+        }
+
+        .btn-undo:hover::before {
+            width: 100%;
+        }
+
+        .btn-reset {
+            padding: 17px 40px;
+            border-radius: 50px;
+            cursor: pointer;
+            border: 0;
+            background-color: white;
+            box-shadow: rgb(0 0 0 / 5%) 0 0 8px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            font-size: 15px;
+            transition: all 0.5s ease;
+            min-width: 52px;
+            width: 52px;
+            height: 52px;
+            padding: 0;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: transparent;
+            position: relative;
+        }
+
+        .btn-reset::before {
+            content: '↺';
+            color: #111827;
+            font-size: 22px;
+            line-height: 1;
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-reset:hover {
+            letter-spacing: 3px;
+            background-color: hsl(261deg 80% 48%);
+            color: hsl(0, 0%, 100%);
+            box-shadow: rgb(93 24 220) 0px 7px 29px 0px;
+        }
+
+        .btn-reset:hover::before {
+            color: #fff;
+        }
+
+        .btn-reset:active {
+            letter-spacing: 3px;
+            background-color: hsl(261deg 80% 48%);
+            color: hsl(0, 0%, 100%);
+            box-shadow: rgb(93 24 220) 0px 0px 0px 0px;
+            transform: translateY(10px);
+            transition: 100ms;
+        }
+
+        .btn-complete {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            padding: 16px 36px;
+            border: 4px solid;
+            border-color: transparent;
+            font-size: 16px;
+            background-color: inherit;
+            border-radius: 100px;
+            font-weight: 600;
+            color: greenyellow;
+            box-shadow: 0 0 0 2px greenyellow;
+            cursor: pointer;
+            overflow: hidden;
+            transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+            flex: 2;
+        }
+
+        .btn-complete .circle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 20px;
+            height: 20px;
+            background-color: greenyellow;
+            border-radius: 50%;
+            opacity: 0;
+            transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .btn-complete .text {
+            position: relative;
+            z-index: 1;
+            transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .btn-complete:hover {
+            box-shadow: 0 0 0 12px transparent;
+            color: #212121;
+            border-radius: 12px;
+        }
+
+        .btn-complete:hover .text {
+            transform: translateX(0);
+        }
+
+        .btn-complete:active {
+            scale: 0.95;
+            box-shadow: 0 0 0 4px greenyellow;
+        }
+
+        .btn-complete:hover .circle {
+            width: 220px;
+            height: 220px;
+            opacity: 1;
+        }
+
+        /* Summary */
+        .summary-screen {
+            display: none;
+            background: rgba(255, 255, 255, 0.44);
+            padding: 3rem 2rem;
+            border-radius: 18px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.75);
+            box-shadow: 0 20px 48px rgba(15, 23, 42, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.45);
+            backdrop-filter: blur(14px) saturate(150%);
+            -webkit-backdrop-filter: blur(14px) saturate(150%);
+        }
+
+        .summary-screen.show {
+            display: block;
+        }
+
+        .summary-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+
+        .summary-icon img {
+            width: 88px;
+            height: 88px;
+            object-fit: contain;
+            border-radius: 14px;
+            filter: drop-shadow(0 8px 16px rgba(15, 23, 42, 0.15));
+        }
+
+        .summary-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            color: var(--neutral-900);
+        }
+
+        .summary-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-box {
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.42);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35);
+        }
+
+        .stat-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: #999;
+            margin-top: 0.5rem;
+        }
+
+        .summary-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .summary-btn {
+            flex: 1;
+            padding: 0.875rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 120px;
+        }
+
+        .summary-btn-again {
+            display: inline-block;
+            transition: all 0.2s ease-in;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            color: #090909;
+            background: #e8e8e8;
+            border: 1px solid #e8e8e8;
+            border-radius: 0.5em;
+            box-shadow: 6px 6px 12px #c5c5c5, -6px -6px 12px #ffffff;
+            font-size: 18px;
+        }
+
+        .summary-btn-again:active {
+            color: #666;
+            box-shadow: inset 4px 4px 12px #c5c5c5, inset -4px -4px 12px #ffffff;
+        }
+
+        .summary-btn-again:before {
+            content: "";
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%) scaleY(1) scaleX(1.25);
+            top: 100%;
+            width: 140%;
+            height: 180%;
+            background-color: rgba(0, 0, 0, 0.05);
+            border-radius: 50%;
+            display: block;
+            transition: all 0.5s 0.1s cubic-bezier(0.55, 0, 0.1, 1);
+            z-index: -1;
+        }
+
+        .summary-btn-again:after {
+            content: "";
+            position: absolute;
+            left: 55%;
+            transform: translateX(-50%) scaleY(1) scaleX(1.45);
+            top: 180%;
+            width: 160%;
+            height: 190%;
+            background-color: #009087;
+            border-radius: 50%;
+            display: block;
+            transition: all 0.5s 0.1s cubic-bezier(0.55, 0, 0.1, 1);
+            z-index: -1;
+        }
+
+        .summary-btn-again:hover {
+            color: #ffffff;
+            border: 1px solid #009087;
+        }
+
+        .summary-btn-again:hover:before {
+            top: -35%;
+            background-color: #009087;
+            transform: translateX(-50%) scaleY(1.3) scaleX(0.8);
+        }
+
+        .summary-btn-again:hover:after {
+            top: -45%;
+            background-color: #009087;
+            transform: translateX(-50%) scaleY(1.3) scaleX(0.8);
+        }
+
+        .summary-btn-back {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.35rem;
+            height: 3em;
+            min-width: 120px;
+            letter-spacing: 1px;
+            cursor: pointer;
+            border: none;
+            border-radius: 3px;
+            background: #fff;
+            color: #111827;
+            transition: all 0.2s linear;
+        }
+
+        .summary-btn-back svg {
+            width: 18px;
+            height: 18px;
+            transition: all 0.4s ease-in;
+        }
+
+        .summary-btn-back:hover {
+            box-shadow: 9px 9px 33px #d1d1d1, -9px -9px 33px #ffffff;
+            transform: translateY(-2px);
+        }
+
+        .summary-btn-back:hover svg {
+            transform: translateX(-5px);
+        }
+
+        @media (max-width: 1024px) {
+            .matching-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .game-area {
+                padding: 1rem;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="session-header">
+            <div style="display:flex; align-items:center; gap:8px; margin-right:20px;">
+              <img src="https://www.image2url.com/r2/default/images/1784112907446-0463de99-8cb2-4889-82b8-3e0c5207bc0d.jpg" alt="Taleem Lexicon" style="width:35px; height:35px; border-radius:50%;">
+              <span style="font-weight:bold; color:#111827;">Taleem Lexicon</span>
+            </div>
+            <div class="header-left">
+                <button class="back-btn" onclick="goBack()">←</button>
+                <div class="session-info">
+                    <div class="info-item">
+                        <div class="info-label">Matched</div>
+                        <div class="info-value" id="matchedCount">0/6</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Streak</div>
+                        <div class="info-value" id="streakCount">0x</div>
+                    </div>
+                    <div class="info-item" id="comboInfo" style="display: none;">
+                        <div class="combo-badge" id="comboBadge">⚡ 3x COMBO!</div>
+                    </div>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button class="exit-btn" onclick="goBack()">Learning Hub</button>
+                <button class="exit-btn" onclick="exitGame()">Exit</button>
+            </div>
+        </div>
+
+        <section class="mode-spotlight">
+            <span class="tag">Exercise 03</span>
+            <h2>Matching Session</h2>
+            <p>Drag words to their meanings quickly and build strong word-association speed with every round.</p>
+        </section>
+
+        <!-- Progress -->
+        <div class="progress-section">
+            <div class="progress-text">
+                <span id="progressText">Matching Pairs</span>
+                <span id="timeText">Time left: --</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+            </div>
+        </div>
+
+        <!-- Game Area -->
+        <div class="game-area">
+            <div class="game-title">Match Words to Definitions</div>
+            <div class="game-subtitle">Drag words on the left to their definitions on the right</div>
+
+            <div class="matching-grid">
+                <!-- Left Column: Words -->
+                <div class="column">
+                    <div class="column-title">Words</div>
+                    <div id="wordsContainer"></div>
+                </div>
+
+                <!-- Right Column: Definitions -->
+                <div class="column">
+                    <div class="column-title">Definitions</div>
+                    <div id="definitionsContainer"></div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <button class="btn btn-undo" onclick="undoLastMatch()">Undo</button>
+                <button class="btn btn-reset" onclick="resetMatching()" aria-label="Reset all"></button>
+                <button class="btn btn-complete" id="completeBtn" onclick="completeSession()" disabled>
+                    <span class="circle"></span>
+                    <span class="text">Complete</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Summary -->
+        <div class="summary-screen" id="summaryScreen">
+            <div class="summary-icon">
+                <img src="https://i.pinimg.com/originals/4e/46/f4/4e46f40ba9bbf1e2c508fdd1967775ef.gif" alt="Celebration confetti">
+            </div>
+            <div class="summary-title">Perfect Match!</div>
+            <div class="summary-stats">
+                <div class="stat-box">
+                    <div class="stat-value" id="totalMatches">6/6</div>
+                    <div class="stat-label">Pairs Matched</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="totalTime">1m 23s</div>
+                    <div class="stat-label">Time Taken</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="earnedXP">+90 XP</div>
+                    <div class="stat-label">XP Earned</div>
+                </div>
+            </div>
+            <div class="summary-buttons">
+                <button class="summary-btn summary-btn-again" onclick="restartMatchingSession()">Try Again</button>
+                <button class="summary-btn summary-btn-back" onclick="goBack()">
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
+                        <path d="M15 6L9 12L15 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    Back
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/api.js"></script>
+    <script src="/js/adaptiveQueue.js"></script>
+    <script src="/js/deckPracticeSession.js"></script>
+    <script>
+        const pageParams = new URLSearchParams(window.location.search);
+        const targetPairCount = Math.max(1, Math.min(60, parseInt(pageParams.get('wordCount'), 10) || 6));
+        const activeDeckSessionId = String(pageParams.get('deckSessionId') || '').trim();
+        const activeDeckSession = window.deckPracticeSession && typeof window.deckPracticeSession.getSession === 'function'
+            ? (activeDeckSessionId ? window.deckPracticeSession.getSession(activeDeckSessionId) : null)
+            : null;
+        const autoNextEnabled = String(pageParams.get('autoNext') || '').toLowerCase() === 'true'
+            && String(pageParams.get('guidedFlow') || '').toLowerCase() === 'weekly';
+        const flowModes = String(pageParams.get('flow') || '')
+            .split(',')
+            .map((mode) => String(mode || '').trim().toLowerCase())
+            .filter((mode) => ['flashcards', 'quiz', 'matching', 'spelling'].includes(mode));
+        const currentFlowMode = String(pageParams.get('mode') || 'matching').trim().toLowerCase() || 'matching';
+        const FLOW_PROGRESS_KEY = 'student_guided_flow_progress_v1';
+        let autoNextScheduled = false;
+
+        function buildFlowSignatureFromParams() {
+            const count = Math.max(5, Math.min(60, parseInt(pageParams.get('wordCount'), 10) || 0));
+            const minDifficulty = Math.max(1, Math.min(5, parseInt(pageParams.get('minDifficulty'), 10) || 1));
+            const maxDifficulty = Math.max(minDifficulty, Math.min(5, parseInt(pageParams.get('maxDifficulty'), 10) || 5));
+            const targetLevel = String(pageParams.get('targetLevel') || 'AUTO').trim().toUpperCase() || 'AUTO';
+            return [activeDeckSessionId || '', targetLevel, count, minDifficulty, maxDifficulty, flowModes.join(',')].join('|');
+        }
+
+        function loadPairsFromDeckSession() {
+            if (!activeDeckSession || !Array.isArray(activeDeckSession.words) || !activeDeckSession.words.length) {
+                return false;
+            }
+            pairs = activeDeckSession.words
+                .map((item) => ({
+                    word: String(item && item.word || '').trim(),
+                    definition: String(item && item.definition || '').trim(),
+                }))
+                .filter((item) => item.word && item.definition)
+                .slice(0, targetPairCount);
+            return pairs.length > 0;
+        }
+
+        function markGuidedModeComplete() {
+            if (!flowModes.length) return;
+            const activeMode = flowModes.includes(currentFlowMode) ? currentFlowMode : 'matching';
+            const idx = flowModes.indexOf(activeMode);
+            const completedModes = flowModes.slice(0, Math.max(0, idx) + 1);
+            const nextMode = idx >= 0 && idx < flowModes.length - 1 ? flowModes[idx + 1] : null;
+            const state = {
+                signature: buildFlowSignatureFromParams(),
+                flowModes: flowModes.slice(),
+                completedModes,
+                nextMode,
+                updatedAt: Date.now(),
+            };
+            try {
+                localStorage.setItem(FLOW_PROGRESS_KEY, JSON.stringify(state));
+            } catch (_err) {}
+        }
+
+        function resolveModePath(mode) {
+            return {
+                flashcards: 'flashcards-ultra.html',
+                quiz: 'quiz-ultra.html',
+                matching: 'matching-ultra.html',
+                spelling: 'spelling-ultra.html',
+            }[String(mode || '').toLowerCase()] || 'flashcards-ultra.html';
+        }
+
+        function resolveNextExerciseUrl() {
+            if (!autoNextEnabled || !flowModes.length) return null;
+            const activeMode = flowModes.includes(currentFlowMode) ? currentFlowMode : 'matching';
+            const idx = flowModes.indexOf(activeMode);
+            if (idx < 0 || idx >= flowModes.length - 1) return null;
+            const nextMode = flowModes[idx + 1];
+            const nextParams = new URLSearchParams(pageParams.toString());
+            nextParams.set('mode', nextMode);
+            nextParams.set('autoNext', 'true');
+            nextParams.set('flow', flowModes.join(','));
+            return `${resolveModePath(nextMode)}?${nextParams.toString()}`;
+        }
+
+        const autoNextTarget = resolveNextExerciseUrl();
+
+        function scheduleAutoNextTransition() {
+            if (!autoNextTarget || autoNextScheduled) return;
+            autoNextScheduled = true;
+            setTimeout(function () {
+                window.location.href = autoNextTarget;
+            }, 2200);
+        }
+
+        // Shared adaptive queue is the only source of session pairs.
+        let pairs = [];
+
+        // ── adaptive queue load ──────────────────────────────────────────────────
+        async function loadPairsFromQueue() {
+            try {
+                const aqParams = adaptiveQueue.resolveQueueParams();
+                let queueResult = null;
+
+                if (aqParams.planId) {
+                    queueResult = await adaptiveQueue.loadPlanQueue(aqParams.planId);
+                } else if (aqParams.queueId) {
+                    try {
+                        queueResult = await adaptiveQueue.loadActiveQueue(aqParams.queueId);
+                    } catch (matchErr) {
+                        if (matchErr.code === 'QUEUE_MISMATCH') {
+                            console.warn('[matching] queueId mismatch — loading current active queue instead');
+                            queueResult = await adaptiveQueue.loadActiveQueue(null);
+                        } else throw matchErr;
+                    }
+                } else {
+                    queueResult = await adaptiveQueue.loadActiveQueue(null);
+                }
+
+                if (queueResult && queueResult.totalItems > 0) {
+                    const cursor = adaptiveQueue.getCachedCursor();
+                    const start = Math.max(0, cursor.nextIndex);
+                    const queueItems = [];
+                    for (let i = start; queueItems.length < targetPairCount; i += 1) {
+                        const item = adaptiveQueue.consumeQueueItem(queueResult.queueId, i);
+                        if (!item) break;
+                        queueItems.push(item);
+                    }
+
+                    const sanitizedItems = queueItems
+                        .map((it) => ({
+                            word: String(it && it.word || '').trim(),
+                            definition: String(it && it.definition || '').trim(),
+                            queueMeta: it && it.queueMeta,
+                        }))
+                        .filter((it) => it.word && it.definition);
+
+                    if (!sanitizedItems.length) {
+                        pairs = [];
+                        console.warn('[matching] queue items missing required word/definition fields');
+                        return;
+                    }
+
+                    pairs = sanitizedItems.map((it) => ({
+                        word: it.word,
+                        definition: it.definition,
+                        queueMeta: it.queueMeta,
+                    }));
+                }
+            } catch (err) {
+                if (err.code !== 'NO_ACTIVE_QUEUE') {
+                    console.warn('[matching] queue pairs load failed:', err.message || err);
+                }
+            }
+        }
+
+        let matches = [];
+        let selectedWord = null;
+        let selectedWordAt = 0;
+        let timeStarted = Date.now();
+        let timeLimitSeconds = 0;
+        let timerInterval = null;
+        let sessionFinished = false;
+        let attemptTelemetry = [];
+        let comboStreak = 0;
+        let totalXP = 0;
+        let gameStarted = true;
+
+        function formatTimeLeft(totalSeconds) {
+            const safeSeconds = Math.max(0, Math.floor(Number(totalSeconds) || 0));
+            const minutes = Math.floor(safeSeconds / 60);
+            const seconds = safeSeconds % 60;
+            return `${minutes}m ${String(seconds).padStart(2, '0')}s`;
+        }
+
+        function clearSessionTimer() {
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+            }
+        }
+
+        function updateTimeLeftDisplay() {
+            const elapsed = Math.floor((Date.now() - timeStarted) / 1000);
+            const remaining = Math.max(0, timeLimitSeconds - elapsed);
+            document.getElementById('timeText').textContent = `Time left: ${formatTimeLeft(remaining)}`;
+            return remaining;
+        }
+
+        function startSessionTimer(wordCount) {
+            clearSessionTimer();
+            const totalWords = Math.max(1, Number(wordCount) || 0);
+            timeLimitSeconds = totalWords * 20;
+            timeStarted = Date.now();
+            updateTimeLeftDisplay();
+
+            timerInterval = setInterval(() => {
+                const remaining = updateTimeLeftDisplay();
+                if (remaining > 0 || sessionFinished) return;
+                clearSessionTimer();
+                showSummary();
+            }, 1000);
+        }
+
+        async function initGame() {
+            sessionFinished = false;
+            const loadedFromDeckSession = loadPairsFromDeckSession();
+            if (activeDeckSessionId && !loadedFromDeckSession) {
+                pairs = [];
+            } else if (!loadedFromDeckSession) {
+                await loadPairsFromQueue();
+            }
+            const wordsContainer = document.getElementById('wordsContainer');
+            const definitionsContainer = document.getElementById('definitionsContainer');
+            wordsContainer.innerHTML = '';
+            definitionsContainer.innerHTML = '';
+
+            if (!pairs.length) {
+                clearSessionTimer();
+                document.getElementById('timeText').textContent = 'Time left: --';
+                wordsContainer.innerHTML = '<div class="word-card matched" style="cursor:default;opacity:.9;">No active adaptive queue</div>';
+                definitionsContainer.innerHTML = '<div class="definition-card matched" style="cursor:default;opacity:.9;"><div class="definition-content"><span class="definition-text">Start a session from Learn Hub first.</span></div></div>';
+                document.getElementById('completeBtn').disabled = true;
+                updateProgress();
+                return;
+            }
+
+            startSessionTimer(pairs.length);
+
+            const definitionEntries = pairs.map((pair, index) => ({ matchIndex: index, definition: pair.definition }));
+            definitionEntries.sort(() => Math.random() - 0.5);
+
+            pairs.forEach((pair, index) => {
+                // Word card
+                const wordCard = document.createElement('div');
+                wordCard.className = 'word-card';
+                wordCard.textContent = pair.word;
+                wordCard.id = `word-${index}`;
+                wordCard.draggable = true;
+                wordCard.dataset.index = index;
+                wordCard.addEventListener('dragstart', dragStart);
+                wordCard.addEventListener('dragend', dragEnd);
+                wordCard.addEventListener('click', () => handleWordClick(wordCard));
+                wordsContainer.appendChild(wordCard);
+            });
+
+            definitionEntries.forEach((entry) => {
+                const defCard = document.createElement('div');
+                defCard.className = 'definition-card';
+                defCard.id = `def-${entry.matchIndex}`;
+                defCard.dataset.index = entry.matchIndex;
+                defCard.innerHTML = `
+                    <div class="definition-content">
+                        <span class="definition-text">${entry.definition}</span>
+                        <span class="definition-checkmark">✓</span>
+                    </div>
+                `;
+                defCard.addEventListener('dragover', dragOver);
+                defCard.addEventListener('drop', drop);
+                defCard.addEventListener('dragleave', dragLeave);
+                defCard.addEventListener('click', () => handleDefinitionClick(entry.matchIndex));
+                definitionsContainer.appendChild(defCard);
+            });
+
+            updateProgress();
+        }
+
+        function handleWordClick(wordElement) {
+            if (sessionFinished) return;
+            if (wordElement.classList.contains('matched')) return;
+            if (selectedWord && selectedWord !== wordElement) {
+                const selectedIndex = parseInt(selectedWord.dataset.index, 10);
+                const targetIndex = parseInt(wordElement.dataset.index, 10);
+                if (selectedIndex === targetIndex) {
+                    makeMatch(selectedIndex, targetIndex);
+                } else {
+                    showMismatch();
+                }
+                selectedWord = null;
+                return;
+            }
+            selectedWord = wordElement;
+            selectedWordAt = Date.now();
+            wordElement.classList.add('dragging');
+            setTimeout(() => wordElement.classList.remove('dragging'), 200);
+        }
+
+        function handleDefinitionClick(defIndex) {
+            if (sessionFinished) return;
+            if (!selectedWord) return;
+            const wordIndex = parseInt(selectedWord.dataset.index, 10);
+            attemptTelemetry.push({
+                wordId: String(pairs[wordIndex] && pairs[wordIndex].word || wordIndex),
+                latencyMs: Math.max(250, Date.now() - (selectedWordAt || Date.now())),
+                correctness: wordIndex === defIndex
+            });
+            // If sourced from queue, report attempt via shared module
+            (async () => {
+                try {
+                    const meta = pairs[wordIndex] && pairs[wordIndex].queueMeta;
+                    if (meta && meta.queueId && meta.queueItemId) {
+                        await adaptiveQueue.submitAttempt(meta.queueId, {
+                            queueItemId:      meta.queueItemId,
+                            mode:             'matching',
+                            correctness:      wordIndex === defIndex,
+                            latencyMs:        Math.max(250, Date.now() - (selectedWordAt || Date.now())),
+                            expectedVersion:  Number(meta.expectedVersion || 0),
+                            expectedPosition: Number(meta.expectedPosition || 0),
+                        });
+                    }
+                } catch (err) { console.warn('[matching] queue attempt failed:', err.message || err); }
+            })();
+            if (wordIndex === defIndex) {
+                makeMatch(wordIndex, defIndex);
+            } else {
+                showMismatch();
+            }
+            selectedWord = null;
+        }
+
+        function dragStart(e) {
+            if (sessionFinished) return;
+            if (e.target.classList.contains('matched')) return;
+            selectedWord = e.target;
+            e.target.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'copy';
+        }
+
+        function dragEnd(e) {
+            e.target.classList.remove('dragging');
+        }
+
+        function dragOver(e) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'copy';
+            if (!e.target.closest('.definition-card').classList.contains('matched')) {
+                e.target.closest('.definition-card').classList.add('drag-over');
+            }
+        }
+
+        function dragLeave(e) {
+            e.target.closest('.definition-card')?.classList.remove('drag-over');
+        }
+
+        function drop(e) {
+            if (sessionFinished) return;
+            e.preventDefault();
+            const defCard = e.target.closest('.definition-card');
+            defCard.classList.remove('drag-over');
+
+            if (!selectedWord) return;
+
+            const wordIndex = parseInt(selectedWord.dataset.index, 10);
+            const defIndex = parseInt(defCard.dataset.index, 10);
+            attemptTelemetry.push({
+                wordId: String(pairs[wordIndex] && pairs[wordIndex].word || wordIndex),
+                latencyMs: Math.max(250, Date.now() - (selectedWordAt || Date.now())),
+                correctness: wordIndex === defIndex
+            });
+            (async () => {
+                try {
+                    const meta = pairs[wordIndex] && pairs[wordIndex].queueMeta;
+                    if (meta && meta.queueId && meta.queueItemId) {
+                        await adaptiveQueue.submitAttempt(meta.queueId, {
+                            queueItemId:      meta.queueItemId,
+                            mode:             'matching',
+                            correctness:      wordIndex === defIndex,
+                            latencyMs:        Math.max(250, Date.now() - (selectedWordAt || Date.now())),
+                            expectedVersion:  Number(meta.expectedVersion || 0),
+                            expectedPosition: Number(meta.expectedPosition || 0),
+                        });
+                    }
+                } catch (err) { console.warn('[matching] queue attempt failed:', err.message || err); }
+            })();
+
+            if (wordIndex === defIndex) {
+                makeMatch(wordIndex, defIndex);
+            } else {
+                showMismatch();
+            }
+            selectedWord = null;
+        }
+
+        function makeMatch(wordIndex, defIndex) {
+            comboStreak++;
+            totalXP += 15 + (comboStreak * 3);
+
+            matches.push({ word: wordIndex, def: defIndex });
+
+            document.getElementById(`word-${wordIndex}`).classList.add('matched');
+            document.getElementById(`def-${defIndex}`).classList.add('matched');
+
+            updateProgress();
+
+            if (comboStreak >= 3) {
+                showCombo();
+            }
+
+            if (matches.length === pairs.length) {
+                completeGame();
+            }
+
+            selectedWord = null;
+        }
+
+        function showCombo() {
+            const comboInfo = document.getElementById('comboInfo');
+            const comboBadge = document.getElementById('comboBadge');
+            comboBadge.textContent = `⚡ ${comboStreak}x COMBO!`;
+            comboInfo.style.display = 'block';
+            setTimeout(() => comboInfo.style.display = 'none', 1500);
+        }
+
+        function showMismatch() {
+            comboStreak = 0;
+            selectedWord.style.animation = 'none';
+            setTimeout(() => {
+                selectedWord.style.animation = 'shake 0.4s ease-in-out';
+            }, 10);
+        }
+
+        function undoLastMatch() {
+            if (sessionFinished) return;
+            if (matches.length > 0) {
+                const last = matches.pop();
+                document.getElementById(`word-${last.word}`).classList.remove('matched');
+                document.getElementById(`def-${last.def}`).classList.remove('matched');
+                updateProgress();
+            }
+        }
+
+        function resetMatching() {
+            matches = [];
+            comboStreak = 0;
+            sessionFinished = false;
+            startSessionTimer(pairs.length);
+            document.querySelectorAll('.word-card, .definition-card').forEach(card => {
+                card.classList.remove('matched');
+            });
+            document.getElementById('summaryScreen').classList.remove('show');
+            document.getElementById('completeBtn').disabled = true;
+            updateProgress();
+        }
+
+        async function restartMatchingSession() {
+            matches = [];
+            comboStreak = 0;
+            totalXP = 0;
+            attemptTelemetry = [];
+            sessionFinished = false;
+            timeStarted = Date.now();
+            document.getElementById('summaryScreen').classList.remove('show');
+
+            if (!activeDeckSession) {
+                try {
+                    await adaptiveQueue.loadPlanQueue(null);
+                } catch (err) {
+                    console.warn('[matching] failed to refresh adaptive queue on restart:', err && err.message ? err.message : err);
+                }
+            }
+
+            await initGame();
+        }
+
+        function updateProgress() {
+            const progress = pairs.length ? (matches.length / pairs.length) * 100 : 0;
+            document.getElementById('progressFill').style.width = progress + '%';
+            document.getElementById('matchedCount').textContent = `${matches.length}/${pairs.length}`;
+            document.getElementById('streakCount').textContent = `${comboStreak}x`;
+            
+            if (pairs.length > 0 && matches.length === pairs.length) {
+                document.getElementById('completeBtn').disabled = false;
+            }
+        }
+
+        function completeGame() {
+            setTimeout(() => {
+                showSummary();
+            }, 800);
+        }
+
+        function completeSession() {
+            if (pairs.length > 0 && matches.length === pairs.length) {
+                completeGame();
+            }
+        }
+
+        function showSummary() {
+            if (sessionFinished) return;
+            sessionFinished = true;
+            clearSessionTimer();
+            const totalTime = Math.round((Date.now() - timeStarted) / 1000);
+            const minutes = Math.floor(totalTime / 60);
+            const seconds = totalTime % 60;
+            const accuracy = Math.round((matches.length / pairs.length) * 100);
+
+            const multipliedXP = typeof applyModeMultiplier === 'function' ? applyModeMultiplier(totalXP, 'matching') : totalXP;
+            const dailyBonus = typeof checkAndClaimDailyBonus === 'function' ? checkAndClaimDailyBonus() : 0;
+            const finalXP = multipliedXP + dailyBonus;
+
+            document.getElementById('totalMatches').textContent = `${matches.length}/${pairs.length}`;
+            document.getElementById('totalTime').textContent = `${minutes}m ${seconds}s`;
+            document.getElementById('earnedXP').textContent = `+${finalXP} XP` + (dailyBonus ? ' (🌟 +50 first study!)' : '');
+            document.getElementById('summaryScreen').classList.add('show');
+            
+            const durationSeconds = totalTime;
+            if (activeDeckSession) {
+                saveSessionProgress('matching', finalXP, accuracy, pairs.length, durationSeconds).then(() => {
+                    markGuidedModeComplete();
+                    scheduleAutoNextTransition();
+                }).catch((err) => {
+                    console.warn('[matching] deck session save failed:', err && err.message ? err.message : err);
+                    markGuidedModeComplete();
+                    scheduleAutoNextTransition();
+                });
+                return;
+            }
+            // Save progress and handle queue lifecycle via shared module
+            // allConsumed:true because showSummary is only reached when all pairs are matched
+            adaptiveQueue.onQueueComplete(adaptiveQueue.getCachedQueue()?.queueId || null, {
+                sessionType:    'matching',
+                xpEarned:       finalXP,
+                accuracy,
+                wordsCompleted: pairs.length,
+                durationSeconds,
+                attempts:       attemptTelemetry,
+                allConsumed:    true,
+            }).then((res) => {
+                markGuidedModeComplete();
+                if (res && typeof showGamificationMoments === 'function' && res.progressResponse) {
+                    showGamificationMoments(res.progressResponse, { modeLabel: 'Matching' });
+                }
+                scheduleAutoNextTransition();
+            }).catch((err) => {
+                console.warn('[matching] onQueueComplete failed:', err.message || err);
+                markGuidedModeComplete();
+                scheduleAutoNextTransition();
+            });
+        }
+        
+        async function saveSessionProgress(sessionType, xpEarned, accuracy, wordsCompleted, durationSeconds) {
+            try {
+                const result = await api.post('/progress', {
+                    sessionType,
+                    xpEarned,
+                    accuracy,
+                    wordsCompleted,
+                    correctCount: matches.length,
+                    totalCount: pairs.length,
+                    duration: durationSeconds,
+                    attempts: attemptTelemetry
+                });
+
+                const state = typeof showGamificationMoments === 'function'
+                    ? showGamificationMoments(result, { modeLabel: 'Matching' })
+                    : null;
+
+                if (state && state.gamification && state.gamification.streak) {
+                    const streakNow = Number(state.gamification.streak.current || comboStreak);
+                    document.getElementById('streakCount').textContent = `${streakNow}x`;
+                }
+
+                const levelValue = state && state.level ? Number(state.level.current || state.level.level || 0) : 0;
+                if (levelValue > 0) {
+                    const xpLabel = document.getElementById('earnedXP');
+                    if (xpLabel) {
+                        const current = xpLabel.textContent || '';
+                        if (!/Lvl\s+\d+/i.test(current)) {
+                            xpLabel.textContent = `${current} • Lvl ${levelValue}`;
+                        }
+                    }
+                }
+            } catch (err) {
+                console.log('Error saving progress:', err.message);
+                showToast('Progress sync failed: ' + err.message, 'warning', 3500);
+            }
+        }
+
+        function goBack() {
+            clearSessionTimer();
+            window.location.href = '/student-learn-v3.html';
+        }
+
+        function exitGame() {
+            if (confirm('Exit game? Progress will not be saved.')) {
+                goBack();
+            }
+        }
+
+        // Add CSS animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes shake {
+                0%, 100% { transform: translateX(0); }
+                25% { transform: translateX(-10px); }
+                75% { transform: translateX(10px); }
+            }
+        `;
+        document.head.appendChild(style);
+
+       window.addEventListener('DOMContentLoaded', function() {
+           // Check authentication
+           if (!requireAuth()) return;
+
+           initGame();
+       });
+    </script>
+</body>
+</html>

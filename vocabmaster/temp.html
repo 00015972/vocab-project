@@ -1,0 +1,3132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learn - VocabMaster</title>
+    <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.9.4/dist/dotlottie-wc.js" type="module"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #50C878;
+            --secondary: #D4AF37;
+            --success: #50C878;
+            --warning: #D4AF37;
+            --danger: #EF4444;
+            --neutral-50: #F9FAFB;
+            --neutral-100: #F3F4F6;
+            --neutral-200: #E5E7EB;
+            --neutral-300: #D1D5DB;
+            --neutral-400: #9CA3AF;
+            --neutral-500: #6B7280;
+            --neutral-600: #4B5563;
+            --neutral-700: #374151;
+            --neutral-800: #1F2937;
+            --neutral-900: #111827;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--neutral-50);
+            color: var(--neutral-900);
+        }
+
+        /* Navbar */
+        .navbar {
+            background: white;
+            border-bottom: 1px solid var(--neutral-200);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stats-bar {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .stat {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0;
+            text-align: center;
+            animation: slideIn 0.6s ease-out;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            white-space: nowrap;
+            line-height: 1;
+        }
+
+        .chance-icon {
+            display: inline-flex;
+            font-size: 1.2rem;
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--neutral-600);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 0;
+            line-height: 1.1;
+        }
+
+        .stat-label.streak-label,
+        .stat-label.xp-label {
+            margin-top: -1.5rem;
+        }
+
+        .lottie-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            min-width: 36px;
+            min-height: 36px;
+            margin-right: -0.75rem;
+            vertical-align: middle;
+            aspect-ratio: 1 / 1;
+            flex-shrink: 0;
+        }
+
+        .lottie-icon.xp-icon {
+            width: 120px;
+            height: 120px;
+            min-width: 120px;
+            min-height: 120px;
+            margin-right: -1.6rem;
+        }
+
+        .lottie-icon.streak-icon {
+            width: 108px;
+            height: 108px;
+            min-width: 108px;
+            min-height: 108px;
+            margin-right: -1.5rem;
+        }
+
+        .lottie-icon.recommendation-icon {
+            width: 56px;
+            height: 56px;
+        }
+
+        .stat-text {
+            display: inline-flex;
+            align-items: center;
+            line-height: 1;
+        }
+
+        .clock-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .clock-icon .face {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            outline: 2px solid rgba(255,255,255,0.9);
+            background: repeating-radial-gradient(circle at 50% 50%, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.2) 2%, transparent 2%, transparent 3%, rgba(255,255,255,0.2) 3%, transparent 3%), conic-gradient(#f8fafc 0%, rgba(255,255,255,0.85) 10%, #f8fafc 35%, rgba(255,255,255,0.75) 45%, #f8fafc 60%, rgba(255,255,255,0.7) 70%, #f8fafc 80%, rgba(255,255,255,0.55) 95%, #f8fafc 100%);
+            box-shadow: inset 0 0 6px rgba(0,0,0,0.22);
+        }
+
+        .clock-icon .hour,
+        .clock-icon .minute,
+        .clock-icon .second {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 999px;
+        }
+
+        .clock-icon .hour {
+            width: 1.5px;
+            height: 10px;
+            top: 7px;
+            background: #334155;
+            transform-origin: center 84%;
+            box-shadow: 0 0 2px rgba(0,0,0,0.25), inset 0 1px 1px rgba(255,255,255,0.5);
+            animation: watch 43200s linear infinite;
+        }
+
+        .clock-icon .minute {
+            width: 1.25px;
+            height: 14px;
+            top: 5px;
+            background: #475569;
+            transform-origin: center 84%;
+            box-shadow: 0 0 2px rgba(0,0,0,0.25), inset 0 1px 1px rgba(255,255,255,0.45);
+            animation: watch 3600s linear infinite;
+        }
+
+        .clock-icon .second {
+            width: 3px;
+            height: 3px;
+            top: 50%;
+            background: #ef4444;
+            border: 1px solid #fff;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            animation: watch 60s steps(60, end) infinite;
+        }
+
+        .clock-icon .second::before {
+            content: "";
+            position: absolute;
+            width: 1px;
+            height: 10px;
+            left: 50%;
+            bottom: -6px;
+            transform: translateX(-50%);
+            background: #ef4444;
+            border-radius: 1px;
+            box-shadow: 0 0 1px rgba(255,255,255,0.5);
+        }
+
+        .xp-fire-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            justify-content: center;
+            white-space: nowrap;
+        }
+
+        .xp-fire-badge .fire {
+            position: relative;
+            width: 22px;
+            height: 22px;
+            background-color: transparent;
+        }
+
+        .xp-fire-badge .fire-center,
+        .xp-fire-badge .fire-right,
+        .xp-fire-badge .fire-left,
+        .xp-fire-badge .fire-bottom {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            animation-fill-mode: both;
+        }
+
+        .xp-fire-badge .fire-center {
+            animation: scaleUpDown 3s ease-out infinite;
+        }
+
+        .xp-fire-badge .fire-center .main-fire,
+        .xp-fire-badge .fire-right .main-fire,
+        .xp-fire-badge .fire-left .main-fire,
+        .xp-fire-badge .fire-bottom .main-fire {
+            position: absolute;
+            background-color: #ef5a00;
+            filter: drop-shadow(0 0 3px rgba(212, 51, 34, 0.45));
+        }
+
+        .xp-fire-badge .fire-center .main-fire {
+            top: 10%;
+            left: 22%;
+            width: 56%;
+            height: 72%;
+            background-image: radial-gradient(circle at 50% 20%, #ffffff 0%, #ffd26e 20%, #ff7a00 55%, #d43200 100%);
+            border-radius: 50% 50% 40% 40%;
+            transform: rotate(8deg);
+        }
+
+        .xp-fire-badge .fire-center .particle-fire,
+        .xp-fire-badge .fire-right .particle-fire,
+        .xp-fire-badge .fire-left .particle-fire {
+            position: absolute;
+            background-color: #ff9a2f;
+            border-radius: 50%;
+            filter: drop-shadow(0 0 3px rgba(212, 51, 34, 0.4));
+            animation: particleUp 2s ease-out infinite;
+            animation-fill-mode: both;
+        }
+
+        .xp-fire-badge .fire-center .particle-fire {
+            top: 58%;
+            left: 50%;
+            width: 3px;
+            height: 3px;
+        }
+
+        .xp-fire-badge .fire-right {
+            animation: shake 1.8s ease-out infinite;
+        }
+
+        .xp-fire-badge .fire-right .main-fire {
+            top: 18%;
+            right: -2%;
+            width: 34%;
+            height: 44%;
+            background-color: #ff8a00;
+            border-radius: 55% 45% 40% 40%;
+            transform: rotate(26deg);
+        }
+
+        .xp-fire-badge .fire-right .particle-fire {
+            top: 48%;
+            left: 18%;
+            width: 3px;
+            height: 3px;
+        }
+
+        .xp-fire-badge .fire-left {
+            animation: shake 2.5s ease-out infinite;
+        }
+
+        .xp-fire-badge .fire-left .main-fire {
+            top: 22%;
+            left: -2%;
+            width: 34%;
+            height: 44%;
+            background-color: #ff9d30;
+            border-radius: 55% 45% 40% 40%;
+            transform: rotate(-26deg);
+        }
+
+        .xp-fire-badge .fire-left .particle-fire {
+            top: 18%;
+            left: 20%;
+            width: 3px;
+            height: 3px;
+            animation-duration: 3s;
+        }
+
+        .xp-fire-badge .fire-bottom .main-fire {
+            top: 40%;
+            left: 30%;
+            width: 40%;
+            height: 40%;
+            background-color: rgba(255, 154, 45, 0.9);
+            border-radius: 50% 50% 60% 60%;
+            filter: blur(1px);
+            animation: glow 2s ease-out infinite;
+        }
+
+        .xp-label {
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: transparent;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        @keyframes scaleUpDown {
+            0%, 100% {
+                transform: scaleY(1) scaleX(1);
+            }
+
+            50%, 90% {
+                transform: scaleY(1.1);
+            }
+
+            75% {
+                transform: scaleY(0.95);
+            }
+
+            80% {
+                transform: scaleX(0.95);
+            }
+        }
+
+        @keyframes shake {
+            0%, 100% {
+                transform: skewX(0) scale(1);
+            }
+
+            50% {
+                transform: skewX(5deg) scale(0.9);
+            }
+        }
+
+        @keyframes particleUp {
+            0% {
+                opacity: 0;
+            }
+
+            20% {
+                opacity: 1;
+            }
+
+            80% {
+                opacity: 1;
+            }
+
+            100% {
+                opacity: 0;
+                top: -100%;
+                transform: scale(0.5);
+            }
+        }
+
+        @keyframes glow {
+            0%, 100% {
+                background-color: #ef5a00;
+            }
+
+            50% {
+                background-color: #ff7800;
+            }
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .btn-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--neutral-100);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-icon:hover {
+            background: var(--neutral-200);
+            transform: scale(1.1);
+        }
+
+        .profile-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .page-layout {
+            display: grid;
+            grid-template-columns: 280px minmax(0, 1fr);
+            gap: 2rem;
+            align-items: start;
+        }
+
+        .student-sidebar {
+            position: sticky;
+            top: 96px;
+            display: grid;
+            gap: 1rem;
+        }
+
+        .sidebar-card {
+            background: white;
+            border: 1px solid var(--neutral-200);
+            border-radius: 12px;
+            padding: 1.25rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .sidebar-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+        }
+
+        .sidebar-list {
+            display: grid;
+            gap: 0.65rem;
+        }
+
+        .planner-controls {
+            display: grid;
+            gap: 0.65rem;
+        }
+
+        .planner-field {
+            display: grid;
+            gap: 0.35rem;
+        }
+
+        .planner-field label {
+            font-size: 0.78rem;
+            color: var(--neutral-600);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .planner-field select,
+        .planner-field input {
+            width: 100%;
+            border: 1px solid var(--neutral-200);
+            border-radius: 10px;
+            padding: 0.6rem 0.72rem;
+            font: inherit;
+            background: white;
+            color: var(--neutral-900);
+        }
+
+        .planner-generate {
+            border: none;
+            border-radius: 10px;
+            padding: 0.72rem 0.9rem;
+            font: inherit;
+            font-weight: 700;
+            cursor: pointer;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+        }
+
+        .planner-output {
+            margin-top: 0.85rem;
+            display: grid;
+            gap: 0.55rem;
+        }
+
+        .planner-summary {
+            font-size: 0.87rem;
+            line-height: 1.55;
+            color: var(--neutral-700);
+        }
+
+        .planner-meta {
+            font-size: 0.8rem;
+            color: var(--neutral-600);
+        }
+
+        .planner-mix {
+            display: grid;
+            gap: 0.5rem;
+        }
+
+        .planner-week {
+            display: grid;
+            gap: 0.7rem;
+            margin-top: 0.35rem;
+        }
+
+        .planner-week-card {
+            border: 1px solid var(--neutral-200);
+            border-radius: 12px;
+            background: linear-gradient(180deg, #ffffff, #f8fafc);
+            padding: 0.8rem;
+            display: grid;
+            gap: 0.5rem;
+        }
+
+        .planner-week-head {
+            display: flex;
+            justify-content: space-between;
+            gap: 0.75rem;
+            align-items: center;
+        }
+
+        .planner-week-title {
+            font-size: 0.84rem;
+            font-weight: 700;
+            color: var(--neutral-900);
+        }
+
+        .planner-week-subtitle {
+            font-size: 0.76rem;
+            color: var(--neutral-600);
+        }
+
+        .planner-week-stats {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.45rem;
+        }
+
+        .planner-week-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            border-radius: 999px;
+            background: rgba(99, 102, 241, 0.08);
+            color: var(--neutral-700);
+            padding: 0.28rem 0.55rem;
+            font-size: 0.74rem;
+            font-weight: 600;
+        }
+
+        .planner-word-preview {
+            font-size: 0.78rem;
+            color: var(--neutral-700);
+            line-height: 1.5;
+        }
+
+        .adaptive-stack {
+            display: grid;
+            gap: 0.85rem;
+            margin-top: 0.85rem;
+        }
+
+        .adaptive-panel {
+            border: 1px solid var(--neutral-200);
+            border-radius: 12px;
+            background: #fff;
+            padding: 0.85rem;
+            display: grid;
+            gap: 0.55rem;
+        }
+
+        .adaptive-panel-title {
+            font-size: 0.84rem;
+            font-weight: 800;
+            color: var(--neutral-900);
+        }
+
+        .adaptive-note {
+            font-size: 0.78rem;
+            color: var(--neutral-600);
+            line-height: 1.5;
+        }
+
+        .adaptive-badge-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.45rem;
+        }
+
+        .adaptive-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.35rem 0.55rem;
+            border-radius: 999px;
+            font-size: 0.76rem;
+            font-weight: 700;
+            background: rgba(99, 102, 241, 0.08);
+            color: var(--neutral-700);
+        }
+
+        .adaptive-badge.locked {
+            background: rgba(239, 68, 68, 0.08);
+            color: #b91c1c;
+        }
+
+        .adaptive-list {
+            display: grid;
+            gap: 0.45rem;
+        }
+
+        .adaptive-meter-track {
+            width: 100%;
+            height: 8px;
+            border-radius: 999px;
+            background: var(--neutral-200);
+            overflow: hidden;
+        }
+
+        .adaptive-meter-fill {
+            height: 100%;
+            width: 0%;
+            border-radius: 999px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            transition: width 0.35s ease;
+        }
+
+        .adaptive-subnote {
+            font-size: 0.75rem;
+            color: var(--neutral-500);
+            line-height: 1.5;
+        }
+
+        .plan-delta-panel {
+            margin-top: 0.75rem;
+            padding: 0.65rem 0.85rem;
+            border-radius: 10px;
+            background: rgba(80, 200, 120, 0.09);
+            border: 1px solid rgba(80, 200, 120, 0.22);
+            font-size: 0.79rem;
+            color: var(--neutral-700);
+            line-height: 1.55;
+        }
+
+        .plan-delta-panel.hidden { display: none; }
+
+        .adaptive-remediation-block {
+            display: grid;
+            gap: 0.4rem;
+        }
+
+        .adaptive-remediation-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.28rem 0.55rem;
+            border-radius: 999px;
+            font-size: 0.73rem;
+            font-weight: 700;
+            background: rgba(239, 68, 68, 0.08);
+            color: #b91c1c;
+        }
+
+        .adaptive-remediation-badge.clear {
+            background: rgba(80, 200, 120, 0.09);
+            color: #166534;
+        }
+
+        .adaptive-panel[aria-busy="true"] {
+            opacity: 0.45;
+            pointer-events: none;
+        }
+
+        .planner-chip {
+            display: inline-flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.5rem;
+            border: 1px solid var(--neutral-200);
+            border-radius: 999px;
+            padding: 0.45rem 0.65rem;
+            background: #fff;
+            font-size: 0.82rem;
+            color: var(--neutral-700);
+        }
+
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+            padding: 0.85rem 0.95rem;
+            border-radius: 10px;
+            background: var(--neutral-50);
+            color: var(--neutral-900);
+            text-decoration: none;
+            border: 1px solid var(--neutral-200);
+        }
+
+        .sidebar-link span {
+            color: var(--neutral-600);
+            font-size: 0.8rem;
+        }
+
+        .sidebar-tip {
+            background: linear-gradient(135deg, rgba(80, 200, 120, 0.1), rgba(212, 175, 55, 0.08));
+            border-color: rgba(99, 102, 241, 0.18);
+        }
+
+        .recommendation-banner {
+            margin-bottom: 1.35rem;
+            border-radius: 18px;
+            padding: 1rem;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 56%, #065f46 100%);
+            color: white;
+            display: grid;
+            gap: 0.85rem;
+            box-shadow: 0 18px 48px rgba(15, 23, 42, 0.24);
+        }
+
+        .recommendation-banner.hidden {
+            display: none;
+        }
+
+        .recommendation-banner-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .recommendation-banner-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+            flex-wrap: wrap;
+        }
+
+        .recommendation-banner-kicker {
+            font-size: 0.75rem;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.72);
+        }
+
+        .recommendation-banner-title {
+            font-size: 1.15rem;
+            font-weight: 800;
+        }
+
+        .recommendation-banner-copy {
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: rgba(255,255,255,0.86);
+        }
+
+        .recommendation-stats {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.55rem;
+        }
+
+        .recommendation-stat {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.38rem 0.62rem;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.12);
+            font-size: 0.78rem;
+            font-weight: 700;
+        }
+
+        .recommendation-start {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 999px;
+            padding: 0.65rem 0.95rem;
+            background: #f8fafc;
+            color: #0f172a;
+            text-decoration: none;
+            font-size: 0.82rem;
+            font-weight: 800;
+            box-shadow: 0 10px 24px rgba(15, 23, 42, 0.18);
+        }
+
+        .recommendation-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 0.7rem;
+        }
+
+        .recommendation-card {
+            border-radius: 14px;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 0.85rem;
+            display: grid;
+            gap: 0.4rem;
+        }
+
+        .recommendation-card-title {
+            font-size: 0.84rem;
+            font-weight: 800;
+        }
+
+        .recommendation-card-copy {
+            font-size: 0.78rem;
+            line-height: 1.5;
+            color: rgba(255,255,255,0.82);
+        }
+
+        .sidebar-tip p {
+            color: var(--neutral-700);
+            line-height: 1.6;
+            font-size: 0.92rem;
+        }
+
+        .main-column {
+            min-width: 0;
+        }
+
+        /* Section Title */
+        .section-header {
+            margin-bottom: 2rem;
+        }
+
+        .section-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .section-subtitle {
+            color: var(--neutral-600);
+        }
+
+        .section-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.8rem 1rem;
+            border-radius: 999px;
+            border: 1px solid rgba(80, 200, 120, 0.25);
+            background: linear-gradient(135deg, rgba(80, 200, 120, 0.12), rgba(212, 175, 55, 0.12));
+            color: var(--neutral-900);
+            text-decoration: none;
+            font-weight: 700;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+        }
+
+        .section-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 18px rgba(80, 200, 120, 0.16);
+            border-color: rgba(80, 200, 120, 0.45);
+        }
+
+        .exercise-banner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.2rem 1.4rem;
+            border-radius: 18px;
+            background: linear-gradient(135deg, rgba(80, 200, 120, 0.12), rgba(212, 175, 55, 0.10));
+            border: 1px solid rgba(80, 200, 120, 0.18);
+            margin-bottom: 1rem;
+        }
+
+        .exercise-kicker {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.45rem;
+            font-size: 0.8rem;
+            font-weight: 800;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--primary);
+        }
+
+        .exercise-kicker::before {
+            content: '';
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            box-shadow: 0 0 0 4px rgba(80, 200, 120, 0.12);
+        }
+
+        .exercise-count {
+            padding: 0.7rem 1rem;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(80, 200, 120, 0.18);
+            color: var(--neutral-700);
+            font-size: 0.92rem;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        /* Daily Challenge Section */
+        .daily-challenge {
+            background: linear-gradient(135deg, #50C878 0%, #2d7a52 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.2);
+            animation: slideInDown 0.6s ease-out;
+        }
+
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .challenge-content {
+            flex: 1;
+        }
+
+        .challenge-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .challenge-desc {
+            font-size: 0.95rem;
+            opacity: 0.9;
+            margin-bottom: 1rem;
+        }
+
+        .challenge-reward {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        .challenge-btn {
+            padding: 0.875rem 2rem;
+            background: white;
+            color: var(--primary);
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .challenge-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .achievement-summary {
+            background: linear-gradient(135deg, rgba(80, 200, 120, 0.08), rgba(212, 175, 55, 0.08));
+            border: 1px solid rgba(80, 200, 120, 0.16);
+            border-radius: 18px;
+            padding: 1.25rem 1.4rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 24px rgba(15, 23, 42, 0.05);
+        }
+
+        .achievement-summary-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .achievement-summary-title {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--neutral-900);
+            margin-bottom: 0.35rem;
+        }
+
+        .achievement-summary-copy {
+            color: var(--neutral-600);
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        .achievement-summary-stats {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .achievement-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            padding: 0.55rem 0.8rem;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.78);
+            border: 1px solid rgba(80, 200, 120, 0.14);
+            color: var(--neutral-800);
+            font-size: 0.84rem;
+            font-weight: 700;
+        }
+
+        .achievement-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+        }
+
+        .achievement-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            padding: 0.55rem 0.8rem;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.84);
+            border: 1px solid rgba(212, 175, 55, 0.18);
+            color: var(--neutral-800);
+            font-size: 0.84rem;
+            font-weight: 700;
+        }
+
+        .achievement-chip-muted {
+            opacity: 0.72;
+        }
+
+        /* Grid Layouts */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.25rem;
+            margin-bottom: 2rem;
+        }
+
+        /* Cards */
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid var(--neutral-200);
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+            border-color: var(--primary);
+        }
+
+        /* Vocabulary Grid */
+        .vocab-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .vocab-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 2px solid var(--neutral-200);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .vocab-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+
+        .vocab-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--primary);
+            box-shadow: 0 12px 24px rgba(99, 102, 241, 0.15);
+        }
+
+        .vocab-card:hover::before {
+            transform: translateX(0);
+        }
+
+        .vocab-word {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--neutral-900);
+        }
+
+        .vocab-definition {
+            font-size: 0.875rem;
+            color: var(--neutral-600);
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+
+        .vocab-stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.75rem;
+            color: var(--neutral-500);
+        }
+
+        .mastery-indicator {
+            width: 80px;
+            height: 6px;
+            background: var(--neutral-200);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .mastery-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            transition: width 0.3s ease;
+        }
+
+        /* Learning Mode Cards */
+        .mode-card {
+            background: linear-gradient(180deg, #ffffff 0%, #fbfffc 100%);
+            border-radius: 18px;
+            padding: 1.5rem;
+            border: 1px solid var(--neutral-200);
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            min-height: 100%;
+            box-shadow: 0 14px 30px rgba(15, 23, 42, 0.06);
+        }
+
+        .mode-card::after {
+            content: '';
+            position: absolute;
+            inset: auto 0 0 0;
+            height: 8px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            opacity: 0.9;
+        }
+
+        .mode-card::before {
+            content: '';
+            position: absolute;
+            top: -40%;
+            right: -35%;
+            width: 220px;
+            height: 220px;
+            background: radial-gradient(circle, rgba(80, 200, 120, 0.14) 0%, transparent 70%);
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .mode-card:hover {
+            transform: translateY(-8px) scale(1.01);
+            border-color: var(--primary);
+            box-shadow: 0 18px 32px rgba(80, 200, 120, 0.14);
+        }
+
+        .mode-card:hover::before {
+            top: -20%;
+            right: -20%;
+        }
+
+        .mode-content {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            min-height: 100%;
+        }
+
+        .mode-index {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 42px;
+            height: 42px;
+            border-radius: 14px;
+            margin-bottom: 0;
+            background: linear-gradient(135deg, rgba(80, 200, 120, 0.14), rgba(212, 175, 55, 0.16));
+            color: var(--neutral-900);
+            font-weight: 800;
+            letter-spacing: 0.06em;
+        }
+
+        .mode-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .mode-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.45rem 0.7rem;
+            border-radius: 999px;
+            background: rgba(80, 200, 120, 0.08);
+            border: 1px solid rgba(80, 200, 120, 0.18);
+            color: var(--neutral-700);
+            font-size: 0.78rem;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .mode-icon {
+            font-size: 2.45rem;
+            margin-bottom: 0.85rem;
+            width: 64px;
+            height: 64px;
+            border-radius: 18px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, rgba(80, 200, 120, 0.1), rgba(212, 175, 55, 0.1));
+            border: 1px solid rgba(80, 200, 120, 0.12);
+        }
+
+        .mode-name {
+            font-size: 1.35rem;
+            font-weight: 700;
+            margin-bottom: 0.35rem;
+            color: var(--neutral-900);
+        }
+
+        .mode-desc {
+            font-size: 0.95rem;
+            color: var(--neutral-600);
+            line-height: 1.6;
+            margin-bottom: 0.9rem;
+        }
+
+        .mode-stats {
+            display: flex;
+            justify-content: flex-start;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+            font-size: 0.82rem;
+            color: var(--neutral-500);
+            margin-bottom: 1rem;
+        }
+
+        .mode-stats span {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.45rem 0.7rem;
+            border-radius: 999px;
+            background: var(--neutral-50);
+            border: 1px solid var(--neutral-200);
+        }
+
+        .mode-btn {
+            margin-top: auto;
+            padding: 0.8rem 1.25rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: fit-content;
+            box-shadow: 0 10px 22px rgba(80, 200, 120, 0.16);
+        }
+
+        .mode-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 14px 26px rgba(80, 200, 120, 0.2);
+        }
+
+        .mode-note {
+            margin-top: 0.75rem;
+            font-size: 0.78rem;
+            color: var(--neutral-500);
+        }
+
+        /* Stat Cards */
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid var(--neutral-200);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .stat-card-info h3 {
+            font-size: 0.875rem;
+            color: var(--neutral-600);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card-value {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-card-icon {
+            font-size: 2.5rem;
+            opacity: 0.1;
+        }
+
+        /* Animations */
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .vocab-card {
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        .vocab-card:nth-child(1) { animation-delay: 0.1s; }
+        .vocab-card:nth-child(2) { animation-delay: 0.15s; }
+        .vocab-card:nth-child(3) { animation-delay: 0.2s; }
+        .vocab-card:nth-child(4) { animation-delay: 0.25s; }
+        .vocab-card:nth-child(5) { animation-delay: 0.3s; }
+        .vocab-card:nth-child(6) { animation-delay: 0.35s; }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.3s ease-out;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--neutral-600);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .stats-bar {
+                gap: 1rem;
+            }
+
+            .stat-value {
+                font-size: 1.25rem;
+            }
+
+            .daily-challenge {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .challenge-btn {
+                margin-top: 1rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .page-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .student-sidebar {
+                position: static;
+            }
+
+            .nav-left {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .stats-bar {
+                gap: 0.5rem;
+            }
+
+            .stat-value {
+                font-size: 1rem;
+            }
+
+            .stat-label {
+                font-size: 0.65rem;
+            }
+
+            .vocab-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+
+            .grid-3 {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-left">
+            <div class="logo">VocabMaster</div>
+            <div class="stats-bar">
+                <div class="stat">
+                    <div class="stat-value" id="streak">⚡ 0</div>
+                    <div class="stat-label streak-label">Streak</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="xp">🔥 0 XP</div>
+                    <div class="stat-label xp-label">XP</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="hearts"><span class="chance-icon" aria-hidden="true">🎫</span><span class="stat-text">5</span></div>
+                    <div class="stat-label">Chances</div>
+                </div>
+            </div>
+        </div>
+        <div class="nav-right">
+            <button class="btn-icon" title="Settings">⚙️</button>
+            <button class="btn-icon" title="Notifications">🔔</button>
+            <button class="profile-btn" onclick="showProfile()" title="Profile">U</button>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="page-layout">
+            <aside class="student-sidebar">
+                <div class="sidebar-card sidebar-tip">
+                    <div class="sidebar-title">Start here</div>
+                    <p>Use the sidebar to follow a simple study path instead of guessing what to click next.</p>
+                    <a class="sidebar-link" href="statistics-ultra.html" style="margin-top: 0.85rem;">Open statistics <span>Progress</span></a>
+                </div>
+
+                <div class="sidebar-card">
+                    <div class="sidebar-title">Today’s study path</div>
+                    <div class="sidebar-list">
+                        <a class="sidebar-link" href="#dailyChallenge">1. Daily challenge <span>Warm up</span></a>
+                        <a class="sidebar-link" id="planFlashcardsLink" href="flashcards-ultra.html">2. Flashcards <span>Review</span></a>
+                        <a class="sidebar-link" id="planQuizLink" href="quiz-ultra.html">3. Quiz <span>Test</span></a>
+                        <a class="sidebar-link" id="planMatchingLink" href="matching-ultra.html">4. Matching <span>Practice</span></a>
+                    </div>
+                </div>
+
+                <div class="sidebar-card">
+                    <div class="sidebar-title">Adaptive Planner</div>
+                    <div class="planner-controls">
+                        <div class="planner-field">
+                            <label for="planLevel">Target level</label>
+                            <select id="planLevel">
+                                <option value="AUTO">Auto from my profile</option>
+                                <option value="A1">A1 Beginner</option>
+                                <option value="A2">A2 Elementary</option>
+                                <option value="B1">B1 Intermediate</option>
+                                <option value="B2">B2 Upper-Intermediate</option>
+                                <option value="C1">C1 Advanced</option>
+                                <option value="C2">C2 Proficient</option>
+                            </select>
+                        </div>
+                        <div class="planner-field">
+                            <label for="planMinutes">Daily minutes</label>
+                            <input id="planMinutes" type="number" min="10" max="120" step="5" value="20" />
+                        </div>
+                        <div class="planner-field">
+                            <label for="planEnglishGrade">English grade</label>
+                            <select id="planEnglishGrade">
+                                <option value="AUTO">Auto from my activity</option>
+                                <option value="A1">A1 Beginner</option>
+                                <option value="A2">A2 Elementary</option>
+                                <option value="B1">B1 Intermediate</option>
+                                <option value="B2">B2 Upper-Intermediate</option>
+                                <option value="C1">C1 Advanced</option>
+                                <option value="C2">C2 Proficient</option>
+                            </select>
+                        </div>
+                        <div class="planner-field">
+                            <label for="planWordCount">Vocabulary today</label>
+                            <input id="planWordCount" type="number" min="5" max="60" step="1" value="16" />
+                        </div>
+                        <button class="planner-generate" id="generatePlanBtn" onclick="handlePlanRegeneration()">Generate my plan</button>
+                    </div>
+                    <div class="plan-delta-panel hidden" id="planDeltaPanel"></div>
+                    <div class="planner-output" id="plannerOutput">
+                        <div class="planner-summary" id="plannerSummary">Building your personalized schedule…</div>
+                        <div class="planner-meta" id="plannerMeta"></div>
+                        <div class="planner-mix" id="plannerMix"></div>
+                        <div class="planner-week" id="plannerWeek"></div>
+                        <div class="adaptive-stack">
+                            <div class="adaptive-panel">
+                                <div class="adaptive-panel-title">Diagnostic status</div>
+                                <div class="adaptive-note" id="diagnosticStatePanel">Your placement and readiness summary will appear here.</div>
+                            </div>
+                            <div class="adaptive-panel">
+                                <div class="adaptive-panel-title">Mastery gates</div>
+                                <div class="adaptive-meter-track"><div class="adaptive-meter-fill" id="masteryProgressFill"></div></div>
+                                <div class="adaptive-note" id="masteryProgressLabel">Mastery progress will update after each session.</div>
+                                <div class="adaptive-badge-row" id="masteryGatesPanel"></div>
+                                <div class="adaptive-badge-row" id="moduleBadgesPanel"></div>
+                                <div class="adaptive-note" id="masteryGateReason">Exercises unlock as confidence, accuracy, and stamina improve.</div>
+                                <div class="adaptive-subnote" id="nextUnlockHint">Keep practicing to unlock your next challenge tier.</div>
+                            </div>
+                            <div class="adaptive-panel">
+                                <div class="adaptive-panel-title">Adaptive queue preview</div>
+                                <div class="adaptive-list" id="adaptiveQueuePanel"></div>
+                                <div class="adaptive-remediation-block" id="remediationPrompt"><div class="adaptive-note">The planner will explain when remediation or due reviews are prioritized.</div></div>
+                            </div>
+                            <div class="adaptive-panel">
+                                <div class="adaptive-panel-title">Hearts system</div>
+                                <div class="adaptive-note" id="heartsPlanNote">Hearts protect students from overload. Low hearts shift the plan toward safer review and reduce risky challenge volume.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sidebar-card">
+                    <div class="sidebar-title">Adaptive Diagnostic</div>
+                    <div id="diagnosticStatusText" style="color: var(--neutral-700); line-height: 1.6; margin-bottom: 0.7rem;">Loading your placement profile…</div>
+                    <div class="planner-mix" id="diagnosticStatusBadges"></div>
+                    <button class="planner-generate" id="diagnosticActionBtn" onclick="startDiagnosticFlow()">Start diagnostic</button>
+                </div>
+
+                <div class="sidebar-card">
+                    <div class="sidebar-title">Quick shortcuts</div>
+                    <div class="sidebar-list">
+                        <a class="sidebar-link" href="spelling-ultra.html">Spelling <span>Typing</span></a>
+                    </div>
+                </div>
+
+                <div class="sidebar-card">
+                    <div class="sidebar-title">Need help?</div>
+                    <p style="color: var(--neutral-600); line-height: 1.6; margin-bottom: 0.85rem;">Use the profile button to check your progress, or start with flashcards if you are unsure what to do next.</p>
+                    <a class="sidebar-link" href="#vocabGrid">Open your words <span>Assigned set</span></a>
+                </div>
+            </aside>
+
+            <main class="main-column">
+                <div class="recommendation-banner hidden" id="dailyRecommendationBanner">
+                    <div class="recommendation-banner-head">
+                        <div>
+                            <div class="recommendation-banner-kicker">Daily recommendation</div>
+                            <div class="recommendation-banner-title" id="dailyRecommendationTitle">Your smart study briefing is loading…</div>
+                        </div>
+                        <div class="recommendation-banner-actions">
+                            <div class="recommendation-stats" id="dailyRecommendationStats"></div>
+                            <a class="recommendation-start" id="dailyRecommendationStart" href="flashcards-ultra.html">Start now</a>
+                        </div>
+                    </div>
+                    <div class="recommendation-banner-copy" id="dailyRecommendationCopy"></div>
+                    <div class="recommendation-grid" id="dailyRecommendationGrid"></div>
+                </div>
+
+                <!-- Daily Challenge -->
+                <div class="daily-challenge" id="dailyChallenge">
+                    <div class="challenge-content">
+                        <div class="challenge-title" id="challengeTitle">Today's Challenge 🎯</div>
+                        <div class="challenge-desc" id="challengeDesc">Answer 10 flashcards correctly to earn +50 XP</div>
+                        <div class="challenge-reward" id="challengeReward">⭐ +50 XP Bonus</div>
+                    </div>
+                    <button class="challenge-btn" id="challengeButton" onclick="navigateTo('flashcards-ultra.html')">Start Challenge →</button>
+                </div>
+
+                <div class="achievement-summary" id="achievementSummary">
+                    <div class="achievement-summary-head">
+                        <div>
+                            <div class="achievement-summary-title">Achievement spotlight</div>
+                            <p class="achievement-summary-copy" id="achievementSummaryCopy">Loading your badges and milestones…</p>
+                        </div>
+                        <a class="section-link" href="statistics-ultra.html#achievements" style="white-space: nowrap;">Open achievements →</a>
+                    </div>
+                    <div class="achievement-summary-stats">
+                        <span class="achievement-pill" id="achievementUnlockedPill">🏆 0 unlocked</span>
+                        <span class="achievement-pill" id="achievementCompletionPill">📈 0% complete</span>
+                    </div>
+                    <div class="achievement-list" id="achievementList">
+                        <span class="achievement-chip achievement-chip-muted">Loading achievements…</span>
+                    </div>
+                </div>
+
+                <!-- Section: Learning Modes -->
+                <div class="section-header">
+                    <div class="exercise-banner">
+                        <div>
+                            <div class="exercise-kicker">Exercise Structures</div>
+                            <h2 class="section-title" style="margin-bottom: 0.35rem;">Choose your training path</h2>
+                            <p class="section-subtitle" style="margin-bottom: 0;">Each structure trains the same vocabulary in a different way.</p>
+                        </div>
+                        <div class="exercise-count">4 core exercises</div>
+                    </div>
+                </div>
+
+                <div class="grid-3">
+                    <div class="mode-card" onclick="navigateTo('flashcards-ultra.html')">
+                        <div class="mode-content">
+                            <div class="mode-header">
+                                <div class="mode-index">01</div>
+                                <div class="mode-chip">Warm up</div>
+                            </div>
+                            <div class="mode-icon">🎴</div>
+                            <div class="mode-name">Flashcards</div>
+                            <div class="mode-desc">Classic spaced repetition with 3D animations</div>
+                            <div class="mode-stats">
+                                <span>📖 Uses your assigned words</span>
+                                <span>⏱️ Quick review</span>
+                            </div>
+                            <button class="mode-btn">Start Learning →</button>
+                            <div class="mode-note">Best for quick memory refresh before harder exercises.</div>
+                        </div>
+                    </div>
+
+                    <div class="mode-card" onclick="navigateTo('quiz-ultra.html')">
+                        <div class="mode-content">
+                            <div class="mode-header">
+                                <div class="mode-index">02</div>
+                                <div class="mode-chip">Challenge</div>
+                            </div>
+                            <div class="mode-icon">❓</div>
+                            <div class="mode-name">Quiz</div>
+                            <div class="mode-desc">Multiple choice with adaptive difficulty</div>
+                            <div class="mode-stats">
+                                <span>🧠 Mixed practice questions</span>
+                                <span>🎯 Built from your word list</span>
+                            </div>
+                            <button class="mode-btn">Start Quiz →</button>
+                            <div class="mode-note">Good when you want to test recall under pressure.</div>
+                        </div>
+                    </div>
+
+                    <div class="mode-card" onclick="navigateTo('matching-ultra.html')">
+                        <div class="mode-content">
+                            <div class="mode-header">
+                                <div class="mode-index">03</div>
+                                <div class="mode-chip">Pairing</div>
+                            </div>
+                            <div class="mode-icon">🎯</div>
+                            <div class="mode-name">Matching</div>
+                            <div class="mode-desc">Fast-paced drag-drop word pairing</div>
+                            <div class="mode-stats">
+                                <span>⚡ Pair words and meanings</span>
+                                <span>🧩 Uses current vocabulary</span>
+                            </div>
+                            <button class="mode-btn">Play →</button>
+                            <div class="mode-note">Helps you connect meanings quickly and visually.</div>
+                        </div>
+                    </div>
+
+                    <div class="mode-card" onclick="navigateTo('spelling-ultra.html')">
+                        <div class="mode-content">
+                            <div class="mode-header">
+                                <div class="mode-index">04</div>
+                                <div class="mode-chip">Typing</div>
+                            </div>
+                            <div class="mode-icon">🔤</div>
+                            <div class="mode-name">Spelling</div>
+                            <div class="mode-desc">Master correct spelling with audio</div>
+                            <div class="mode-stats">
+                                <span>🔊 Listen and type</span>
+                                <span>✍️ Practice your assigned set</span>
+                            </div>
+                            <button class="mode-btn">Spell →</button>
+                            <div class="mode-note">Use this when you want precision and word form control.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section: Your Vocabulary -->
+                <div class="section-header">
+                    <h2 class="section-title">Your Vocabulary</h2>
+                    <p class="section-subtitle">Continue learning your current set</p>
+                </div>
+
+                <div class="vocab-grid" id="vocabGrid">
+                    <!-- Populated by JavaScript -->
+                </div>
+
+                <!-- Section: Statistics -->
+                <div class="section-header" style="margin-top: 3rem;">
+                    <div class="section-header-row">
+                        <div>
+                            <h2 class="section-title">Your Progress</h2>
+                            <p class="section-subtitle">This week's learning stats</p>
+                        </div>
+                        <a class="section-link" href="statistics-ultra.html">View full statistics →</a>
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="stat-card">
+                        <div class="stat-card-info">
+                            <h3>Total XP</h3>
+                            <div class="stat-card-value" id="totalXpCard">0</div>
+                        </div>
+                        <div class="stat-card-icon">⚡</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-card-info">
+                            <h3>Words Learned</h3>
+                            <div class="stat-card-value" id="wordsLearnedCard">0</div>
+                        </div>
+                        <div class="stat-card-icon">📚</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-card-info">
+                            <h3>Average Accuracy</h3>
+                            <div class="stat-card-value" id="accuracyCard">0%</div>
+                        </div>
+                        <div class="stat-card-icon">🎯</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-card-info">
+                            <h3>Lessons Completed</h3>
+                            <div class="stat-card-value" id="lessonsCard">0</div>
+                        </div>
+                        <div class="stat-card-icon">🏆</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-card-info">
+                            <h3>Best Streak</h3>
+                            <div class="stat-card-value" id="longestStreakCard">0</div>
+                        </div>
+                        <div class="stat-card-icon">⚡</div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Profile Modal -->
+    <div class="modal" id="profileModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()">✕</button>
+            <div class="modal-title">Your Profile</div>
+            <p style="margin-bottom: 1rem;">👤 <strong>Username:</strong> Learning Master</p>
+            <p style="margin-bottom: 1rem;">📧 <strong>Email:</strong> user@example.com</p>
+            <p style="margin-bottom: 1rem;">🎯 <strong>Goal:</strong> Daily learning</p>
+            <p style="margin-bottom: 1rem;">📊 <strong>Total XP:</strong> <span id="profileXp">Loading...</span></p>
+            <p style="margin-bottom: 1.5rem;">📅 <strong>Member Since:</strong> <span id="profileJoined">Loading...</span></p>
+            <button onclick="logout()" style="width: 100%; padding: 0.75rem; background: var(--danger); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">
+                Sign Out
+            </button>
+        </div>
+    </div>
+
+    <div class="modal" id="diagnosticModal">
+        <div class="modal-content" style="max-width: 780px;">
+            <button class="modal-close" onclick="closeDiagnosticModal()">✕</button>
+            <div class="modal-title" id="diagnosticModalTitle">Adaptive Diagnostic</div>
+            <div id="diagnosticModalBody" style="line-height: 1.7; color: var(--neutral-700);">Preparing your diagnostic…</div>
+        </div>
+    </div>
+
+    <script src="/js/api.js"></script>
+    <script>
+        let vocabulary = [];
+        let adaptivePlan = null;
+        let diagnosticSession = null;
+        let diagnosticCurrentIndex = 0;
+        let diagnosticResponses = [];
+        const PLAN_PREFS_KEY = 'student_adaptive_plan_prefs_v1';
+        const FLOW_PROGRESS_KEY = 'student_guided_flow_progress_v1';
+
+        function readPlanPrefs() {
+            try {
+                return JSON.parse(localStorage.getItem(PLAN_PREFS_KEY) || '{}') || {};
+            } catch (err) {
+                return {};
+            }
+        }
+
+        function savePlanPrefs(prefs) {
+            try {
+                localStorage.setItem(PLAN_PREFS_KEY, JSON.stringify(prefs || {}));
+            } catch (err) {
+                console.log('Could not save planner preferences:', err.message);
+            }
+        }
+
+        function readFlowProgress() {
+            try {
+                return JSON.parse(localStorage.getItem(FLOW_PROGRESS_KEY) || '{}') || {};
+            } catch (_err) {
+                return {};
+            }
+        }
+
+        function saveFlowProgress(payload) {
+            try {
+                localStorage.setItem(FLOW_PROGRESS_KEY, JSON.stringify(payload || {}));
+            } catch (_err) {}
+        }
+
+        function buildFlowSignature(settings, flowModes) {
+            const count = Math.max(5, Math.min(60, parseInt(settings?.wordCount, 10) || 0));
+            const minDifficulty = Number(settings?.difficultyBand?.min || 1);
+            const maxDifficulty = Number(settings?.difficultyBand?.max || 5);
+            const targetLevel = String(settings?.targetLevel || 'AUTO').trim().toUpperCase() || 'AUTO';
+            const flow = Array.isArray(flowModes) ? flowModes.join(',') : '';
+            return [targetLevel, count, minDifficulty, maxDifficulty, flow].join('|');
+        }
+
+        function resolveGuidedStartMode(plan, flowModes, fallbackMode) {
+            const fallback = resolvePlanMode(plan, fallbackMode || 'flashcards', 'flashcards');
+            if (!Array.isArray(flowModes) || !flowModes.length) {
+                return { startMode: fallback, completedCount: 0, allDone: false };
+            }
+
+            const signature = buildFlowSignature(plan?.settings || {}, flowModes);
+            const state = readFlowProgress();
+            const savedCompleted = Array.isArray(state?.completedModes)
+                ? state.completedModes.map((mode) => String(mode || '').toLowerCase()).filter(Boolean)
+                : [];
+            const completed = savedCompleted.filter((mode) => flowModes.includes(mode));
+
+            if (String(state?.signature || '') !== signature) {
+                return { startMode: fallback, completedCount: 0, allDone: false };
+            }
+
+            const nextMode = flowModes.find((mode) => !completed.includes(mode));
+            if (nextMode) {
+                return { startMode: nextMode, completedCount: completed.length, allDone: false };
+            }
+
+            return { startMode: fallback, completedCount: flowModes.length, allDone: true };
+        }
+
+        function buildFlowModesFromPlan(plan) {
+            const todayPlan = Array.isArray(plan?.aiSchedule?.dailyPlan) ? plan.aiSchedule.dailyPlan[0] : null;
+            const rawModes = Array.isArray(todayPlan?.focusModes) && todayPlan.focusModes.length
+                ? todayPlan.focusModes.map((item) => String(item?.mode || item?.label || '').toLowerCase())
+                : (Array.isArray(plan?.exerciseMix)
+                    ? plan.exerciseMix.map((item) => String(item?.mode || item?.label || '').toLowerCase())
+                    : []);
+            const allowed = ['flashcards', 'quiz', 'matching', 'spelling'];
+            const normalizedRaw = rawModes.filter((mode) => allowed.includes(mode));
+            const flowModes = [];
+            const startMode = resolvePlanMode(plan, normalizedRaw[0] || 'flashcards', 'flashcards');
+            if (startMode) flowModes.push(startMode);
+            normalizedRaw.forEach((mode) => {
+                if (!flowModes.includes(mode)) flowModes.push(mode);
+            });
+            if (!flowModes.length) flowModes.push('flashcards');
+            return flowModes;
+        }
+
+        function buildExerciseUrl(path, settings, flowOptions) {
+            const params = new URLSearchParams();
+            const count = Math.max(5, Math.min(60, parseInt(settings?.wordCount, 10) || 0));
+            const minDifficulty = Number(settings?.difficultyBand?.min || 1);
+            const maxDifficulty = Number(settings?.difficultyBand?.max || 5);
+            const targetLevel = String(settings?.targetLevel || '').trim().toUpperCase();
+            if (count) params.set('wordCount', String(count));
+            params.set('minDifficulty', String(minDifficulty));
+            params.set('maxDifficulty', String(maxDifficulty));
+            if (targetLevel) params.set('targetLevel', targetLevel);
+            params.set('reviewWrong', 'true');
+            const options = flowOptions && typeof flowOptions === 'object' ? flowOptions : {};
+            const flowModes = Array.isArray(options.flowModes)
+                ? options.flowModes.map((mode) => String(mode || '').toLowerCase()).filter(Boolean)
+                : [];
+            const currentMode = String(options.currentMode || '').toLowerCase();
+            if (flowModes.length) params.set('flow', flowModes.join(','));
+            if (currentMode) params.set('mode', currentMode);
+            if (options.autoNext === true) params.set('autoNext', 'true');
+            const query = params.toString();
+            return query ? `${path}?${query}` : path;
+        }
+
+        function applyAdaptiveLinks(plan) {
+            if (!plan || !plan.settings) return;
+            const flashcardsLink = document.getElementById('planFlashcardsLink');
+            const quizLink = document.getElementById('planQuizLink');
+            const matchingLink = document.getElementById('planMatchingLink');
+            const gates = plan?.masteryGates || {};
+            const isUnlocked = (mode) => gates[mode]?.unlocked !== false;
+            const flowModes = buildFlowModesFromPlan(plan);
+            if (flashcardsLink) {
+                flashcardsLink.href = buildExerciseUrl('flashcards-ultra.html', plan.settings, {
+                    flowModes,
+                    currentMode: 'flashcards',
+                    autoNext: true,
+                });
+                flashcardsLink.dataset.locked = isUnlocked('flashcards') ? 'false' : 'true';
+            }
+            if (quizLink) {
+                quizLink.href = isUnlocked('quiz') ? buildExerciseUrl('quiz-ultra.html', plan.settings, {
+                    flowModes,
+                    currentMode: 'quiz',
+                    autoNext: true,
+                }) : '#';
+                quizLink.dataset.locked = isUnlocked('quiz') ? 'false' : 'true';
+            }
+            if (matchingLink) {
+                matchingLink.href = isUnlocked('matching') ? buildExerciseUrl('matching-ultra.html', plan.settings, {
+                    flowModes,
+                    currentMode: 'matching',
+                    autoNext: true,
+                }) : '#';
+                matchingLink.dataset.locked = isUnlocked('matching') ? 'false' : 'true';
+            }
+        }
+
+        function buildLocalWeeklyPreview(plan) {
+            const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            const today = new Date();
+            const wordCount = Math.max(5, Math.min(60, parseInt(plan?.settings?.wordCount, 10) || 16));
+            const minutes = Math.max(10, Math.min(120, parseInt(plan?.settings?.minutes, 10) || 20));
+            const previewPool = Array.isArray(vocabulary) ? vocabulary.slice() : [];
+            const focusModes = Array.isArray(plan?.exerciseMix)
+                ? plan.exerciseMix.map((item) => ({ mode: String(item.label || item.mode || 'practice').toLowerCase(), minutes: Number(item.minutes || 0) }))
+                : [];
+
+            return Array.from({ length: 7 }, (_, index) => {
+                const date = new Date(today);
+                date.setDate(today.getDate() + index);
+                const start = (index * wordCount) % Math.max(previewPool.length || 1, 1);
+                const wordsPreview = previewPool.slice(start, start + 5);
+                if (wordsPreview.length < 5 && previewPool.length) {
+                    wordsPreview.push(...previewPool.slice(0, 5 - wordsPreview.length));
+                }
+                return {
+                    dayIndex: index + 1,
+                    dayName: days[date.getDay()],
+                    date: date.toISOString().slice(0, 10),
+                    targetWords: wordCount,
+                    minutes,
+                    focusModes,
+                    wordsPreview: wordsPreview.map((item) => ({ word: item.word })),
+                };
+            });
+        }
+
+        function resolveModePath(mode) {
+            const normalized = String(mode || '').toLowerCase();
+            return {
+                flashcards: 'flashcards-ultra.html',
+                quiz: 'quiz-ultra.html',
+                matching: 'matching-ultra.html',
+                spelling: 'spelling-ultra.html',
+            }[normalized] || 'flashcards-ultra.html';
+        }
+
+        function resolveSafeMode(plan, requestedMode, fallbackMode = 'flashcards') {
+            const normalized = String(requestedMode || '').toLowerCase();
+            const normalizedFallback = String(fallbackMode || 'flashcards').toLowerCase();
+            if (normalized && plan?.masteryGates?.[normalized]?.unlocked !== false) {
+                return normalized;
+            }
+            const unlockedModes = Array.isArray(plan?.unlockedModes)
+                ? plan.unlockedModes.map((value) => String(value || '').toLowerCase()).filter(Boolean)
+                : [];
+            const fallbackCandidates = [normalizedFallback, ...unlockedModes].filter(Boolean);
+            const preferredFallback = fallbackCandidates.find((value) => value && value !== normalized && (plan?.masteryGates?.[value]?.unlocked !== false));
+            if (preferredFallback) {
+                return preferredFallback;
+            }
+            if (unlockedModes.length) {
+                return unlockedModes.find((value) => value !== normalized) || unlockedModes[0];
+            }
+            return normalizedFallback;
+        }
+
+        function resolvePlanMode(plan, requestedMode, fallbackMode = 'flashcards') {
+            return resolveSafeMode(plan, requestedMode, fallbackMode);
+        }
+
+        function renderTopRecommendations(plan) {
+            const bannerEl = document.getElementById('dailyRecommendationBanner');
+            const titleEl = document.getElementById('dailyRecommendationTitle');
+            const copyEl = document.getElementById('dailyRecommendationCopy');
+            const statsEl = document.getElementById('dailyRecommendationStats');
+            const gridEl = document.getElementById('dailyRecommendationGrid');
+            const startEl = document.getElementById('dailyRecommendationStart');
+            if (!bannerEl || !titleEl || !copyEl || !statsEl || !gridEl || !startEl) return;
+
+            if (!plan) {
+                bannerEl.classList.add('hidden');
+                return;
+            }
+
+            const aiCards = Array.isArray(plan?.aiSchedule?.ai?.recommendationCards) ? plan.aiSchedule.ai.recommendationCards : [];
+            const cards = aiCards.length ? aiCards : (Array.isArray(plan?.aiSchedule?.topRecommendations) ? plan.aiSchedule.topRecommendations : []);
+            const spotlight = plan?.aiSchedule?.ai?.dailySpotlight || null;
+            const todayPlan = Array.isArray(plan?.aiSchedule?.dailyPlan) ? plan.aiSchedule.dailyPlan[0] : null;
+            const focusModes = Array.isArray(todayPlan?.focusModes) && todayPlan.focusModes.length
+                ? todayPlan.focusModes
+                : (Array.isArray(plan?.exerciseMix) ? plan.exerciseMix : []);
+            const requestedStartMode = String(spotlight?.startMode || todayPlan?.focusModes?.[0]?.mode || 'flashcards').toLowerCase();
+            const flowModes = buildFlowModesFromPlan(plan);
+            const flowState = resolveGuidedStartMode(plan, flowModes, requestedStartMode || 'flashcards');
+            const startMode = flowState.startMode;
+            const startModeEntry = focusModes.find((item) => String(item?.mode || item?.label || '').toLowerCase() === startMode);
+            const startModeMinutes = Math.max(0, Number(startModeEntry?.minutes || 0));
+            const totalMinutes = Math.max(0, Number(plan?.settings?.minutes || 0));
+            const modeSplitText = focusModes
+                .filter((item) => Number(item?.minutes || 0) > 0)
+                .map((item) => `${String(item.mode || item.label || 'practice').toLowerCase()}: ${Number(item.minutes || 0)}m`)
+                .join(' · ');
+            const summary = plan?.aiSchedule?.ai?.weeklySummary || plan.summary || 'Stay consistent and let the planner increase challenge only when retention is stable.';
+            const filtering = plan?.aiSchedule?.filteringSummary || {};
+
+            bannerEl.classList.remove('hidden');
+            const activeModeLabel = modeLabel(startMode);
+            if (flowState.allDone) {
+                titleEl.textContent = `Today's guided sequence is complete`;
+            } else if (flowState.completedCount > 0) {
+                titleEl.textContent = `Next task: ${activeModeLabel}`;
+            } else {
+                titleEl.textContent = spotlight?.title || cards[0]?.title || `Today: ${plan?.settings?.wordCount || 0} words with adaptive practice order`;
+            }
+            const baseCopy = spotlight?.detail || cards[0]?.detail || summary;
+            if (flowState.allDone) {
+                copyEl.textContent = modeSplitText
+                    ? `You finished all recommended modes. Today's ${totalMinutes}-minute split was: ${modeSplitText}.`
+                    : 'You finished all recommended modes for today.';
+            } else if (flowState.completedCount > 0) {
+                copyEl.textContent = modeSplitText
+                    ? `Great progress. Continue with ${activeModeLabel.toLowerCase()} next. Today's split: ${modeSplitText}.`
+                    : `Great progress. Continue with ${activeModeLabel.toLowerCase()} next.`;
+            } else {
+                copyEl.textContent = modeSplitText
+                    ? `${baseCopy} Today's ${totalMinutes}-minute block is split across modes: ${modeSplitText}.`
+                    : baseCopy;
+            }
+            startEl.href = buildExerciseUrl(resolveModePath(startMode), plan.settings, {
+                flowModes,
+                currentMode: startMode,
+                autoNext: true,
+            });
+            if (flowState.allDone) {
+                startEl.textContent = startModeMinutes > 0
+                    ? `Review ${activeModeLabel} (${startModeMinutes}m)`
+                    : `Review ${activeModeLabel}`;
+            } else if (flowState.completedCount > 0) {
+                startEl.textContent = startModeMinutes > 0
+                    ? `Continue ${activeModeLabel} (${startModeMinutes}m)`
+                    : `Continue ${activeModeLabel}`;
+            } else {
+                startEl.textContent = startModeMinutes > 0
+                    ? `Start ${activeModeLabel} (${startModeMinutes}m)`
+                    : `Start ${activeModeLabel}`;
+            }
+            statsEl.innerHTML = [
+                `<span class="recommendation-stat"><span class="lottie-icon recommendation-icon" aria-hidden="true"><dotlottie-wc src="https://lottie.host/8719ff43-b256-45de-b0f2-1377106dadc3/IdaDi3yJnn.lottie" autoplay loop style="width:100%;height:100%"></dotlottie-wc></span>${plan?.settings?.minutes || 0} min</span>`,
+                `<span class="recommendation-stat"><span class="lottie-icon recommendation-icon" aria-hidden="true"><dotlottie-wc src="https://lottie.host/5c181ff6-0164-418d-af06-73a910eecad2/41aiLBwiN2.lottie" autoplay loop style="width:100%;height:100%"></dotlottie-wc></span>${plan?.settings?.wordCount || 0} words</span>`,
+                `<span class="recommendation-stat">🎯 ${plan?.aiSchedule?.grade || plan?.settings?.englishGrade || 'AUTO'}</span>`,
+                `<span class="recommendation-stat">🧪 ${filtering.struggling || 0} fragile</span>`,
+                flowModes.length ? `<span class="recommendation-stat">✅ ${Math.min(flowState.completedCount, flowModes.length)}/${flowModes.length} done</span>` : '',
+                modeSplitText ? `<span class="recommendation-stat">🧭 ${modeSplitText}</span>` : '',
+            ].join('');
+            gridEl.innerHTML = cards.slice(0, 4).map((card) => `
+                <div class="recommendation-card">
+                    <div class="recommendation-card-title">${card.title || 'Recommendation'}</div>
+                    <div class="recommendation-card-copy">${card.detail || summary}</div>
+                </div>
+            `).join('');
+        }
+
+        function normalizeStudyPlanPayload(payload) {
+            const raw = payload && typeof payload === 'object' ? payload : null;
+            if (!raw) return null;
+
+            const plan = raw.plan && typeof raw.plan === 'object' ? raw.plan : raw;
+            if (!plan || typeof plan !== 'object') return null;
+
+            // selectedWords can be at raw level (wrapped response) or at plan level
+            const selectedWords = Array.isArray(raw.selectedWords)
+                ? raw.selectedWords
+                : Array.isArray(plan.selectedWords)
+                    ? plan.selectedWords
+                    : [];
+
+            if (selectedWords.length) {
+                plan.adaptiveQueue = plan.adaptiveQueue || {};
+                if (!Array.isArray(plan.adaptiveQueue.queuePreview) || !plan.adaptiveQueue.queuePreview.length) {
+                    plan.adaptiveQueue.queuePreview = selectedWords.slice(0, 10).map((item, index) => ({
+                        wordId: String(item?._id || item?.wordId || item?.word || ''),
+                        word: String(item?.word || ''),
+                        difficulty: Number(item?.difficulty || 3),
+                        source: String(item?._planMeta?.source || item?.source || 'general'),
+                        position: index,
+                    }));
+                }
+            }
+
+            if (!plan.settings && raw.settings) {
+                plan.settings = raw.settings;
+            }
+
+            return plan;
+        }
+
+        function escapeHtml(value) {
+            return String(value ?? '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function renderDiagnosticState(data) {
+            const panel = document.getElementById('diagnosticStatePanel');
+            if (!panel) return;
+            const diagnosticLevel = String(
+                data?.personalization?.diagnosticLevel
+                || data?.diagnosticLevel
+                || data?.snapshot?.adaptiveProfile?.targetLevel
+                || data?.settings?.targetLevel
+                || 'A1'
+            ).toUpperCase();
+            const abilityScore = Math.round(Number(
+                data?.personalization?.abilityScore
+                ?? data?.abilityScore
+                ?? data?.snapshot?.adaptiveProfile?.abilityScore
+                ?? 0
+            ));
+            const confidence = Math.round(Number(data?.behaviorSignals?.confidenceScore || 0) * 100);
+            const fastGuessRate = Math.round(Number(data?.behaviorSignals?.fastGuessRate || 0) * 100);
+            const slowStruggleRate = Math.round(Number(data?.behaviorSignals?.slowStruggleRate || 0) * 100);
+            const requestedCount = Number(data?.prefs?.wordCount || 0);
+            const plannedCount = Number(data?.targetWordCount || requestedCount || 0);
+
+            const whyParts = [];
+            if (plannedCount > 0 && requestedCount > 0 && plannedCount < requestedCount) {
+                whyParts.push(`Word load was reduced from ${requestedCount} to ${plannedCount} to protect retention.`);
+            }
+            if (fastGuessRate >= 18) {
+                whyParts.push(`Fast-guess risk is ${fastGuessRate}%, so the planner favors safer reinforcement.`);
+            }
+            if (slowStruggleRate >= 18) {
+                whyParts.push(`Slow-struggle rate is ${slowStruggleRate}%, so recovery exercises are prioritized.`);
+            }
+            if (!whyParts.length) {
+                whyParts.push('Your recent pace and accuracy support a balanced challenge plan.');
+            }
+
+            panel.textContent = `Level ${diagnosticLevel} with ${abilityScore}/100 ability and ${confidence}% confidence. ${whyParts.join(' ')}`;
+        }
+
+        function modeLabel(mode) {
+            const labels = { flashcards: 'Flashcards', matching: 'Matching', quiz: 'Quiz', spelling: 'Spelling' };
+            return labels[String(mode || '').toLowerCase()] || String(mode || 'Unknown').replace(/^./, (c) => c.toUpperCase());
+        }
+
+        function moduleTitle(id, titleFromData) {
+            if (titleFromData && typeof titleFromData === 'string' && !titleFromData.startsWith('module-')) return titleFromData;
+            const match = String(id || '').match(/(\d+)$/);
+            return match ? `Module ${match[1]}` : String(id || 'Module');
+        }
+
+        function renderMasteryGates(data) {
+            const panel = document.getElementById('masteryGatesPanel');
+            const modulePanel = document.getElementById('moduleBadgesPanel');
+            const reasonEl = document.getElementById('masteryGateReason');
+            const meterFill = document.getElementById('masteryProgressFill');
+            const meterLabel = document.getElementById('masteryProgressLabel');
+            const nextUnlockHint = document.getElementById('nextUnlockHint');
+            if (!panel || !reasonEl || !modulePanel || !meterFill || !meterLabel || !nextUnlockHint) return;
+            const gates = data?.masteryGates || {};
+            const entries = ['flashcards', 'matching', 'quiz', 'spelling'].map((mode) => ({
+                mode,
+                label: modeLabel(mode),
+                ...(gates[mode] || { unlocked: false, reason: 'Complete more sessions to unlock.' }),
+            }));
+            panel.innerHTML = entries.map((entry) => `<span class="adaptive-badge ${entry.unlocked ? '' : 'locked'}">${entry.unlocked ? '✓' : '🔒'} ${escapeHtml(entry.label)}</span>`).join('');
+
+            const unlockedCount = entries.filter((entry) => entry.unlocked).length;
+            const masteryPct = Math.max(0, Math.min(100, Number(data?.masteryProgressPct ?? data?.abilityScore ?? 0)));
+            // rAF ensures transition fires even when element is first rendered
+            requestAnimationFrame(() => { meterFill.style.width = `${masteryPct}%`; });
+            meterLabel.textContent = `${masteryPct}% mastery progress · ${unlockedCount} of ${entries.length} modes ready.`;
+
+            const progression = data?.progression || {};
+            const currentId = progression.moduleId || `module-${progression.currentModuleIndex || 1}`;
+            const nextId = progression.nextModuleId || `module-${(progression.currentModuleIndex || 1) + 1}`;
+            const moduleUnlocked = progression.unlocked === true;
+            modulePanel.innerHTML = [
+                `<span class="adaptive-badge">📍 ${escapeHtml(moduleTitle(currentId, progression.title))}</span>`,
+                `<span class="adaptive-badge ${moduleUnlocked ? '' : 'locked'}">${moduleUnlocked ? '✅' : '🔒'} ${escapeHtml(moduleTitle(nextId))}</span>`,
+            ].join('');
+
+            const firstLocked = entries.find((entry) => !entry.unlocked);
+            reasonEl.textContent = firstLocked ? firstLocked.reason : 'All exercise modes are unlocked for your profile.';
+            const blocked = Array.isArray(data?.blockedModes) ? data.blockedModes : [];
+            if (blocked.length) {
+                reasonEl.textContent = blocked[0].reason || reasonEl.textContent;
+            }
+
+            if (!firstLocked) {
+                nextUnlockHint.textContent = moduleUnlocked
+                    ? 'Great momentum. You are currently eligible for the next module challenge.'
+                    : (progression.reason || 'Keep session quality steady to unlock the next module.');
+                return;
+            }
+
+            const subSkills = firstLocked.subSkills && typeof firstLocked.subSkills === 'object'
+                ? Object.values(firstLocked.subSkills)
+                : [];
+            const missingSkills = subSkills.filter((skill) => skill && skill.passed === false);
+            const skillHint = missingSkills.length
+                ? missingSkills.slice(0, 2).map((skill) => String(skill.label || 'skill')).join(' + ')
+                : 'accuracy and confidence';
+            nextUnlockHint.textContent = `Next unlock: ${firstLocked.label}. Improve ${skillHint} to open it.`;
+        }
+
+        function renderAdaptiveQueuePreview(data) {
+            const panel = document.getElementById('adaptiveQueuePanel');
+            const remediationEl = document.getElementById('remediationPrompt');
+            const heartsEl = document.getElementById('heartsPlanNote');
+            if (!panel || !remediationEl || !heartsEl) return;
+            const queue = Array.isArray(data?.adaptiveQueue?.queuePreview) ? data.adaptiveQueue.queuePreview : [];
+
+            function sourceLabel(source) {
+                const key = String(source || 'general').toLowerCase();
+                if (key === 'due_review') return 'Due review';
+                if (key === 'remediation') return 'Remediation';
+                if (key === 'stretch') return 'Stretch';
+                if (key === 'growth') return 'Growth';
+                if (key === 'new') return 'New';
+                return 'General';
+            }
+
+            function sourceReason(source) {
+                const key = String(source || 'general').toLowerCase();
+                if (key === 'due_review') return 'scheduled now to protect memory spacing';
+                if (key === 'remediation') return 'added to repair weak spots before harder tests';
+                if (key === 'stretch') return 'included to gently expand difficulty range';
+                if (key === 'growth') return 'selected to build core fluency at your current level';
+                if (key === 'new') return 'introduced for fresh controlled exposure';
+                return 'selected by adaptive ranking for today';
+            }
+
+            panel.innerHTML = queue.length
+                ? queue.slice(0, 5).map((item) => {
+                    const source = String(item?.source || 'general');
+                    const label = sourceLabel(source);
+                    const reason = sourceReason(source);
+                    return `<div class="adaptive-note"><strong>${escapeHtml(item.word)}</strong> · level ${Number(item.difficulty || 3)}/5 · ${escapeHtml(label)} (${escapeHtml(reason)})</div>`;
+                }).join('')
+                : '<div class="adaptive-note">Your personalized queue preview will appear here.</div>';
+            const remediation = data?.remediation || {};
+            const dueReviews = Number(data?.personalization?.dueReviews ?? data?.dueReviews ?? data?.adaptiveQueue?.dueReviewCount ?? 0);
+            const remediationStatus = String(data?.personalization?.remediationStatus || remediation.status || (remediation.active ? 'active' : 'clear'));
+            const remediationReason = String(remediation.reason || '');
+            const focusModes = Array.isArray(remediation.focusModes) ? remediation.focusModes : [];
+            const subtopicPrimary = remediation.subtopicSignals?.primary || null;
+
+            const statusBadge = `<span class="adaptive-remediation-badge ${remediationStatus === 'active' ? '' : 'clear'}">${remediationStatus === 'active' ? '⚠ Remediation active' : '✓ No remediation'}</span>`;
+            const dueTag = dueReviews > 0 ? `<span class="adaptive-remediation-badge clear">📅 ${dueReviews} due review${dueReviews > 1 ? 's' : ''}</span>` : '';
+            const modesTag = focusModes.length ? `<span class="adaptive-subnote">Focus: ${focusModes.map((m) => modeLabel(m)).join(' · ')}</span>` : '';
+            const reasonTag = remediationReason ? `<span class="adaptive-subnote">${escapeHtml(remediationReason)}</span>` : '';
+            const subtopicTag = subtopicPrimary ? `<span class="adaptive-subnote">Sub-topic: <strong>${escapeHtml(subtopicPrimary.subtopic)}</strong> at ${subtopicPrimary.accuracyPct}% accuracy (${subtopicPrimary.severity || 'low'} severity)</span>` : '';
+
+            remediationEl.innerHTML = `<div class="adaptive-badge-row">${statusBadge}${dueTag}</div>${modesTag}${reasonTag}${subtopicTag}`;
+
+            const heartState = data?.heartState || {};
+            heartsEl.textContent = heartState.lowHearts
+                ? `You have ${heartState.count || 0} hearts, so the planner is lowering challenge intensity and prioritizing recovery.`
+                : `You have ${heartState.count || 0} hearts, so challenge modes can stay in rotation without overload.`;
+        }
+
+        let isRegenerating = false;
+
+        function setAdaptivePanelsLoading(loading) {
+            ['masteryGatesPanel', 'moduleBadgesPanel', 'adaptiveQueuePanel'].forEach((id) => {
+                const panel = document.getElementById(id)?.closest('.adaptive-panel');
+                if (panel) {
+                    if (loading) panel.setAttribute('aria-busy', 'true');
+                    else panel.removeAttribute('aria-busy');
+                }
+            });
+        }
+
+        function renderPlanDelta(prevSnap, newPlan) {
+            const deltaEl = document.getElementById('planDeltaPanel');
+            if (!deltaEl) return;
+            const deltas = [];
+
+            const prevLevel = String(prevSnap.diagnosticLevel || 'A1').toUpperCase();
+            const newLevel = String(newPlan?.diagnosticLevel || newPlan?.personalization?.diagnosticLevel || 'A1').toUpperCase();
+            if (prevLevel !== newLevel) deltas.push(`Level ${prevLevel} → ${newLevel}`);
+
+            const prevAbility = prevSnap.abilityScore;
+            const newAbility = Math.round(Number(newPlan?.abilityScore ?? newPlan?.personalization?.abilityScore ?? 0));
+            if (Math.abs(newAbility - prevAbility) >= 2) {
+                const diff = newAbility - prevAbility;
+                deltas.push(`Ability ${prevAbility} → ${newAbility} (${diff > 0 ? '+' : ''}${diff})`);
+            }
+
+            const prevStatus = prevSnap.remediationStatus;
+            const newStatus = String(newPlan?.remediation?.status || newPlan?.personalization?.remediationStatus || 'clear');
+            if (prevStatus !== newStatus) deltas.push(`Remediation ${prevStatus} → ${newStatus}`);
+
+            const prevCount = prevSnap.targetWordCount;
+            const newCount = Number(newPlan?.targetWordCount || 0);
+            if (newCount > 0 && prevCount !== newCount) deltas.push(`Word target ${prevCount} → ${newCount}`);
+
+            const prevModes = prevSnap.unlockedModes.slice().sort().join(',');
+            const newModes = (Array.isArray(newPlan?.unlockedModes) ? newPlan.unlockedModes.slice().sort() : []).join(',');
+            if (prevModes !== newModes) {
+                const added = (newPlan?.unlockedModes || []).filter((m) => !prevSnap.unlockedModes.includes(m)).map(modeLabel);
+                const removed = prevSnap.unlockedModes.filter((m) => !(newPlan?.unlockedModes || []).includes(m)).map(modeLabel);
+                if (added.length) deltas.push(`Unlocked: ${added.join(', ')}`);
+                if (removed.length) deltas.push(`Locked: ${removed.join(', ')}`);
+            }
+
+            deltaEl.textContent = deltas.length
+                ? `What changed: ${deltas.join(' · ')}`
+                : 'Plan refreshed — no significant changes from your last session.';
+            deltaEl.classList.remove('hidden');
+        }
+
+        function handlePlanRegeneration() {
+            if (isRegenerating) return;
+            isRegenerating = true;
+
+            const prevSnap = adaptivePlan ? {
+                diagnosticLevel: String(adaptivePlan?.diagnosticLevel || adaptivePlan?.personalization?.diagnosticLevel || 'A1').toUpperCase(),
+                abilityScore: Math.round(Number(adaptivePlan?.abilityScore ?? adaptivePlan?.personalization?.abilityScore ?? 0)),
+                remediationStatus: String(adaptivePlan?.remediation?.status || adaptivePlan?.personalization?.remediationStatus || 'clear'),
+                targetWordCount: Number(adaptivePlan?.targetWordCount || 0),
+                unlockedModes: Array.isArray(adaptivePlan?.unlockedModes) ? [...adaptivePlan.unlockedModes] : [],
+            } : null;
+
+            setAdaptivePanelsLoading(true);
+
+            generateAdaptivePlan(true)
+                .then(() => {
+                    if (prevSnap && adaptivePlan) renderPlanDelta(prevSnap, adaptivePlan);
+                })
+                .catch(() => {})
+                .finally(() => {
+                    isRegenerating = false;
+                    setAdaptivePanelsLoading(false);
+                });
+        }
+
+        function renderAdaptivePlan(plan) {
+            const summaryEl = document.getElementById('plannerSummary');
+            const metaEl = document.getElementById('plannerMeta');
+            const mixEl = document.getElementById('plannerMix');
+            const weekEl = document.getElementById('plannerWeek');
+            if (!summaryEl || !metaEl || !mixEl || !weekEl) return;
+
+            if (!plan) {
+                renderTopRecommendations(null);
+                summaryEl.textContent = 'Could not generate your plan right now.';
+                metaEl.textContent = '';
+                mixEl.innerHTML = '';
+                weekEl.innerHTML = '';
+                // clear adaptive panels so stale data does not remain visible
+                const toClear = ['diagnosticStatePanel', 'masteryGatesPanel', 'moduleBadgesPanel', 'adaptiveQueuePanel', 'masteryProgressLabel', 'nextUnlockHint'];
+                toClear.forEach((id) => { const el = document.getElementById(id); if (el) el.textContent = ''; });
+                const mf = document.getElementById('masteryProgressFill'); if (mf) mf.style.width = '0%';
+                return;
+            }
+
+            renderTopRecommendations(plan);
+            renderDiagnosticState(plan);
+            renderMasteryGates(plan);
+            renderAdaptiveQueuePreview(plan);
+
+            const wordsSelected = Number(plan?.pool?.wordsSelected || 0);
+            const totalWords = Number(plan?.pool?.totalWordsAvailable || 0);
+            const aiSummary = String(plan?.aiSchedule?.ai?.weeklySummary || '').trim();
+            summaryEl.textContent = aiSummary || plan.summary || 'Plan ready. Follow the suggested order for better retention.';
+            const gradeTag = plan.settings.englishGrade && plan.settings.englishGrade !== 'AUTO'
+                ? ` | Grade ${plan.settings.englishGrade}`
+                : '';
+            const progression = plan?.progression || {};
+            const progressionTag = progression.moduleId
+                ? ` | ${progression.unlocked ? 'Next module unlocked' : progression.reason || 'Next module locked'}`
+                : '';
+            metaEl.textContent = `${plan.settings.label || plan.settings.targetLevel || 'Auto level'} | ${plan.settings.minutes} min${gradeTag} | ${wordsSelected}/${totalWords} words selected${progressionTag}`;
+
+            mixEl.innerHTML = (plan.exerciseMix || []).map((item) => {
+                const mode = String(item.mode || item.label || 'flashcards').toLowerCase();
+                const isLocked = plan?.masteryGates?.[mode]?.unlocked === false;
+                const path = String(item.path || 'flashcards-ultra.html');
+                const href = isLocked ? '#' : buildExerciseUrl(path, plan.settings, {
+                    flowModes: buildFlowModesFromPlan(plan),
+                    currentMode: mode,
+                    autoNext: true,
+                });
+                const badge = isLocked ? ' 🔒' : '';
+                return `<a class="planner-chip" href="${href}" ${isLocked ? 'aria-disabled="true"' : ''}><span>${item.label}${badge}</span><span>${item.minutes} min</span></a>`;
+            }).join('');
+
+            const aiOrdering = Array.isArray(plan?.aiSchedule?.ai?.adaptiveOrdering)
+                ? plan.aiSchedule.ai.adaptiveOrdering.find((row) => Number(row.dayIndex) === 1)
+                : null;
+            if (aiOrdering && Array.isArray(aiOrdering.order) && aiOrdering.order.length) {
+                mixEl.innerHTML += `<span class="planner-chip"><span>AI order today</span><span>${aiOrdering.order.join(' → ')}</span></span>`;
+            }
+
+            const dailyPlan = Array.isArray(plan?.aiSchedule?.dailyPlan) && plan.aiSchedule.dailyPlan.length
+                ? plan.aiSchedule.dailyPlan
+                : buildLocalWeeklyPreview(plan);
+            const aiExplanations = Array.isArray(plan?.aiSchedule?.ai?.dailyExplanations) ? plan.aiSchedule.ai.dailyExplanations : [];
+            weekEl.innerHTML = dailyPlan.length
+                ? dailyPlan.map((day) => {
+                    const explanation = aiExplanations.find((item) => Number(item.dayIndex) === Number(day.dayIndex));
+                    const modeSummary = Array.isArray(day.focusModes)
+                        ? day.focusModes.map((item) => `${item.mode}: ${item.minutes}m`).join(' · ')
+                        : '';
+                    const preview = Array.isArray(day.wordsPreview)
+                        ? day.wordsPreview.slice(0, 5).map((item) => item.word).filter(Boolean).join(', ')
+                        : '';
+                    return `<div class="planner-week-card">
+                        <div class="planner-week-head">
+                            <div>
+                                <div class="planner-week-title">Day ${day.dayIndex}: ${day.dayName}</div>
+                                <div class="planner-week-subtitle">${day.date || ''}</div>
+                            </div>
+                            <div class="planner-week-pill">${day.targetWords || 0} words</div>
+                        </div>
+                        <div class="planner-week-stats">
+                            <span class="planner-week-pill">⏱ ${day.minutes || 0} min</span>
+                            <span class="planner-week-pill">🎯 Level ${plan?.aiSchedule?.grade || plan?.settings?.englishGrade || 'AUTO'}</span>
+                        </div>
+                        <div class="planner-word-preview">${explanation && explanation.explanation ? explanation.explanation : modeSummary}</div>
+                        <div class="planner-word-preview">Preview: ${preview || 'Vocabulary will be selected from your current set.'}</div>
+                    </div>`;
+                }).join('')
+                : '<div class="planner-week-subtitle">Your 7-day schedule will appear here after plan generation.</div>';
+        }
+
+        async function generateAdaptivePlan(fromUserAction) {
+            const levelEl = document.getElementById('planLevel');
+            const minutesEl = document.getElementById('planMinutes');
+            const englishGradeEl = document.getElementById('planEnglishGrade');
+            const wordCountEl = document.getElementById('planWordCount');
+            const buttonEl = document.getElementById('generatePlanBtn');
+
+            const targetLevel = String(levelEl?.value || 'AUTO').toUpperCase();
+            const englishGrade = String(englishGradeEl?.value || 'AUTO').toUpperCase();
+            const minutes = Math.max(10, Math.min(120, parseInt(minutesEl?.value, 10) || 20));
+            const requestedWordCount = Math.max(5, Math.min(60, parseInt(wordCountEl?.value, 10) || 16));
+
+            if (buttonEl && fromUserAction) {
+                buttonEl.disabled = true;
+                buttonEl.textContent = 'Generating…';
+            }
+
+            // hide stale delta on any new generation
+            const deltaEl = document.getElementById('planDeltaPanel');
+            if (deltaEl) deltaEl.classList.add('hidden');
+
+            try {
+                const currentHearts = typeof getHearts === 'function' ? getHearts() : 5;
+                const aiSchedulePromise = api.post('/ai/weekly-schedule', {
+                    days: 7,
+                    englishGrade,
+                    minutesPerDay: minutes,
+                    hearts: currentHearts,
+                }, { timeoutMs: 25000 }).catch((aiErr) => {
+                    console.log('AI schedule unavailable, using deterministic planner:', aiErr.message);
+                    return null;
+                });
+
+                const query = new URLSearchParams({
+                    minutes: String(minutes),
+                    wordCount: String(requestedWordCount),
+                    hearts: String(currentHearts),
+                });
+                if (targetLevel !== 'AUTO') {
+                    query.set('targetLevel', targetLevel);
+                }
+
+                const planResponse = await api.get(`/progress/study-plan?${query.toString()}`);
+                // always return the plan from the function so handlePlanRegeneration can act on it
+                const plan = normalizeStudyPlanPayload(planResponse);
+                if (!plan) throw new Error('Invalid plan response');
+                const aiSchedule = await aiSchedulePromise;
+                const finalWordCount = Math.max(5, Math.min(60, parseInt(aiSchedule?.dailyWordTarget, 10) || requestedWordCount));
+                plan.settings = plan.settings || {};
+                plan.settings.minutes = minutes;
+                plan.settings.wordCount = finalWordCount;
+                plan.settings.targetLevel = targetLevel;
+                plan.settings.englishGrade = englishGrade;
+                plan.settings.label = (plan.settings.difficultyBand && plan.settings.difficultyBand.label) || plan.settings.targetLevel || 'Auto';
+                plan.aiSchedule = aiSchedule;
+
+                adaptivePlan = plan;
+                savePlanPrefs({ targetLevel, englishGrade, minutes, wordCount: finalWordCount });
+                renderAdaptivePlan(plan);
+                applyAdaptiveLinks(plan);
+            } catch (err) {
+                renderAdaptivePlan(null);
+                console.log('Could not generate adaptive plan:', err.message);
+            } finally {
+                if (buttonEl && fromUserAction) {
+                    buttonEl.disabled = false;
+                    buttonEl.textContent = 'Generate my plan';
+                }
+            }
+        }
+
+        function hydratePlannerInputs() {
+            const prefs = readPlanPrefs();
+            const levelEl = document.getElementById('planLevel');
+            const minutesEl = document.getElementById('planMinutes');
+            const englishGradeEl = document.getElementById('planEnglishGrade');
+            const wordCountEl = document.getElementById('planWordCount');
+
+            if (levelEl && prefs.targetLevel) levelEl.value = String(prefs.targetLevel).toUpperCase();
+            if (minutesEl && prefs.minutes) minutesEl.value = String(Math.max(10, Math.min(120, parseInt(prefs.minutes, 10) || 20)));
+            if (englishGradeEl && prefs.englishGrade) englishGradeEl.value = String(prefs.englishGrade).toUpperCase();
+            if (wordCountEl && prefs.wordCount) wordCountEl.value = String(Math.max(5, Math.min(60, parseInt(prefs.wordCount, 10) || 16)));
+        }
+
+        function renderDiagnosticCard(progressData) {
+            const statusEl = document.getElementById('diagnosticStatusText');
+            const badgesEl = document.getElementById('diagnosticStatusBadges');
+            const actionBtn = document.getElementById('diagnosticActionBtn');
+            if (!statusEl || !badgesEl || !actionBtn) return;
+
+            const adaptive = progressData && progressData.adaptiveProfile ? progressData.adaptiveProfile : null;
+            const diagnostic = adaptive && adaptive.diagnostic ? adaptive.diagnostic : null;
+            const completed = Boolean(diagnostic && (Number(diagnostic.attempts || 0) > 0 || diagnostic.completedAt));
+            const targetLevel = adaptive && adaptive.targetLevel ? adaptive.targetLevel : 'A1';
+            const abilityScore = adaptive && adaptive.abilityScore != null ? adaptive.abilityScore : 0;
+            const attempts = diagnostic ? Number(diagnostic.attempts || 0) : 0;
+            const accuracy = diagnostic ? Number(diagnostic.accuracy || 0) : 0;
+
+            statusEl.innerHTML = completed
+                ? `You are placed at <strong>${targetLevel}</strong> with <strong>${abilityScore}/100</strong> readiness. Last diagnostic: <strong>${accuracy}%</strong> accuracy across ${attempts} attempt${attempts === 1 ? '' : 's'}.`
+                : 'Take a quick diagnostic to personalize your next study path and level-up your recommendations.';
+
+            badgesEl.innerHTML = completed
+                ? `
+                    <span class="achievement-chip">🎯 ${targetLevel}</span>
+                    <span class="achievement-chip achievement-chip-muted">⚡ ${abilityScore}/100 readiness</span>
+                `
+                : '<span class="achievement-chip achievement-chip-muted">🧠 New placement soon</span>';
+
+            actionBtn.textContent = completed ? 'Retake diagnostic' : 'Start diagnostic';
+        }
+
+        async function loadAdaptiveProfile() {
+            try {
+                const progressData = await api.get('/progress');
+                renderDiagnosticCard(progressData || {});
+            } catch (err) {
+                console.log('Could not load adaptive profile:', err.message);
+            }
+        }
+
+        function openDiagnosticModal() {
+            const modal = document.getElementById('diagnosticModal');
+            if (modal) modal.classList.add('show');
+        }
+
+        function closeDiagnosticModal() {
+            const modal = document.getElementById('diagnosticModal');
+            if (modal) modal.classList.remove('show');
+            diagnosticSession = null;
+            diagnosticCurrentIndex = 0;
+            diagnosticResponses = [];
+        }
+
+        function showDiagnosticModalMessage(html) {
+            const body = document.getElementById('diagnosticModalBody');
+            if (body) body.innerHTML = html;
+        }
+
+        function renderDiagnosticQuestion() {
+            if (!diagnosticSession || !diagnosticSession.questions) {
+                showDiagnosticModalMessage('<p>Unable to load the diagnostic right now.</p>');
+                return;
+            }
+
+            const question = diagnosticSession.questions[diagnosticCurrentIndex];
+            if (!question) {
+                showDiagnosticModalMessage('<p>There was a problem with the diagnostic questions.</p>');
+                return;
+            }
+
+            question._startedAt = Date.now();
+            const isLast = diagnosticCurrentIndex === diagnosticSession.questions.length - 1;
+            const optionsMarkup = (question.options || []).map((option) => `
+                <label style="display:flex; align-items:center; gap:0.6rem; padding:0.55rem 0.7rem; border:1px solid var(--neutral-200); border-radius:8px; cursor:pointer; background:white; margin-bottom:0.6rem;">
+                    <input type="radio" name="diagnosticAnswer" value="${option}" />
+                    <span>${option}</span>
+                </label>
+            `).join('');
+
+            showDiagnosticModalMessage(`
+                <div style="display:flex; flex-direction:column; gap:1rem;">
+                    <div>
+                        <div style="font-size:0.9rem; font-weight:700; color:var(--primary); text-transform:uppercase; letter-spacing:0.08em;">Question ${diagnosticCurrentIndex + 1}/${diagnosticSession.questions.length}</div>
+                        <div style="font-size:1.15rem; font-weight:700; color:var(--neutral-900); margin-top:0.35rem;">${question.prompt}</div>
+                    </div>
+                    <div>${optionsMarkup}</div>
+                    <div style="display:flex; justify-content:flex-end; gap:0.6rem;">
+                        <button class="planner-generate" style="background: var(--neutral-100); color: var(--neutral-700);" onclick="advanceDiagnosticQuestion()">${isLast ? 'Submit diagnostic' : 'Next question'}</button>
+                    </div>
+                </div>
+            `);
+        }
+
+        function advanceDiagnosticQuestion() {
+            if (!diagnosticSession) return;
+            const selected = document.querySelector('input[name="diagnosticAnswer"]:checked');
+            const question = diagnosticSession.questions[diagnosticCurrentIndex];
+            const answer = selected ? String(selected.value) : '';
+            const responseTimeMs = question && question._startedAt ? Math.max(800, Date.now() - question._startedAt) : 1000;
+            diagnosticResponses.push({
+                questionId: question ? question.questionId : '',
+                answer,
+                responseTimeMs,
+            });
+
+            if (diagnosticCurrentIndex < diagnosticSession.questions.length - 1) {
+                diagnosticCurrentIndex += 1;
+                renderDiagnosticQuestion();
+                return;
+            }
+
+            finishDiagnostic();
+        }
+
+        async function finishDiagnostic() {
+            if (!diagnosticSession) return;
+            showDiagnosticModalMessage('<p>Scoring your diagnostic…</p>');
+            try {
+                const result = await api.post('/study/diagnostic/submit', {
+                    diagnosticToken: diagnosticSession.diagnosticToken,
+                    responses: diagnosticResponses,
+                });
+                showDiagnosticModalMessage(`
+                    <div style="display:flex; flex-direction:column; gap:0.8rem;">
+                        <div style="font-size:1.05rem; font-weight:700; color:var(--neutral-900);">Diagnostic complete</div>
+                        <p style="margin:0;">You scored <strong>${result.diagnostic ? result.diagnostic.accuracy : 0}%</strong> with <strong>${result.diagnostic ? result.diagnostic.attempts : 0}</strong> responses. Your recommended level is <strong>${result.targetLevel || 'A1'}</strong>.</p>
+                        <p style="margin:0;">We’ve updated your study plan difficulty to <strong>${result.difficultyBand ? result.difficultyBand.min : 1}-${result.difficultyBand ? result.difficultyBand.max : 2}</strong>.</p>
+                        <div style="display:flex; justify-content:flex-end;">
+                            <button class="planner-generate" onclick="closeDiagnosticModal()">Close</button>
+                        </div>
+                    </div>
+                `);
+                await loadAdaptiveProfile();
+                await generateAdaptivePlan(false);
+            } catch (err) {
+                showDiagnosticModalMessage(`<p>Could not finish the diagnostic: ${err.message}</p>`);
+            }
+        }
+
+        async function startDiagnosticFlow() {
+            openDiagnosticModal();
+            showDiagnosticModalMessage('<p>Preparing your diagnostic…</p>');
+            try {
+                const data = await api.get('/study/diagnostic/start?count=8');
+                diagnosticSession = data;
+                diagnosticCurrentIndex = 0;
+                diagnosticResponses = [];
+                renderDiagnosticQuestion();
+            } catch (err) {
+                showDiagnosticModalMessage(`<p>Could not start the diagnostic: ${err.message}</p>`);
+            }
+        }
+
+        async function refreshStudentExperience() {
+            try {
+                await Promise.all([
+                    loadProgressStats(),
+                    loadAdaptiveProfile(),
+                    generateAdaptivePlan(false),
+                ]);
+            } catch (err) {
+                console.log('Could not refresh student experience:', err.message);
+            }
+        }
+
+        async function loadProgressStats() {
+            try {
+                const stats = await api.get('/progress/stats');
+                updateDailyChallenge(stats || {});
+                if (document.getElementById('xp')) {
+                    document.getElementById('xp').innerHTML = `
+                        <span class="lottie-icon xp-icon" aria-hidden="true"><dotlottie-wc src="https://lottie.host/ed30ea17-b4a0-4ace-85e6-d6ebc7316306/bTUhiZaR7R.lottie" autoplay loop></dotlottie-wc></span>
+                        <span class="stat-text">${stats.totalXP || 0} XP</span>
+                    `;
+                }
+                if (document.getElementById('streak')) {
+                    document.getElementById('streak').innerHTML = `
+                        <span class="lottie-icon streak-icon" aria-hidden="true"><dotlottie-wc src="https://lottie.host/45855e7f-d051-45b2-be39-fda7957b250b/2oCxZAlN6Q.lottie" autoplay loop></dotlottie-wc></span>
+                        <span class="stat-text">${stats.streak || 0}</span>
+                    `;
+                }
+                if (document.getElementById('lessons')) {
+                    document.getElementById('lessons').textContent = `📚 ${stats.lessonsCompleted || 0} Lessons`;
+                }
+                if (typeof refreshHeartsUI === 'function') {
+                    refreshHeartsUI();
+                }
+                if (document.getElementById('totalXpCard')) {
+                    document.getElementById('totalXpCard').textContent = stats.totalXP || 0;
+                }
+                if (document.getElementById('wordsLearnedCard')) {
+                    document.getElementById('wordsLearnedCard').textContent = stats.wordsLearned || 0;
+                }
+                if (document.getElementById('accuracyCard')) {
+                    document.getElementById('accuracyCard').textContent = `${stats.avgAccuracy || 0}%`;
+                }
+                if (document.getElementById('lessonsCard')) {
+                    document.getElementById('lessonsCard').textContent = stats.lessonsCompleted || 0;
+                }
+                if (document.getElementById('longestStreakCard')) {
+                    document.getElementById('longestStreakCard').textContent = stats.longestStreak || 0;
+                }
+            } catch (err) {
+                console.log('Could not load progress stats:', err.message);
+            }
+        }
+
+        async function loadAchievementSummary() {
+            const summaryCopy = document.getElementById('achievementSummaryCopy');
+            const unlockedPill = document.getElementById('achievementUnlockedPill');
+            const completionPill = document.getElementById('achievementCompletionPill');
+            const achievementList = document.getElementById('achievementList');
+
+            if (!summaryCopy || !unlockedPill || !completionPill || !achievementList) return;
+
+            try {
+                const data = await api.get('/progress/achievements');
+                const unlocked = Array.isArray(data.unlocked) ? data.unlocked : [];
+                const inProgress = Array.isArray(data.inProgress) ? data.inProgress : [];
+
+                unlockedPill.textContent = `🏆 ${data.unlockedCount || unlocked.length || 0} unlocked`;
+                completionPill.textContent = `📈 ${data.completionPct || 0}% complete`;
+
+                if (unlocked.length) {
+                    const topUnlocked = unlocked.slice(0, 2).map((item) => item.title || item.name || 'Badge').join(' • ');
+                    summaryCopy.textContent = `You have earned ${data.unlockedCount || unlocked.length} badges. Keep going to unlock ${inProgress[0]?.title || 'the next milestone'}.`;
+                    achievementList.innerHTML = `
+                        ${unlocked.slice(0, 3).map((item) => `<span class="achievement-chip">${item.icon || '🏆'} ${item.title || item.name || 'Badge'}</span>`).join('')}
+                        ${inProgress.slice(0, 1).map((item) => `<span class="achievement-chip achievement-chip-muted">Next: ${item.icon || '🎯'} ${item.title || item.name || 'Badge'} (${item.progressPct || 0}%)</span>`).join('')}
+                    ` || `<span class="achievement-chip achievement-chip-muted">${topUnlocked}</span>`;
+                } else if (inProgress.length) {
+                    const next = inProgress[0];
+                    summaryCopy.textContent = `No badges unlocked yet, but you're closest to ${next.title || 'your first badge'}.`;
+                    achievementList.innerHTML = `
+                        <span class="achievement-chip achievement-chip-muted">Next up: ${next.icon || '🎯'} ${next.title || next.name || 'Badge'} (${next.progressPct || 0}%)</span>
+                    `;
+                } else {
+                    summaryCopy.textContent = 'Badge milestones will appear here after your first study session.';
+                    achievementList.innerHTML = '<span class="achievement-chip achievement-chip-muted">Complete a session to start earning badges</span>';
+                }
+            } catch (err) {
+                summaryCopy.textContent = 'Could not load badge progress right now.';
+                unlockedPill.textContent = '🏆 -- unlocked';
+                completionPill.textContent = '📈 -- complete';
+                achievementList.innerHTML = '<span class="achievement-chip achievement-chip-muted">Try refreshing later</span>';
+                console.log('Could not load achievement summary:', err.message);
+            }
+        }
+
+        function updateDailyChallenge(stats) {
+            const challengeTitle = document.getElementById('challengeTitle');
+            const challengeDesc = document.getElementById('challengeDesc');
+            const challengeReward = document.getElementById('challengeReward');
+            const challengeButton = document.getElementById('challengeButton');
+
+            if (!challengeTitle || !challengeDesc || !challengeReward || !challengeButton) return;
+
+            const streak = Number(stats.streak || 0);
+            const lessonsCompleted = Number(stats.lessonsCompleted || 0);
+            const accuracy = Number(stats.avgAccuracy || 0);
+
+            let challenge = {
+                title: 'Today\'s Challenge 🎯',
+                desc: 'Answer 10 flashcards correctly to earn +50 XP',
+                reward: '⭐ +50 XP Bonus',
+                button: 'Start Challenge →',
+                action: 'flashcards-ultra.html',
+            };
+
+            if (streak >= 7) {
+                challenge = {
+                    title: 'Streak Sprint ⚡',
+                    desc: 'Protect your 7-day streak with a quick quiz and a clean score.',
+                    reward: '🏆 +75 XP Bonus',
+                    button: 'Run the Sprint →',
+                    action: 'quiz-ultra.html',
+                };
+            } else if (streak >= 3) {
+                challenge = {
+                    title: 'Consistency Builder 🔥',
+                    desc: 'Complete 8 flashcards today to extend your streak and keep momentum.',
+                    reward: '⭐ +60 XP Bonus',
+                    button: 'Keep the Streak Going →',
+                    action: 'flashcards-ultra.html',
+                };
+            } else if (lessonsCompleted < 3) {
+                challenge = {
+                    title: 'Warm-Up Win 🎯',
+                    desc: 'Finish 5 flashcards to start building your first learning streak.',
+                    reward: '✨ +30 XP Bonus',
+                    button: 'Warm Up Now →',
+                    action: 'flashcards-ultra.html',
+                };
+            } else if (accuracy < 80) {
+                challenge = {
+                    title: 'Accuracy Boost 🧠',
+                    desc: 'Run a short quiz and aim for 80% accuracy or better today.',
+                    reward: '🎯 +45 XP Bonus',
+                    button: 'Boost Accuracy →',
+                    action: 'quiz-ultra.html',
+                };
+            }
+
+            challengeTitle.textContent = challenge.title;
+            challengeDesc.textContent = challenge.desc;
+            challengeReward.textContent = challenge.reward;
+            challengeButton.textContent = challenge.button;
+            challengeButton.onclick = function () {
+                navigateTo(challenge.action);
+            };
+        }
+
+        async function loadUserProfile() {
+            try {
+                const user = getUser();
+                if (user && document.getElementById('profileModal')) {
+                    // Update profile modal
+                    const modal = document.getElementById('profileModal');
+                    const content = modal.querySelector('.modal-content');
+                    content.innerHTML = `
+                        <button class="modal-close" onclick="closeModal()">✕</button>
+                        <div class="modal-title">Your Profile</div>
+                        <p style="margin-bottom: 1rem;">👤 <strong>Username:</strong> ${user.name || 'Student'}</p>
+                        <p style="margin-bottom: 1rem;">📧 <strong>Email:</strong> ${user.email || 'user@example.com'}</p>
+                        <p style="margin-bottom: 1rem;">🎯 <strong>Role:</strong> ${user.role === 'student' ? 'Language Learner' : 'Creator'}</p>
+                        <p style="margin-bottom: 1rem;">📊 <strong>Total XP:</strong> <span id="profileXp">Loading...</span></p>
+                        <p style="margin-bottom: 1.5rem;">📅 <strong>Member Since:</strong> <span id="profileJoined">Loading...</span></p>
+                        <button onclick="logout()" style="width: 100%; padding: 0.75rem; background: var(--danger); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">
+                            Sign Out
+                        </button>
+                    `;
+                    
+                    // Load profile XP
+                    const stats = await api.get('/progress/stats');
+                    document.getElementById('profileXp').textContent = stats.totalXP || 0;
+                    document.getElementById('profileJoined').textContent = user.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'Unknown';
+                }
+            } catch (err) {
+                console.log('Could not load user profile:', err.message);
+            }
+        }
+
+        async function initVocabulary() {
+            const grid = document.getElementById('vocabGrid');
+            grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><div class="empty-state-icon">🔍</div><p>Loading vocabulary...</p></div>';
+            try {
+                const data = await api.get('/words');
+                vocabulary = (data.words || []).map(function (word) {
+                    return {
+                        word: word.word,
+                        def: word.definition,
+                        mastery: Math.max(1, Math.min(5, parseInt(word.difficulty, 10) || 3))
+                    };
+                });
+
+                if (!vocabulary.length) {
+                    const message = 'No vocabulary has been published in Creator Studio yet.';
+                    grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><div class="empty-state-icon">📖</div><p>' + message + '</p></div>';
+                    return;
+                }
+
+                grid.innerHTML = '';
+                vocabulary.forEach(item => {
+                    const card = document.createElement('div');
+                    card.className = 'vocab-card';
+                    card.innerHTML = `
+                        <div class="vocab-word">${item.word}</div>
+                        <div class="vocab-definition">${item.def}</div>
+                        <div class="vocab-stats">
+                            <span>Level ${item.mastery}/5</span>
+                            <div class="mastery-indicator">
+                                <div class="mastery-fill" style="width: ${(item.mastery / 5) * 100}%"></div>
+                            </div>
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                });
+            } catch (err) {
+                grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><div class="empty-state-icon">⚠️</div><p>Could not load vocabulary.</p></div>';
+                console.error('Vocabulary load error:', err);
+            }
+        }
+
+        function navigateTo(page) {
+            if (adaptivePlan && adaptivePlan.settings) {
+                const safePage = String(page || '');
+                if (safePage.endsWith('flashcards-ultra.html') || safePage.endsWith('quiz-ultra.html') || safePage.endsWith('matching-ultra.html') || safePage.endsWith('spelling-ultra.html')) {
+                    const mode = safePage.includes('quiz') ? 'quiz'
+                        : safePage.includes('matching') ? 'matching'
+                        : safePage.includes('spelling') ? 'spelling'
+                        : 'flashcards';
+                    window.location.href = buildExerciseUrl(safePage, adaptivePlan.settings, {
+                        flowModes: buildFlowModesFromPlan(adaptivePlan),
+                        currentMode: mode,
+                        autoNext: true,
+                    });
+                    return;
+                }
+            }
+            window.location.href = page;
+        }
+
+        function showProfile() {
+            document.getElementById('profileModal').classList.add('show');
+        }
+
+        function closeModal() {
+            document.getElementById('profileModal').classList.remove('show');
+        }
+
+        function logout() {
+            localStorage.clear();
+            window.location.href = '/index-ultra.html';
+        }
+
+        // Close modal on click outside
+        document.getElementById('profileModal').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+        const diagnosticModalEl = document.getElementById('diagnosticModal');
+        if (diagnosticModalEl) {
+            diagnosticModalEl.addEventListener('click', function(e) {
+                if (e.target === this) closeDiagnosticModal();
+            });
+        }
+
+        // Initialize on load
+        window.addEventListener('DOMContentLoaded', function() {
+            // Check authentication
+            if (!requireAuth()) return;
+            
+            // Load user data
+            const user = getUser();
+            if (user && user.role === 'creator') {
+                window.location.href = '/creator-dashboard-new.html';
+                return;
+            }
+
+            // Initialize vocabulary
+            initVocabulary();
+
+            // Initialize adaptive planner
+            hydratePlannerInputs();
+            refreshStudentExperience();
+
+            // Load achievement summary from API
+            loadAchievementSummary();
+            
+            // Load user profile
+            loadUserProfile();
+        });
+
+        window.addEventListener('focus', function () {
+            refreshStudentExperience();
+        });
+
+        document.addEventListener('visibilitychange', function () {
+            if (!document.hidden) {
+                refreshStudentExperience();
+            }
+        });
+    </script>
+</body>
+</html>

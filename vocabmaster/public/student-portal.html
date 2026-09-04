@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Student Portal — VocabMaster</title>
+  <link rel="stylesheet" href="/css/main.css" />
+  <script>
+    window.location.replace('/login-ultra.html?role=student');
+  </script>
+</head>
+<body>
+<div class="auth-page">
+  <div class="auth-card">
+    <div class="auth-logo" style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+      <img src="https://www.image2url.com/r2/default/images/1784112907446-0463de99-8cb2-4889-82b8-3e0c5207bc0d.jpg" alt="Taleem Lexicon" style="width: 40px; height: 40px; border-radius: 50%;">
+      <span style="font-size: 1.2rem; font-weight: bold;">Taleem Lexicon</span>
+    </div>
+    <div class="auth-subtitle">Student Portal</div>
+    <h2 style="margin-bottom:14px">Solve creator content only</h2>
+    <p style="color:var(--muted);margin-bottom:24px;line-height:1.6">
+      Students can enter without creator code and only study/solve creator-created vocabulary with flashcards and quizzes.
+    </p>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <a href="/register-ultra.html?role=student" class="btn btn-primary btn-full">Create Student Account</a>
+      <a href="/login-ultra.html?role=student" class="btn btn-secondary btn-full">Sign In as Student</a>
+      <a href="creator-portal.html" class="btn btn-ghost btn-full">Switch to Creator Portal</a>
+    </div>
+  </div>
+</div>
+</body>
+</html>

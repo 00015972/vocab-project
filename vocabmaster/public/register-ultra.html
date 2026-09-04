@@ -1,0 +1,2168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Your Account - Taleem Lexicon</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Dancing+Script:wght@600;700&family=Manrope:wght@400;500;600;700;800&display=swap');
+
+        .welcome-shell {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.25rem;
+            flex-wrap: wrap;
+        }
+
+        .welcome-anim {
+            width: 92px;
+            height: 92px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .welcome-anim dotlottie-wc {
+            width: 100%;
+            height: 100%;
+        }
+
+        .welcome-title {
+            font-family: 'Caveat', 'Segoe Script', cursive;
+            font-size: 2rem;
+            font-weight: 700;
+            line-height: 1.1;
+            color: #0f766e;
+            letter-spacing: 0.02em;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #50C878;
+            --secondary: #D4AF37;
+            --success: #50C878;
+            --neutral-50: #F9FAFB;
+            --neutral-100: #F3F4F6;
+            --neutral-200: #E5E7EB;
+            --neutral-600: #4B5563;
+            --neutral-700: #374151;
+            --neutral-900: #111827;
+        }
+
+        body {
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #50C878 0%, #2d7a52 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #vanta-bg {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            background: #FFFFFF;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(80, 200, 120, 0.15);
+            max-width: 900px;
+            width: 100%;
+            overflow: hidden;
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            min-height: 600px;
+        }
+
+        .left-panel {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 3rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .left-panel::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 400px;
+            height: 400px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float 8s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(30px); }
+        }
+
+        .left-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .left-content h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .left-content p {
+            font-size: 1rem;
+            opacity: 0.9;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .benefits {
+            list-style: none;
+        }
+
+        .benefits li {
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .benefits li::before {
+            content: '✓';
+            font-weight: bold;
+            font-size: 1.25rem;
+        }
+
+        .right-panel {
+            padding: 3rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .creator-cta {
+            margin-bottom: 1.5rem;
+            padding: 1rem 1.25rem;
+            border: 1px solid rgba(80, 200, 120, 0.25);
+            border-radius: 12px;
+            background: linear-gradient(180deg, rgba(80, 200, 120, 0.08), rgba(212, 175, 55, 0.04));
+        }
+
+        .creator-cta h3 {
+            font-size: 1rem;
+            margin-bottom: 0.35rem;
+            color: var(--neutral-900);
+        }
+
+        .creator-cta p {
+            color: var(--neutral-600);
+            font-size: 0.875rem;
+            line-height: 1.5;
+            margin-bottom: 0.85rem;
+        }
+
+        .creator-links {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .creator-link {
+            text-decoration: none;
+            padding: 0.72rem 0.95rem;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 0.92rem;
+            border: 1px solid var(--neutral-200);
+            color: var(--neutral-900);
+            background: white;
+        }
+
+        .creator-link.primary {
+            border-color: transparent;
+            background: linear-gradient(135deg, #50C878, #D4AF37);
+            color: white;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .auth-mode {
+            font-size: 0.875rem;
+            color: var(--neutral-600);
+        }
+
+        .auth-mode a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        /* Progress Indicator */
+        .progress {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .progress-bar {
+            height: 4px;
+            flex: 1;
+            background: var(--neutral-200);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .progress-bar.active {
+            background: var(--primary);
+            animation: fillBar 0.6s ease-out;
+        }
+
+        @keyframes fillBar {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--neutral-700);
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--neutral-200);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: #50C878;
+            box-shadow: 0 0 0 3px rgba(80, 200, 120, 0.15);
+        }
+
+        input.error {
+            border-color: #EF4444;
+        }
+
+        .error-message {
+            color: #EF4444;
+            font-size: 0.75rem;
+            margin-top: 0.25rem;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .password-strength {
+            margin-top: 0.5rem;
+            display: flex;
+            gap: 0.25rem;
+        }
+
+        .strength-bar {
+            height: 4px;
+            flex: 1;
+            background: var(--neutral-200);
+            border-radius: 2px;
+            transition: background 0.3s ease;
+        }
+
+        .strength-bar.weak { background: #EF4444; }
+        .strength-bar.fair { background: #F59E0B; }
+        .strength-bar.good { background: #3B82F6; }
+        .strength-bar.strong { background: var(--success); }
+
+        .toggle-password {
+            position: relative;
+        }
+
+        .toggle-icon {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: var(--neutral-600);
+            user-select: none;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: #50C878;
+        }
+
+        .checkbox-label {
+            font-size: 0.875rem;
+            color: var(--neutral-600);
+            margin: 0;
+        }
+
+        .wave-group {
+            position: relative;
+            margin: 0 auto 3.5rem;
+            max-width: 420px;
+            width: 100%;
+        }
+
+        /* From Uiverse.io by Praashoo7 */
+        .input {
+            border: none;
+            outline: none;
+            border-radius: 15px;
+            padding: 1em;
+            background-color: #ccc;
+            box-shadow: inset 2px 5px 10px rgba(0,0,0,0.3);
+            transition: 300ms ease-in-out;
+            width: 100%;
+            font-size: 14px;
+            display: block;
+        }
+
+        .input:focus {
+            background-color: white;
+            transform: scale(1.05);
+            box-shadow: 13px 13px 100px #969696,
+                        -13px -13px 100px #ffffff;
+        }
+
+        .wave-group .label {
+            color: #999;
+            font-size: 14px;
+            font-weight: normal;
+            position: absolute;
+            pointer-events: none;
+            left: 8px;
+            top: 8px;
+            display: flex;
+        }
+
+        .wave-group .input:focus ~ label .label-char,
+        .wave-group .input:valid ~ label .label-char {
+            transform: translateY(-18px);
+            font-size: 11px;
+            color: #5264AE;
+        }
+
+        .wave-group .toggle-icon {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1rem;
+            color: #5264AE;
+            cursor: pointer;
+            user-select: none;
+            z-index: 2;
+        }
+
+        .wave-group .toggle-icon:hover {
+            color: #2f4ad8;
+        }
+
+        /* From Uiverse.io by catraco */
+        .password-visibility-container {
+          --color: #a5a5b0;
+          display: block;
+          position: absolute;
+          right: 14px;
+          top: 50%;
+          transform: translateY(-50%);
+          cursor: pointer;
+          font-size: 20px;
+          user-select: none;
+          fill: var(--color);
+          width: auto;
+          margin-top: 0;
+          z-index: 3;
+          border: none;
+          background: transparent;
+          padding: 0;
+        }
+
+        .password-visibility-container {
+          --color: #a5a5b0;
+          display: block;
+          position: absolute;
+          right: 14px;
+          top: 50%;
+          transform: translateY(-50%);
+          cursor: pointer;
+          font-size: 20px;
+          user-select: none;
+          fill: var(--color);
+          width: auto;
+          margin-top: 0;
+          z-index: 3;
+          border: none;
+          background: transparent;
+          padding: 0;
+        }
+
+        .password-visibility-container .eye,
+        .password-visibility-container .eye-slash {
+          position: relative;
+          animation: keyframes-fill .25s;
+          width: 1rem;
+          height: 1rem;
+          display: block;
+        }
+
+        .password-visibility-container.active .eye {
+          display: none;
+        }
+
+        .password-visibility-container.active .eye-slash {
+          display: block;
+        }
+
+        .eye-toggle-container {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          background: transparent;
+          border: none;
+          padding: 0;
+          width: auto;
+          height: auto;
+          cursor: pointer;
+        }
+
+        .eye-toggle-container:focus {
+          outline: none;
+        }
+
+        .password-visibility-container .eye-slash {
+          display: none;
+        }
+
+        .password-visibility-container.active .eye {
+          display: none;
+        }
+
+        .password-visibility-container.active .eye-slash {
+          display: block;
+        }
+
+        @keyframes keyframes-fill {
+          0% {
+            transform: scale(0);
+            opacity: 0;
+          }
+
+          50% {
+            transform: scale(1.2);
+          }
+        }
+
+        @keyframes rotate-nebula {
+          from {
+            transform: rotate(0deg);
+          }
+          to {
+            transform: rotate(360deg);
+          }
+        }
+
+        @keyframes star-drift {
+          0% {
+            transform: scale(1);
+          }
+          100% {
+            transform: scale(1.1) translate(-2%, -2%);
+          }
+        }
+
+        .wave-group .label {
+            color: #999;
+            font-size: 14px;
+            font-weight: normal;
+            position: absolute;
+            pointer-events: none;
+            left: 5px;
+            top: 8px;
+            display: flex;
+        }
+
+        .wave-group .label-char {
+            transition: 0.2s ease all;
+            transition-delay: calc(var(--index) * .05s);
+        }
+
+        .wave-group .input:focus ~ label .label-char,
+        .wave-group .input:valid ~ label .label-char {
+            transform: translateY(-18px);
+            font-size: 11px;
+            color: #5264AE;
+        }
+
+        .wave-group .bar {
+            position: relative;
+            display: block;
+            width: 100%;
+        }
+
+        .wave-group .bar:before,.wave-group .bar:after {
+            content: '';
+            height: 2px;
+            width: 0;
+            bottom: 1px;
+            position: absolute;
+            background: #5264AE;
+            transition: 0.2s ease all;
+            -moz-transition: 0.2s ease all;
+            -webkit-transition: 0.2s ease all;
+        }
+
+        .wave-group .bar:before {
+            left: 50%;
+        }
+
+        .wave-group .bar:after {
+            right: 50%;
+        }
+
+        .wave-group .input:focus ~ .bar:before,
+        .wave-group .input:focus ~ .bar:after {
+            width: 50%;
+        }
+
+        .eye-toggle-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.25rem;
+            cursor: pointer;
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            user-select: none;
+            font-size: 1rem;
+            margin: 0;
+            z-index: 3;
+        }
+
+        .eye-toggle-container input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+            height: 0;
+            width: 0;
+        }
+
+        .eye-toggle-container .checkmark {
+            position: relative;
+            top: 0;
+            left: 0;
+            height: 1.4em;
+            width: 1.4em;
+            border: 2px solid #2196F3;
+            border-radius: 1rem 0rem 1rem;
+            transform: rotate(45deg);
+            transition: all .5s ease-in-out;
+            display: inline-block;
+        }
+
+        .eye-toggle-container input:checked ~ .checkmark {
+            box-shadow: 0px 0px 40px 5px #2196F3;
+            border-radius: 1rem 0rem 1rem;
+            background-color: #2195f31f;
+        }
+
+        .eye-toggle-container .checkmark:after {
+            content: "";
+            position: absolute;
+            display: none;
+        }
+
+        .eye-toggle-container input:checked ~ .checkmark:after {
+            display: block;
+        }
+
+        .eye-toggle-container .checkmark:after {
+            left: 0.35em;
+            top: 0.20em;
+            width: 0.25em;
+            height: 0.5em;
+            border: solid #2196F3;
+            border-width: 0 0.15em 0.15em 0;
+            transform: rotate(-5deg);
+            animation: upAnimate 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        @keyframes upAnimate {
+            from {
+                transform: translate(-20px, -20px) rotate(-5deg);
+                opacity: 0;
+            }
+            to {
+                transform: translate(0, 0) rotate(-5deg);
+                opacity: 1;
+            }
+        }
+
+        .checkbox-label a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        /* Checkbox visuals (Uiverse - dovatgabriel) */
+        label.checkbox-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            cursor: pointer;
+        }
+
+        label.checkbox-label input[type='checkbox'] {
+            position: absolute;
+            transform: scale(0);
+        }
+
+        label.checkbox-label .checkbox {
+            display: block;
+            width: 20px;
+            height: 20px;
+            border: solid 3px #2a2a2ab7;
+            border-radius: 6px;
+            transition: all 0.375s;
+            box-sizing: border-box;
+        }
+
+        label.checkbox-label input[type='checkbox']:checked ~ .checkbox,
+        label.checkbox-label input[type='checkbox']:checked + .checkbox {
+            transform: rotate(45deg);
+            width: 14px;
+            margin-left: 5px;
+            border-color: #24c78e;
+            border-width: 5px;
+            border-top-color: transparent;
+            border-left-color: transparent;
+            border-radius: 0;
+        }
+
+        .social-auth {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--neutral-200);
+        }
+
+        .social-auth p {
+            text-align: center;
+            font-size: 0.875rem;
+            color: var(--neutral-600);
+            margin-bottom: 1rem;
+        }
+
+        .social-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .social-btn {
+            flex: 1;
+            padding: 0.75rem;
+            border: 2px solid var(--neutral-200);
+            background: white;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .social-btn:hover {
+            border-color: #50C878;
+            background: var(--neutral-50);
+        }
+
+        /* Create Account button style from Uiverse.io by gksckt */
+        .btn-submit {
+            width: 100%;
+            background-color: #444141;
+            border-radius: 4px;
+            color: #fff;
+            cursor: pointer;
+            padding: 15px 30px;
+            font-size: 18px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .btn-submit:hover {
+            background-image: linear-gradient(90deg, #53cbef 0%, #dcc66c 50%, #ffa3b6 75%, #53cbef 100%);
+            animation: slidernbw 5s linear infinite;
+            color: #000;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(80, 200, 120, 0.2);
+        }
+
+        @keyframes slidernbw {
+            to { background-position: 20vw; }
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Steps */
+        .step {
+            display: none;
+            animation: fadeIn 0.4s ease-in;
+        }
+
+        .step.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .step-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--neutral-900);
+        }
+
+        .step-description {
+            font-size: 0.875rem;
+            color: var(--neutral-600);
+            margin-bottom: 1.5rem;
+        }
+
+        .step-footer {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn-back {
+            width: 150px;
+            height: 50px;
+            border-radius: 10px;
+            border: 1px solid #03045e;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.5s ease-in;
+            z-index: 1;
+            background: white;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-back::before,
+        .btn-back::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            width: 0;
+            height: 100%;
+            transform: skew(15deg);
+            transition: all 0.5s;
+            overflow: hidden;
+            z-index: -1;
+        }
+
+        .btn-back::before {
+            left: -10px;
+            background: #240046;
+        }
+
+        .btn-back::after {
+            right: -10px;
+            background: #5a189a;
+        }
+
+        .btn-back:hover::before,
+        .btn-back:hover::after {
+            width: 58%;
+        }
+
+        .btn-back span {
+            color: #03045e;
+            font-size: 18px;
+            transition: all 0.3s ease-in;
+            position: relative;
+            z-index: 1;
+        }
+
+        .btn-back:hover span {
+            color: #e0aaff;
+            transition: 0.3s;
+        }
+
+        .btn-next {
+            flex: 2;
+            font-family: system-ui, -apple-system, sans-serif;
+            font-size: 16px;
+            padding: 0.9em 2em;
+            border-radius: 0.75em;
+            border: none;
+            background: #0c0c14;
+            color: #ffffff;
+            position: relative;
+            cursor: pointer;
+            overflow: hidden;
+            z-index: 1;
+            transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            box-shadow: 0 0.5em 1.5em -0.5em rgba(133, 83, 244, 0.4);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-next:focus-visible {
+            outline: 2px solid #8553f4;
+            outline-offset: 4px;
+        }
+
+        .btn-next:active {
+            transform: scale(0.96);
+        }
+
+        .btn-next__content {
+            display: flex;
+            align-items: center;
+            gap: 0.75em;
+            position: relative;
+            z-index: 2;
+            color: #ffffff;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .btn-next__stars {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            pointer-events: none;
+            background-image: radial-gradient(circle at 20% 30%, white 1px, transparent 1.5px),
+                              radial-gradient(circle at 80% 70%, white 1px, transparent 1.5px),
+                              radial-gradient(circle at 40% 80%, white 0.5px, transparent 1px);
+            background-size: 120% 120%;
+            opacity: 0.3;
+            transition: opacity 0.3s ease, background-position 0.3s ease;
+        }
+
+        .btn-next:hover .btn-next__stars {
+            opacity: 0.8;
+            animation: star-drift 5s linear infinite alternate;
+        }
+
+        .btn-next::before {
+            content: "";
+            position: absolute;
+            inset: -4px;
+            z-index: 0;
+            background: conic-gradient(from 0deg, #0c0c14 0deg, #8553f4 60deg, #3b82f6 120deg, #0c0c14 180deg, #f43f5e 240deg, #8553f4 300deg, #0c0c14 360deg);
+            border-radius: 0.75em;
+            animation: rotate-nebula 4s linear infinite;
+            filter: blur(8px);
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+        }
+
+        .btn-next:hover::before {
+            opacity: 1;
+            animation-duration: 2s;
+        }
+
+        .btn-next::after {
+            content: "";
+            position: absolute;
+            inset: 2px;
+            background: #0c0c14;
+            border-radius: 0.6em;
+            z-index: 1;
+        }
+
+        .success-screen {
+            text-align: center;
+            padding: 2rem 0;
+        }
+
+        .success-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            animation: scaleIn 0.6s ease-out;
+        }
+
+        @keyframes scaleIn {
+            from {
+                transform: scale(0);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .success-screen h2 {
+            font-size: 1.75rem;
+            margin-bottom: 0.5rem;
+            color: var(--neutral-900);
+        }
+
+        .success-screen p {
+            color: var(--neutral-600);
+            margin-bottom: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .content {
+                grid-template-columns: 1fr;
+                min-height: auto;
+            }
+
+            .left-panel {
+                display: none;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Clean micaelgomestavares signup form presentation. */
+        body {
+            background: #f3f3f3;
+            color: #151717;
+        }
+
+        .container {
+            width: 450px;
+            max-width: 100%;
+            background-color: #fff;
+            box-shadow: rgba(0, 0, 0, 0.35) 0 5px 15px;
+            border-radius: 20px;
+            padding: 30px;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .content {
+            display: block;
+            min-height: 0;
+        }
+
+        .left-panel {
+            display: none;
+        }
+
+        .right-panel {
+            padding: 0;
+            display: block;
+        }
+
+        .header {
+            margin-bottom: 15px;
+        }
+
+        .header .logo {
+            color: #151717;
+            background: none;
+            -webkit-text-fill-color: initial;
+            font-size: 1.2rem;
+        }
+
+        .auth-mode,
+        .step-description,
+        .social-auth p {
+            color: #747474;
+        }
+
+        .auth-mode a,
+        .checkbox-label a,
+        .creator-link,
+        .span {
+            color: #2d79f3;
+        }
+
+        .creator-cta {
+            padding: 12px 15px;
+            margin-bottom: 15px;
+            border: 1px solid #ecedec;
+            border-radius: 10px;
+            background: #fff;
+        }
+
+        .creator-link.primary {
+            background: #fff;
+            color: #2d79f3;
+            border: 1px solid #ededef;
+        }
+
+        .progress {
+            margin-bottom: 15px;
+        }
+
+        .progress-bar.active {
+            background: #2d79f3;
+        }
+
+        .step-title {
+            text-align: center;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 10px 0 8px;
+            font-size: 28px;
+            font-weight: 800;
+            color: #151717;
+        }
+
+        .step-description {
+            text-align: center;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 10px;
+        }
+
+        .form-group > label,
+        .checkbox-label {
+            color: #151717;
+            font-weight: 600;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        select {
+            height: 50px;
+            padding: 0 15px;
+            border: 1.5px solid #ecedec;
+            border-radius: 10px;
+            background: #fff;
+            transition: 0.2s ease-in-out;
+        }
+
+        input:focus,
+        select:focus {
+            border: 1.5px solid #2d79f3;
+            box-shadow: none;
+        }
+
+        .btn-next {
+            width: 100%;
+            height: 50px;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 10px;
+            background: #151717;
+            color: #fff;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            box-shadow: none;
+        }
+
+        .btn-next:hover {
+            background: #252727;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-back {
+            flex: 1;
+            height: 50px;
+            border: 1px solid #ededef;
+            border-radius: 10px;
+            background: #fff;
+        }
+
+        .step-footer {
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .social-auth {
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #ecedec;
+        }
+
+        .social-buttons,
+        .creator-links {
+            gap: 10px;
+        }
+
+        .social-btn,
+        .creator-link {
+            border: 1px solid #ededef;
+            border-radius: 10px;
+            background: #fff;
+        }
+
+        .password-strength {
+            margin-top: 5px;
+        }
+
+        .success-screen h2,
+        .success-screen p {
+            color: #151717;
+        }
+
+        #creatorShortcut {
+            border-color: #ecedec !important;
+            background: #fff !important;
+        }
+
+        .step-title {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-size: 28px;
+            font-weight: 800;
+        }
+
+        .creator-portal-button {
+            background: #000;
+            border-color: #000;
+            color: #fff;
+        }
+
+        .creator-portal-button:hover {
+            background: #000;
+            color: #fff;
+            border-color: #000;
+            box-shadow: 0 0 25px rgba(0, 0, 0, 0.35);
+        }
+
+        .account-input {
+            width: 100%;
+            height: 50px;
+            padding: 1em;
+            border: none !important;
+            outline: none !important;
+            border-radius: 15px !important;
+            background-color: #ccc !important;
+            color: #151717;
+            box-shadow: inset 2px 5px 10px rgba(0, 0, 0, 0.3) !important;
+            transition: 300ms ease-in-out;
+        }
+
+        .account-input:focus {
+            background-color: #fff !important;
+            transform: scale(1.05);
+            box-shadow: 13px 13px 100px #969696, -13px -13px 100px #fff !important;
+        }
+
+        .stealth-next {
+            --stealth-color: #fff;
+            --stealth-bg: #404660;
+            --stealth-hover: #3a4059;
+            position: relative;
+            z-index: 1;
+            isolation: isolate;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 13rem;
+            height: 3rem;
+            margin-left: auto;
+            overflow: hidden;
+            border: double 4px transparent;
+            border-radius: 5rem;
+            background-image: linear-gradient(#212121, #212121), linear-gradient(137.48deg, #ffdb3b 10%, #fe53bb 45%, #8f51ea 67%, #0044ff 87%);
+            background-origin: border-box;
+            background-clip: content-box, border-box;
+            color: var(--stealth-color);
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            transition: transform 0.5s;
+            animation: gradient_301 5s ease infinite;
+            background-size: 300% 300%;
+        }
+
+        .stealth-next #container-stars {
+            position: absolute;
+            z-index: -1;
+            inset: 0;
+            overflow: hidden;
+            border-radius: 5rem;
+            background: #212121;
+        }
+
+        .stealth-next #stars,
+        .stealth-next #glow {
+            position: absolute;
+            pointer-events: none;
+        }
+
+        .stealth-next #stars {
+            width: 200rem;
+            height: 200rem;
+            background: transparent;
+        }
+
+        .stealth-next #stars::before,
+        .stealth-next #stars::after {
+            content: '';
+            position: absolute;
+            background-image: radial-gradient(#fff 1px, transparent 1%);
+            background-size: 50px 50px;
+        }
+
+        .stealth-next #stars::before {
+            top: 0;
+            left: -50%;
+            width: 170%;
+            height: 500%;
+            opacity: 0.5;
+            animation: animStar 60s linear infinite;
+        }
+
+        .stealth-next #stars::after {
+            top: -10rem;
+            left: -100rem;
+            width: 100%;
+            height: 100%;
+            animation: animStarRotate 90s linear infinite;
+        }
+
+        .stealth-next strong {
+            z-index: 2;
+            color: #fff;
+            text-shadow: 0 0 4px #fff;
+        }
+
+        .stealth-next:hover {
+            transform: scale(1.08);
+            background-color: var(--stealth-hover);
+        }
+
+        @keyframes animStar {
+            from { transform: translateY(0); }
+            to { transform: translateY(-135rem); }
+        }
+
+        @keyframes animStarRotate {
+            from { transform: rotate(360deg); }
+            to { transform: rotate(0); }
+        }
+
+        @keyframes gradient_301 {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .continue-application {
+            --color: #fff;
+            --background: #404660;
+            --background-hover: #3a4059;
+            --background-left: #2b3044;
+            --folder: #f3e9cb;
+            --folder-inner: #beb393;
+            --paper: #fff;
+            --paper-lines: #bbc1e1;
+            --paper-behind: #e1e6f9;
+            --pencil-cap: #fff;
+            --pencil-top: #275efe;
+            --pencil-middle: #fff;
+            --pencil-bottom: #5c86ff;
+            --shadow: rgba(13, 15, 25, 0.2);
+            position: relative;
+            width: 100%;
+            min-height: 53px;
+            padding: 17px 29px 17px 69px;
+            border: none;
+            outline: none;
+            border-radius: 5px;
+            color: var(--color);
+            background: var(--background);
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            line-height: 19px;
+            transition: background 0.3s;
+        }
+
+        .continue-application > div {
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            width: 53px;
+            overflow: hidden;
+            border-radius: 5px 0 0 5px;
+            background: var(--background-left);
+        }
+
+        .continue-application .folder {
+            position: absolute;
+            top: 13px;
+            left: 15px;
+            width: 23px;
+            height: 27px;
+        }
+
+        .continue-application .folder::before,
+        .continue-application .folder::after,
+        .continue-application .folder .paper {
+            content: '';
+            position: absolute;
+            left: 1px;
+            top: 1px;
+            width: 21px;
+            height: 25px;
+            border-radius: 1px;
+            background: var(--paper-behind);
+        }
+
+        .continue-application .folder::before {
+            left: 0;
+            top: 0;
+            background: var(--folder-inner);
+            box-shadow: 0 1.5px 3px var(--shadow), 0 2.5px 5px var(--shadow);
+        }
+
+        .continue-application .folder .paper {
+            z-index: 1;
+            background: var(--paper);
+        }
+
+        .continue-application .folder .paper::before {
+            content: '';
+            position: absolute;
+            left: 3px;
+            top: 3px;
+            width: 14px;
+            height: 2px;
+            background: var(--paper-lines);
+            box-shadow: 0 7px var(--paper-lines), 0 14px var(--paper-lines);
+        }
+
+        .continue-application .folder .top {
+            position: absolute;
+            z-index: 2;
+            inset: 0;
+        }
+
+        .continue-application .folder .top svg {
+            width: 24px;
+            height: 27px;
+            display: block;
+            fill: var(--folder);
+        }
+
+        .continue-application .pencil {
+            position: absolute;
+            z-index: 3;
+            top: 8px;
+            left: 105%;
+            width: 3px;
+            height: 2px;
+            background: var(--pencil-cap);
+            transform: translateX(0) rotate(35deg);
+            transition: transform 0.4s ease 0.15s;
+        }
+
+        .continue-application .pencil::before {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: -1px;
+            width: 5px;
+            height: 20px;
+            border-radius: 2px;
+            background: linear-gradient(var(--pencil-top) 55%, var(--pencil-middle) 55.1%, var(--pencil-middle) 60%, var(--pencil-bottom) 60.1%);
+        }
+
+        .continue-application::before,
+        .continue-application::after {
+            content: '';
+            position: absolute;
+            top: 26px;
+            right: 16px;
+            width: 10px;
+            height: 2px;
+            border-radius: 1px;
+            background: var(--color);
+            transform: rotate(-45deg);
+            transition: transform 0.3s;
+        }
+
+        .continue-application::after { transform: rotate(45deg); }
+
+        .continue-application:hover {
+            --background: var(--background-hover);
+        }
+
+        .continue-application:hover .pencil {
+            transform: translateX(-24px) rotate(35deg);
+        }
+
+        .creator-portal-button {
+            position: relative;
+            padding: 12px 35px;
+            border: 3px solid #fec195;
+            border-radius: 8px;
+            background: #fec195;
+            color: #181818;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease-in-out;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .creator-portal-button:hover {
+            background: transparent;
+            color: #fec195;
+            box-shadow: 0 0 25px #fec1958c;
+        }
+
+        .creator-portal-button .star {
+            position: absolute;
+            z-index: -1;
+            color: #fffdef;
+            opacity: 0;
+            transition: all 0.8s ease;
+        }
+
+        .creator-portal-button:hover .star {
+            z-index: 2;
+            opacity: 1;
+            filter: drop-shadow(0 0 8px #fffdef);
+        }
+
+        .creator-portal-button .star-1 { top: -18px; left: -18px; font-size: 24px; }
+        .creator-portal-button .star-2 { top: -12px; left: 35px; font-size: 15px; }
+        .creator-portal-button .star-3 { bottom: -12px; left: 45px; font-size: 9px; }
+        .creator-portal-button .star-4 { top: 4px; right: 30px; font-size: 12px; }
+        .creator-portal-button .star-5 { top: 12px; right: -20px; font-size: 18px; }
+        .creator-portal-button .star-6 { top: -12px; right: 15px; font-size: 8px; }
+    </style>
+</head>
+<body>
+    <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.9.4/dist/dotlottie-wc.js" type="module"></script>
+    <div id="vanta-bg"></div>
+    <div class="container">
+        <div class="content">
+            <!-- Left Panel -->
+            <div class="left-panel">
+                <div class="left-content">
+                    <div style="display: flex; align-items: center; margin-bottom: 1.25rem;">
+                      <img src="https://www.image2url.com/r2/default/images/1784112907446-0463de99-8cb2-4889-82b8-3e0c5207bc0d.jpg" alt="Taleem Lexicon" style="width: 50px; height: 50px; border-radius: 50%; margin-right: 15px;">
+                      <h3 style="font-size: 1.5rem; font-weight: bold;">Taleem Lexicon</h3>
+                    </div>
+                    <div class="welcome-shell">
+                        <div class="welcome-anim">
+                            <dotlottie-wc src="https://lottie.host/b814828f-af1f-42e2-82a1-0553ea756c48/XoZsua0x0I.lottie" autoplay loop></dotlottie-wc>
+                        </div>
+                        <div class="welcome-title">Welcome to Taleem Lexicon</div>
+                    </div>
+                    <p>Join thousands of learners and master vocabulary through AI-powered learning.</p>
+                    <ul class="benefits">
+                        <li>Personalized learning paths</li>
+                        <li>Real-time progress tracking</li>
+                        <li>Gamified experience</li>
+                        <li>World-class learning modes</li>
+                        <li>No credit card required</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Right Panel -->
+            <div class="right-panel">
+                <div class="header">
+                    <div class="logo">Register</div>
+                    <div class="auth-mode">
+                        Already have an account? <a href="/login-ultra.html">Sign in</a>
+                    </div>
+                </div>
+
+                <div class="creator-cta">
+                    <h3>Creator account</h3>
+                    <p>Enter the creator access code once, then open the creator portal.</p>
+                    <div class="creator-links">
+                        <a class="creator-portal-button" href="creator-portal.html">
+                            Open Creator Portal
+                            <span class="star star-1">✦</span><span class="star star-2">✦</span><span class="star star-3">✦</span>
+                            <span class="star star-4">✦</span><span class="star star-5">✦</span><span class="star star-6">✦</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Progress -->
+                <div class="progress">
+                    <div class="progress-bar active" id="pb1"></div>
+                    <div class="progress-bar" id="pb2"></div>
+                    <div class="progress-bar" id="pb3"></div>
+                </div>
+
+                <!-- Step 1: Account Info -->
+                <div class="step active" id="step1">
+                    <div class="step-title">Create Your Account</div>
+                    <div class="step-description">Let's get started with your learning journey</div>
+
+                    <div class="social-auth">
+                        <p>Sign up with</p>
+                        <div id="googleRegisterBtn" style="display:flex;justify-content:center;min-height:40px;"></div>
+                        <div id="googleRegisterError" style="display:none;margin-top:10px;text-align:center;font-size:12px;color:#EF4444;"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input class="account-input" type="text" id="fullName" placeholder="John Doe" required>
+                        <div class="error-message" id="err-name"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <input class="account-input" type="email" id="email" placeholder="you@example.com" required>
+                        <div class="error-message" id="err-email"></div>
+                    </div>
+
+                    <div class="step-footer">
+                        <button type="button" class="stealth-next" onclick="goToStep(2)">
+                            <div id="container-stars"><div id="stars"></div></div>
+                            <div id="glow"><div class="circle"></div><div class="circle"></div></div>
+                            <strong>Next Step</strong>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 2: Password & Role -->
+                <div class="step" id="step2">
+                    <div class="step-title">Secure Your Account</div>
+                    <div class="step-description">Create a strong password</div>
+
+                        <div class="form-group toggle-password wave-group">
+                        <input class="input" type="password" id="password" required>
+                        <label class="label" for="password">
+                            <span class="label-char" style="--index:0">P</span>
+                            <span class="label-char" style="--index:1">a</span>
+                            <span class="label-char" style="--index:2">s</span>
+                            <span class="label-char" style="--index:3">s</span>
+                            <span class="label-char" style="--index:4">w</span>
+                            <span class="label-char" style="--index:5">o</span>
+                            <span class="label-char" style="--index:6">r</span>
+                            <span class="label-char" style="--index:7">d</span>
+                        </label>
+                        <span class="bar"></span>
+                        <div class="password-strength">
+                            <div class="strength-bar" id="bar1"></div>
+                            <div class="strength-bar" id="bar2"></div>
+                            <div class="strength-bar" id="bar3"></div>
+                            <div class="strength-bar" id="bar4"></div>
+                        </div>
+                        <button type="button" class="eye-toggle-container password-visibility-container" onclick="togglePasswordVisibility('password', this)" aria-label="Toggle password visibility">
+                            <svg class="eye" viewBox="0 0 24 24" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12Z" fill="none" stroke="currentColor" stroke-width="1.8"></path><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.8" fill="none"></circle></svg>
+                            <svg class="eye-slash" viewBox="0 0 24 24" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12Z" fill="none" stroke="currentColor" stroke-width="1.8"></path><path d="M7.5 8.5l9 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path><path d="M7.5 15.5l9-7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg>
+                        </button>
+                        <div class="error-message" id="err-password"></div>
+                    </div>
+
+                    <div class="form-group toggle-password wave-group">
+                        <input class="input" type="password" id="confirmPassword" required>
+                        <label class="label" for="confirmPassword">
+                            <span class="label-char" style="--index:0">C</span>
+                            <span class="label-char" style="--index:1">o</span>
+                            <span class="label-char" style="--index:2">n</span>
+                            <span class="label-char" style="--index:3">f</span>
+                            <span class="label-char" style="--index:4">i</span>
+                            <span class="label-char" style="--index:5">r</span>
+                            <span class="label-char" style="--index:6">m</span>
+                            <span class="label-char" style="--index:7"> </span>
+                            <span class="label-char" style="--index:8">P</span>
+                            <span class="label-char" style="--index:9">a</span>
+                            <span class="label-char" style="--index:10">s</span>
+                            <span class="label-char" style="--index:11">s</span>
+                            <span class="label-char" style="--index:12">w</span>
+                            <span class="label-char" style="--index:13">o</span>
+                            <span class="label-char" style="--index:14">r</span>
+                            <span class="label-char" style="--index:15">d</span>
+                        </label>
+                        <span class="bar"></span>
+                        <button type="button" class="eye-toggle-container password-visibility-container" onclick="togglePasswordVisibility('confirmPassword', this)" aria-label="Toggle confirm password visibility">
+                            <svg class="eye" viewBox="0 0 24 24" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12Z" fill="none" stroke="currentColor" stroke-width="1.8"></path><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.8" fill="none"></circle></svg>
+                            <svg class="eye-slash" viewBox="0 0 24 24" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12Z" fill="none" stroke="currentColor" stroke-width="1.8"></path><path d="M7.5 8.5l9 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path><path d="M7.5 15.5l9-7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg>
+                        </button>
+                        <div class="error-message" id="err-confirm"></div>
+                    </div>
+
+                    <input type="hidden" id="role" value="student">
+
+                    <div class="form-group" id="creatorPortalField" style="display: none;">
+                        <label>Creator Access Code</label>
+                        <input type="text" id="creatorPortalCode" placeholder="Enter creator access code" required>
+                        <small>This is the only creator-specific code you need.</small>
+                        <div class="error-message" id="err-creatorCode"></div>
+                    </div>
+
+                    <div class="step-footer">
+                        <button type="button" class="btn-back" onclick="goToStep(1)"><span>← Back</span></button>
+                        <button type="button" class="btn-next" onclick="goToStep(3)">
+                            <div class="btn-next__content">Initialize →</div>
+                            <div class="btn-next__stars"></div>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 3: Preferences & Terms -->
+                <div class="step" id="step3">
+                    <div class="step-title">Learning Preferences</div>
+                    <div class="step-description">Customize your experience</div>
+
+                    <div id="creatorShortcut" style="display:none; padding: 1rem 1.1rem; border: 1px solid rgba(80, 200, 120, 0.2); border-radius: 12px; background: rgba(80, 200, 120, 0.05); margin-bottom: 1rem;">
+                        <strong style="display:block; margin-bottom: 0.35rem; color: var(--neutral-900);">Creator setup is minimal</strong>
+                        <div style="color: var(--neutral-600); font-size: 0.9rem; line-height: 1.5;">Just enter the creator access code and finish registration. The rest of this step is optional for creators.</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Learning Goal</label>
+                        <select id="goal" required>
+                            <option value="">Select your goal</option>
+                            <option value="casual">Casual Learning (15 min/week)</option>
+                            <option value="regular">Regular Study (30 min/week)</option>
+                            <option value="intensive">Intensive (1 hour/week)</option>
+                            <option value="exam">Exam Preparation</option>
+                        </select>
+                    </div>
+
+                    <div class="checkbox-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="terms" required>
+                            <span class="checkbox" aria-hidden="true"></span>
+                            I agree to <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
+                        </label>
+                    </div>
+
+                    <div class="checkbox-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="notifications" checked>
+                            <span class="checkbox" aria-hidden="true"></span>
+                            Send me learning tips and updates
+                        </label>
+                    </div>
+
+                    <button type="button" class="btn-submit" onclick="completeRegistration()">Create Account</button>
+
+                    <div class="step-footer">
+                        <button type="button" class="btn-back" onclick="goToStep(2)"><span>← Back</span></button>
+                    </div>
+                </div>
+
+                <!-- Success Screen -->
+                <div class="step" id="success">
+                    <div class="success-screen">
+                        <div class="success-icon" style="display:flex;justify-content:center;align-items:center;">
+                            <dotlottie-wc src="https://lottie.host/b814828f-af1f-42e2-82a1-0553ea756c48/XoZsua0x0I.lottie" style="width: 220px; height: 220px" autoplay loop></dotlottie-wc>
+                        </div>
+                        <h2>Welcome to Taleem Lexicon!</h2>
+                        <p id="registrationSuccessMessage">Your account is ready. Let's start learning!</p>
+                        <button type="button" class="btn-submit" onclick="handleSuccessRedirect()">
+                            <span id="registrationSuccessAction">Go to Dashboard →</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanta/0.5.21/vanta.fog.min.js"></script>
+    <script src="js/api.js"></script>
+    <script>
+        VANTA.FOG({
+            el: "#vanta-bg",
+            mouseControls: true,
+            touchControls: true,
+            gyroControls: false,
+            minHeight: 200.00,
+            minWidth: 200.00,
+            lowlightColor: 0xff001e,
+            baseColor: 0xe8b4b4
+        });
+
+        const queryRole = new URLSearchParams(window.location.search).get('role');
+        let currentStep = 1;
+        const maxSteps = 3;
+        let registrationRequiresVerification = false;
+        let googleRegisterConfigured = false;
+
+        function goToStep(step) {
+            const role = document.getElementById('role').value;
+            if (role === 'creator' && step === 3) {
+                if (!validateStep(currentStep)) return;
+                completeRegistration();
+                return;
+            }
+            if (step < currentStep) {
+                currentStep = step;
+                updateUI();
+                return;
+            }
+
+            // Validate current step
+            if (!validateStep(currentStep)) return;
+
+            currentStep = step;
+            updateUI();
+        }
+
+        function clearError(id) {
+            const elem = document.getElementById(id);
+            if (!elem) return;
+            elem.textContent = '';
+            elem.classList.remove('show');
+        }
+
+        function validateStep(step) {
+            const name = document.getElementById('fullName').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const role = document.getElementById('role').value;
+
+            if (step === 1) {
+                clearError('err-name');
+                clearError('err-email');
+                if (!name || !email) {
+                    showError('err-name', 'Please fill all fields');
+                    return false;
+                }
+                if (!email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+                    showError('err-email', 'Invalid email address');
+                    return false;
+                }
+            } else if (step === 2) {
+                clearError('err-password');
+                clearError('err-confirm');
+                clearError('err-role');
+                clearError('err-creatorCode');
+                if (!password || password.length < 12) {
+                    showError('err-password', 'Password must be at least 12 characters');
+                    return false;
+                }
+                if (password !== confirmPassword) {
+                    showError('err-confirm', 'Passwords do not match');
+                    return false;
+                }
+                if (!role) {
+                    showError('err-role', 'Please select your role');
+                    return false;
+                }
+                if (role === 'creator' && !document.getElementById('creatorPortalCode').value.trim()) {
+                    showError('err-creatorCode', 'Enter the creator access code');
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        function updateUI() {
+            const role = document.getElementById('role').value;
+            document.querySelectorAll('.step').forEach((el, i) => {
+                const isSuccess = i === 3 && currentStep > maxSteps;
+                const shouldShowCreatorStep = role === 'creator' && i < 2 && i + 1 === currentStep;
+                const shouldShowStudentStep = role !== 'creator' && i + 1 === currentStep;
+                el.classList.toggle('active', isSuccess || shouldShowCreatorStep || shouldShowStudentStep);
+            });
+
+            // Update progress bars
+            for (let i = 1; i <= 3; i++) {
+                document.getElementById(`pb${i}`).classList.toggle('active', i <= currentStep);
+            }
+
+            const creatorShortcut = document.getElementById('creatorShortcut');
+            const step2ButtonContent = document.querySelector('#step2 .btn-next__content');
+            if (creatorShortcut) {
+                creatorShortcut.style.display = role === 'creator' ? 'block' : 'none';
+            }
+            if (step2ButtonContent) {
+                step2ButtonContent.textContent = role === 'creator' ? 'Create Account →' : 'Initialize →';
+            }
+        }
+
+        async function loadGoogleSdk() {
+            if (window.google && window.google.accounts && window.google.accounts.id) {
+                return;
+            }
+
+            await new Promise((resolve, reject) => {
+                const existingScript = document.querySelector('script[src*="accounts.google.com/gsi/client"]');
+                if (existingScript) {
+                    existingScript.addEventListener('load', resolve, { once: true });
+                    existingScript.addEventListener('error', () => reject(new Error('Google SDK failed to load.')), { once: true });
+                    return;
+                }
+
+                const script = document.createElement('script');
+                script.src = 'https://accounts.google.com/gsi/client?hl=en';
+                script.async = true;
+                script.defer = true;
+                script.onload = resolve;
+                script.onerror = () => reject(new Error('Google SDK failed to load.'));
+                document.head.appendChild(script);
+            });
+        }
+
+        async function initGoogleRegister() {
+            try {
+                const config = await api.get('/auth/google/config');
+                if (!config || !config.enabled || !config.clientId) {
+                    document.getElementById('googleRegisterBtn').style.display = 'none';
+                    const errorBox = document.getElementById('googleRegisterError');
+                    errorBox.textContent = 'Google sign-up is not configured right now.';
+                    errorBox.style.display = 'block';
+                    return;
+                }
+
+                await loadGoogleSdk();
+
+                const waitForGoogle = function() {
+                    return new Promise(function(resolve, reject) {
+                        var attempts = 0;
+                        var timer = setInterval(function() {
+                            attempts += 1;
+                            if (window.google && window.google.accounts && window.google.accounts.id) {
+                                clearInterval(timer);
+                                resolve();
+                                return;
+                            }
+                            if (attempts >= 60) {
+                                clearInterval(timer);
+                                reject(new Error('Google SDK failed to load.'));
+                            }
+                        }, 100);
+                    });
+                };
+
+                await waitForGoogle();
+                googleRegisterConfigured = true;
+                window.google.accounts.id.initialize({
+                    client_id: config.clientId,
+                    callback: handleGoogleRegisterCredential,
+                    auto_select: false,
+                    cancel_on_tap_outside: true,
+                });
+                window.google.accounts.id.renderButton(document.getElementById('googleRegisterBtn'), {
+                    theme: 'outline',
+                    size: 'large',
+                    text: 'signup_with',
+                    shape: 'pill',
+                    width: 360,
+                });
+            } catch (err) {
+                console.error('Google register init error:', err);
+                document.getElementById('googleRegisterBtn').style.display = 'none';
+                const errorBox = document.getElementById('googleRegisterError');
+                errorBox.textContent = 'Google sign-up is unavailable. Use email/password signup.';
+            errorBox.style.display = 'block';
+            }
+        }
+
+        function togglePasswordVisibility(fieldId, button) {
+            const input = document.getElementById(fieldId);
+            if (!input) return;
+            const showing = input.type === 'text';
+            input.type = showing ? 'password' : 'text';
+            button.classList.toggle('active', !showing);
+        }
+
+        function showError(id, msg) {
+            const elem = document.getElementById(id);
+            if (!elem) return;
+            elem.textContent = msg;
+            elem.classList.add('show');
+        }
+
+        document.getElementById('password').addEventListener('input', function() {
+            const strength = calculateStrength(this.value);
+            updateStrengthBars(strength);
+        });
+
+        function calculateStrength(password) {
+            let strength = 0;
+            if (password.length >= 8) strength++;
+            if (password.match(/[a-z]/) && password.match(/[A-Z]/)) strength++;
+            if (password.match(/[0-9]/)) strength++;
+            if (password.match(/[^a-zA-Z0-9]/)) strength++;
+            return strength;
+        }
+
+        function updateStrengthBars(strength) {
+            const bars = document.querySelectorAll('.strength-bar');
+            const strengths = ['weak', 'fair', 'good', 'strong'];
+            bars.forEach((bar, i) => {
+                bar.className = 'strength-bar';
+                if (i < strength) {
+                    bar.classList.add(strengths[strength - 1]);
+                }
+            });
+        }
+
+        async function completeRegistration() {
+            const name = document.getElementById('fullName').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const role = document.getElementById('role').value;
+
+            // Validate required fields
+            if (!name || !email || !password || !role) {
+                alert('Please fill in all required fields');
+                return;
+            }
+
+            if (role !== 'creator') {
+                const goal = document.getElementById('goal').value;
+                if (!goal) {
+                    alert('Please choose a learning goal');
+                    return;
+                }
+            }
+
+            // For creators, validate portal code
+            if (role === 'creator') {
+                const creatorCode = document.getElementById('creatorPortalCode').value;
+                if (!creatorCode) {
+                    showError('err-creatorCode', 'Creator access code is required');
+                    return;
+                }
+            }
+
+            try {
+                const payload = {
+                    name,
+                    email,
+                    password,
+                    role,
+                };
+
+                if (role !== 'creator') {
+                    payload.goal = document.getElementById('goal').value;
+                }
+
+                // Add creator access code if creator
+                if (role === 'creator') {
+                    payload.creatorPortalCode = document.getElementById('creatorPortalCode').value;
+                }
+
+                const data = await api.post('/auth/register', payload);
+
+                if (data) {
+                    registrationRequiresVerification = data.emailVerificationRequired === true;
+                    if (registrationRequiresVerification) {
+                        clearAuth();
+                        document.getElementById('registrationSuccessMessage').textContent = 'Check your email and verify your account before signing in.';
+                        document.getElementById('registrationSuccessAction').textContent = 'Go to Login →';
+                    } else {
+                        setAuth(null, data.user);
+                    }
+                    
+                    // Show success screen
+                    currentStep = maxSteps + 1;
+                    updateUI();
+                }
+            } catch (error) {
+                console.error('Registration error:', error);
+                const errorMsg = error.message || 'An error occurred during registration.';
+                if (role === 'creator' && errorMsg.toLowerCase().includes('code')) {
+                    showError('err-creatorCode', errorMsg);
+                } else {
+                    alert(errorMsg);
+                }
+            }
+        }
+
+        function updateCreatorPortalField() {
+            const role = document.getElementById('role').value;
+            const field = document.getElementById('creatorPortalField');
+            const codeInput = document.getElementById('creatorPortalCode');
+            
+            if (role === 'creator') {
+                field.style.display = 'block';
+                codeInput.setAttribute('required', 'required');
+                document.querySelector('#step3 .step-title').textContent = 'Creator Setup';
+                document.querySelector('#step3 .step-description').textContent = 'Enter the creator access code and finish registration.';
+                document.getElementById('goal').removeAttribute('required');
+                document.getElementById('terms').checked = true;
+                document.getElementById('creatorShortcut').style.display = 'block';
+            } else {
+                field.style.display = 'none';
+                codeInput.removeAttribute('required');
+                codeInput.value = '';
+                document.querySelector('#step3 .step-title').textContent = 'Learning Preferences';
+                document.querySelector('#step3 .step-description').textContent = 'Customize your experience';
+                document.getElementById('goal').setAttribute('required', 'required');
+                document.getElementById('creatorShortcut').style.display = 'none';
+            }
+            updateUI();
+        }
+
+        function applyInitialRole() {
+            if (queryRole !== 'creator') {
+                return;
+            }
+
+            const roleSelect = document.getElementById('role');
+            if (!roleSelect) {
+                return;
+            }
+
+            roleSelect.value = 'creator';
+            updateCreatorPortalField();
+        }
+
+        function handleSuccessRedirect() {
+            if (registrationRequiresVerification) {
+                window.location.href = '/login-ultra.html';
+                return;
+            }
+            const user = getUser();
+            if (!user) {
+                window.location.href = '/login-ultra.html';
+                return;
+            }
+            if (user.role === 'creator') {
+                window.location.href = '/creator-dashboard-new.html';
+            } else {
+                window.location.href = '/student-learn-v3.html';
+            }
+        }
+
+        async function handleGoogleRegisterCredential(googleResponse) {
+            const errorBox = document.getElementById('googleRegisterError');
+            if (errorBox) {
+                errorBox.textContent = '';
+                errorBox.style.display = 'none';
+            }
+
+            if (!googleResponse || !googleResponse.credential) {
+                if (errorBox) {
+                    errorBox.textContent = 'Google sign-up failed. Please try again.';
+                    errorBox.style.display = 'block';
+                }
+                return;
+            }
+
+            try {
+                const data = await api.post('/auth/google', {
+                    credential: googleResponse.credential,
+                    role: 'student'
+                });
+
+                setAuth(null, data.user);
+                currentStep = maxSteps + 1;
+                updateUI();
+                handleSuccessRedirect();
+            } catch (err) {
+                if (errorBox) {
+                    errorBox.textContent = err.message;
+                    errorBox.style.display = 'block';
+                }
+            }
+        }
+
+        if (typeof api !== 'undefined') {
+            initGoogleRegister();
+        } else {
+            const errorBox = document.getElementById('googleRegisterError');
+            if (errorBox) {
+                errorBox.textContent = 'Google sign-up is unavailable in file mode.';
+                errorBox.style.display = 'block';
+            }
+        }
+        applyInitialRole();
+    </script>
+</body>
+</html>

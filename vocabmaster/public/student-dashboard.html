@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Taleem Lexicon - My Learning</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --gold: #D4AF37;
+      --emerald: #50C878;
+      --white: #FFFFFF;
+      --dark: #1a1a1a;
+    }
+
+    * {
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #f0f9ff 0%, #f0fdf4 100%);
+    }
+
+    /* Header */
+    .dashboard-header {
+      background: linear-gradient(135deg, var(--emerald) 0%, #2d7a5c 100%);
+      color: white;
+      padding: 40px 0;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .header-content {
+      max-width: 7xl;
+      margin: 0 auto;
+      padding: 0 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .greeting {
+      font-size: 28px;
+      font-weight: 800;
+    }
+
+    .user-stats {
+      display: flex;
+      gap: 30px;
+      font-size: 14px;
+    }
+
+    .user-stat {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Tabs */
+    .tabs-container {
+      display: flex;
+      gap: 20px;
+      padding: 20px;
+      background: white;
+      border-radius: 15px 15px 0 0;
+      margin: 30px 20px 0;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .tab-btn {
+      background: none;
+      border: none;
+      padding: 12px 20px;
+      font-weight: 600;
+      color: #999;
+      cursor: pointer;
+      font-size: 16px;
+      transition: all 0.3s ease;
+      border-bottom: 3px solid transparent;
+    }
+
+    .tab-btn.active {
+      color: var(--emerald);
+      border-bottom-color: var(--emerald);
+    }
+
+    .tab-btn:hover {
+      color: var(--dark);
+    }
+
+    /* Content */
+    .tab-content {
+      display: none;
+      background: white;
+      padding: 30px 20px;
+      margin: 0 20px 30px;
+      border-radius: 0 0 15px 15px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .max-w {
+      max-width: 7xl;
+      margin: 0 auto;
+    }
+
+    /* Course Cards */
+    .course-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .course-card {
+      background: white;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+      transition: all 0.3s ease;
+      border: 2px solid transparent;
+    }
+
+    .course-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 12px 30px rgba(80, 200, 120, 0.2);
+      border-color: var(--emerald);
+    }
+
+    .course-card-header {
+      background: linear-gradient(135deg, var(--gold) 0%, var(--emerald) 100%);
+      padding: 20px;
+      color: white;
+      height: 120px;
+      display: flex;
+      align-items: flex-end;
+    }
+
+    .course-title {
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .course-card-body {
+      padding: 20px;
+    }
+
+    .course-meta {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+      font-size: 12px;
+      color: #999;
+    }
+
+    .badge {
+      display: inline-block;
+      background: var(--emerald);
+      color: white;
+      padding: 4px 10px;
+      border-radius: 15px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .badge.level-a1 { background: #3b82f6; }
+    .badge.level-a2 { background: #06b6d4; }
+    .badge.level-b1 { background: #f59e0b; }
+    .badge.level-b2 { background: #d97706; }
+    .badge.level-c1 { background: #ef4444; }
+    .badge.level-c2 { background: #7c3aed; }
+
+    .course-description {
+      color: #666;
+      font-size: 13px;
+      line-height: 1.5;
+      margin-bottom: 15px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .progress-container {
+      margin-bottom: 15px;
+    }
+
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      margin-bottom: 5px;
+      color: #666;
+    }
+
+    .progress-bar {
+      height: 6px;
+      background: #e0e0e0;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--emerald), var(--gold));
+      transition: width 0.3s ease;
+    }
+
+    .course-card-footer {
+      display: flex;
+      gap: 10px;
+      padding-top: 15px;
+      border-top: 1px solid #e0e0e0;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 13px;
+    }
+
+    .btn-primary {
+      background: var(--emerald);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #2d7a5c;
+      transform: translateY(-2px);
+    }
+
+    .btn-secondary {
+      background: var(--gold);
+      color: var(--dark);
+    }
+
+    .btn-secondary:hover {
+      opacity: 0.9;
+      transform: translateY(-2px);
+    }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+    }
+
+    .empty-state-icon {
+      font-size: 60px;
+      margin-bottom: 20px;
+    }
+
+    .empty-state-title {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: var(--dark);
+    }
+
+    .empty-state-desc {
+      color: #999;
+      margin-bottom: 30px;
+    }
+
+    .btn-explore {
+      background: linear-gradient(135deg, var(--emerald), #2d7a5c);
+      color: white;
+      padding: 12px 32px;
+      border-radius: 50px;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .btn-explore:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(80, 200, 120, 0.3);
+    }
+
+    /* Filter Bar */
+    .filter-bar {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      padding: 8px 16px;
+      border: 2px solid #e0e0e0;
+      background: white;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .filter-btn.active {
+      background: var(--emerald);
+      color: white;
+      border-color: var(--emerald);
+    }
+
+    .filter-btn:hover {
+      border-color: var(--emerald);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .course-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .header-content {
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      .user-stats {
+        width: 100%;
+        justify-content: space-around;
+      }
+
+      .tabs-container {
+        margin: 30px 0 0;
+        border-radius: 0;
+        overflow-x: auto;
+      }
+
+      .tab-content {
+        margin: 0;
+        border-radius: 0;
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <div class="dashboard-header">
+    <div class="header-content">
+      <div>
+        <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 10px;">
+          <img src="https://www.image2url.com/r2/default/images/1784112907446-0463de99-8cb2-4889-82b8-3e0c5207bc0d.jpg" alt="Taleem Lexicon" style="width: 45px; height: 45px; border-radius: 50%;">
+          <h2 style="font-size: 1.8rem; font-weight: 800; color: white;">Taleem Lexicon</h2>
+        </div>
+        <div class="greeting">Welcome back, <span id="userName">Learner</span>! 👋</div>
+        <p style="margin-top: 5px; opacity: 0.9;">Continue your learning journey</p>
+      </div>
+      <div class="user-stats">
+        <div class="user-stat">
+          <span style="font-size: 20px;">🔥</span>
+          <div>
+            <div style="font-weight: 700;" id="streak">0</div>
+            <div>Day Streak</div>
+          </div>
+        </div>
+        <div class="user-stat">
+          <span style="font-size: 20px;">⭐</span>
+          <div>
+            <div style="font-weight: 700;" id="level">1</div>
+            <div>Level</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs-container">
+    <button class="tab-btn active" onclick="switchTab(event, 'learning')">📚 My Learning</button>
+    <button class="tab-btn" onclick="switchTab(event, 'browse')">🌍 Browse</button>
+    <button class="tab-btn" onclick="switchTab(event, 'progress')">📊 Progress</button>
+  </div>
+
+  <!-- My Learning Tab -->
+  <div class="tab-content active" id="learningTab">
+    <div class="max-w">
+      <h2 style="font-size: 24px; font-weight: 800; margin-bottom: 20px;">My Courses</h2>
+      <div class="course-grid" id="enrolledCourses">
+        <div style="text-align: center; padding: 40px; grid-column: 1/-1;">No courses yet</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Browse Courses Tab -->
+  <div class="tab-content" id="browseTab">
+    <div class="max-w">
+      <h2 style="font-size: 24px; font-weight: 800; margin-bottom: 20px;">Explore Courses</h2>
+      <div class="course-grid" id="allCourses">
+        <div style="text-align: center; padding: 40px; grid-column: 1/-1;">Loading...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Progress Tab -->
+  <div class="tab-content" id="progressTab">
+    <div class="max-w">
+      <h2 style="font-size: 24px; font-weight: 800; margin-bottom: 30px;">Your Stats</h2>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+        <div style="background: linear-gradient(135deg, rgba(80,200,120,0.1) 0%, rgba(80,200,120,0.05) 100%); border-left: 5px solid var(--emerald); padding: 20px; border-radius: 10px;">
+          <div style="font-size: 12px; color: #666; font-weight: 600;">Words Learned</div>
+          <div style="font-size: 32px; font-weight: 800; color: var(--emerald); margin-top: 10px;" id="totalWords">0</div>
+        </div>
+        <div style="background: linear-gradient(135deg, rgba(212,175,55,0.1) 0%, rgba(212,175,55,0.05) 100%); border-left: 5px solid var(--gold); padding: 20px; border-radius: 10px;">
+          <div style="font-size: 12px; color: #666; font-weight: 600;">Study Streak</div>
+          <div style="font-size: 32px; font-weight: 800; color: var(--gold); margin-top: 10px;" id="streakDays">0</div>
+        </div>
+        <div style="background: linear-gradient(135deg, rgba(16,185,129,0.1) 0%, rgba(16,185,129,0.05) 100%); border-left: 5px solid #10b981; padding: 20px; border-radius: 10px;">
+          <div style="font-size: 12px; color: #666; font-weight: 600;">Retention</div>
+          <div style="font-size: 32px; font-weight: 800; color: #10b981; margin-top: 10px;" id="retention">0%</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script>
+    async function initialize() {
+      const token = localStorage.getItem('token');
+      if (!token) return window.location.href = '/login.html';
+
+      try {
+        const userPayload = await (await fetch('/api/auth/me', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        })).json();
+        const user = userPayload.user || userPayload;
+        document.getElementById('userName').textContent = user.name;
+
+        await loadCourses();
+        await loadStats();
+      } catch (e) {
+        console.error('Error:', e);
+      }
+    }
+
+    async function loadCourses() {
+      const token = localStorage.getItem('token');
+      try {
+        const payload = await (await fetch('/api/cms/courses', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        })).json();
+        const courses = Array.isArray(payload?.courses) ? payload.courses : [];
+        
+        const enrolled = courses.filter(c => c.isEnrolled);
+        const all = courses.filter(c => c.isPublished);
+
+        document.getElementById('enrolledCourses').innerHTML = enrolled.length 
+          ? enrolled.map(c => `
+              <div class="course-card">
+                <div class="course-card-header"><div class="course-title">${c.title}</div></div>
+                <div class="course-card-body">
+                  <div class="course-meta"><span class="badge">${c.level}</span></div>
+                  <div class="course-description">${c.description}</div>
+                  <div class="course-card-footer">
+                    <button class="btn btn-primary" onclick="continueCourse('${c._id}')">Continue →</button>
+                  </div>
+                </div>
+              </div>
+            `).join('')
+          : '<div style="grid-column:1/-1; text-align:center; padding:40px;">No courses yet</div>';
+
+        document.getElementById('allCourses').innerHTML = all.map(c => `
+          <div class="course-card">
+            <div class="course-card-header"><div class="course-title">${c.title}</div></div>
+            <div class="course-card-body">
+              <div class="course-meta"><span class="badge">${c.level}</span></div>
+              <div class="course-description">${c.description}</div>
+              <div class="course-card-footer">
+                <button class="btn btn-primary" onclick="enrollCourse('${c._id}')">Enroll</button>
+              </div>
+            </div>
+          </div>
+        `).join('');
+      } catch (e) {
+        console.error('Error:', e);
+      }
+    }
+
+    async function enrollCourse(id) {
+      const token = localStorage.getItem('token');
+      try {
+        await fetch(`/api/cms/courses/${id}/enroll`, {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        await loadCourses();
+      } catch (e) {
+        alert('Error: ' + e.message);
+      }
+    }
+
+    function continueCourse(id) {
+      window.location.href = `/lesson-player.html?courseId=${id}`;
+    }
+
+    async function loadStats() {
+      const token = localStorage.getItem('token');
+      try {
+        const stats = await (await fetch('/api/user/stats', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        })).json();
+        document.getElementById('streak').textContent = stats.currentStreak || 0;
+        document.getElementById('level').textContent = stats.level || 1;
+        document.getElementById('totalWords').textContent = stats.totalWordsLearned || 0;
+        document.getElementById('retention').textContent = (stats.averageRetention || 0) + '%';
+      } catch (e) {
+        console.error('Error:', e);
+      }
+    }
+
+    function switchTab(event, tab) {
+      if (event) event.preventDefault();
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+      document.getElementById(tab + 'Tab').classList.add('active');
+      event?.target?.classList.add('active');
+    }
+
+    function logout() {
+      clearAuth();
+      window.location.href = '/login.html';
+    }
+
+    document.addEventListener('DOMContentLoaded', initialize);
+  </script>
+</body>
+</html>

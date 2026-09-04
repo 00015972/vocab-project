@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="refresh" content="0; url=/matching-ultra.html" />
+  <title>Matching — VocabMaster</title>
+  <link rel="stylesheet" href="/css/main.css" />
+  <style>
+    :root {
+      --primary: #6c63ff;
+      --primary-light: #a78bfa;
+      --success: #10b981;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --bg: #0f1117;
+      --bg-secondary: #1a1d27;
+      --text: #e2e8f0;
+      --text-muted: #94a3b8;
+      --border: #2e3250;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    .matching-container {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: linear-gradient(135deg, rgba(108, 99, 255, 0.1), rgba(167, 139, 250, 0.05));
+    }
+
+    .top-bar {
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .logo {
+      font-size: 18px;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      cursor: pointer;
+    }
+
+    .session-info {
+      display: flex;
+      gap: 24px;
+      align-items: center;
+      font-size: 14px;
+    }
+
+    .session-stat {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .session-stat-value {
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .content {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+
+    .matching-game {
+      width: 100%;
+      max-width: 900px;
+    }
+
+    .matching-title {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .matching-subtitle {
+      color: var(--text-muted);
+      font-size: 14px;
+      margin-bottom: 24px;
+    }
+
+    .progress-bar {
+      height: 6px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 3px;
+      overflow: hidden;
+      margin-bottom: 32px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary), var(--primary-light));
+      width: 0%;
+      transition: width 0.3s;
+    }
+
+    .matching-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-bottom: 32px;
+    }
+
+    .column {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .column-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .item {
+      background: var(--bg-secondary);
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      padding: 14px;
+      cursor: grab;
+      user-select: none;
+      transition: all 0.2s;
+      font-size: 14px;
+      position: relative;
+    }
+
+    .item:hover {
+      border-color: var(--primary);
+      background: rgba(108, 99, 255, 0.05);
+    }
+
+    .item.selected {
+      border-color: var(--primary);
+      background: rgba(108, 99, 255, 0.15);
+      box-shadow: 0 0 12px rgba(108, 99, 255, 0.3);
+    }
+
+    .item.correct {
+      border-color: var(--success);
+      background: rgba(16, 185, 129, 0.1);
+    }
+
+    .item.incorrect {
+      border-color: var(--danger);
+      background: rgba(239, 68, 68, 0.1);
+    }
+
+    .item-text {
+      font-weight: 500;
+      word-wrap: break-word;
+    }
+
+    .match-line {
+      position: absolute;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    .match-animation {
+      animation: matchPulse 0.4s ease-out;
+    }
+
+    @keyframes matchPulse {
+      0% {
+        opacity: 1;
+        transform: scale(1);
+      }
+      50% {
+        opacity: 1;
+        transform: scale(1.05);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .session-summary {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 32px;
+      text-align: center;
+    }
+
+    .summary-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+    }
+
+    .summary-title {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .summary-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 20px;
+      margin: 24px 0;
+    }
+
+    .stat-box {
+      background: rgba(108, 99, 255, 0.05);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+    }
+
+    .stat-value {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 24px;
+      justify-content: center;
+    }
+
+    .btn {
+      padding: 11px 24px;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #7c73ff;
+    }
+
+    .btn-secondary {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      color: var(--text-muted);
+    }
+
+    .spinner {
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .matching-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+
+      .summary-stats {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="matching-container">
+  <div class="top-bar">
+    <div class="logo" onclick="window.location.href='/student-learn.html'" style="cursor: pointer;">VocabMaster</div>
+    <div class="session-info">
+      <div class="session-stat">
+        <span>⏱️</span>
+        <span id="sessionTimer">0:00</span>
+      </div>
+      <div class="session-stat">
+        <span>✓</span>
+        <span id="correctCount" class="session-stat-value">0</span>/<span id="totalCount">0</span>
+      </div>
+      <div class="session-stat">
+        <span>⭐</span>
+        <span id="xpCount" class="session-stat-value">0</span> XP
+      </div>
+    </div>
+  </div>
+
+  <div class="content">
+    <div class="matching-game">
+      <div id="loadingState" class="loading">
+        <div class="spinner"></div>
+        <span>Loading words...</span>
+      </div>
+
+      <div id="gameState" style="display: none;">
+        <div class="matching-title">Match the Words</div>
+        <div class="matching-subtitle">Connect each word to its definition</div>
+
+        <div class="progress-bar">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+
+        <div class="matching-grid">
+          <div class="column">
+            <div class="column-label">Words</div>
+            <div id="wordsColumn" class="column"></div>
+          </div>
+          <div class="column">
+            <div class="column-label">Definitions</div>
+            <div id="definitionsColumn" class="column"></div>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button class="btn btn-secondary" onclick="location.href='/student-learn.html'">Back to Learn</button>
+          <button class="btn btn-primary" onclick="resetGame()">Reset</button>
+        </div>
+      </div>
+
+      <div id="summaryState" class="session-summary" style="display: none;">
+        <div class="summary-icon">🎉</div>
+        <div class="summary-title">Session Complete!</div>
+        <div class="summary-stats">
+          <div class="stat-box">
+            <div class="stat-value" id="finalScore">0</div>
+            <div class="stat-label">Accuracy</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-value" id="finalTime">0:00</div>
+            <div class="stat-label">Time</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-value" id="finalXP">0</div>
+            <div class="stat-label">XP Earned</div>
+          </div>
+        </div>
+        <div class="actions">
+          <button class="btn btn-secondary" onclick="location.href='/student-learn.html'">Back to Learn</button>
+          <button class="btn btn-primary" onclick="location.reload()">Try Again</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="/js/api.js"></script>
+<script>
+redirectIfAuth();
+checkStudentRole();
+
+let vocabulary = [];
+let pairs = [];
+let selectedWord = null;
+let selectedDefinition = null;
+let matches = [];
+let startTime = Date.now();
+let correctCount = 0;
+let sessionXP = 0;
+let timerInterval;
+
+const wordsColumn = document.getElementById('wordsColumn');
+const definitionsColumn = document.getElementById('definitionsColumn');
+const gameState = document.getElementById('gameState');
+const loadingState = document.getElementById('loadingState');
+const summaryState = document.getElementById('summaryState');
+
+async function initGame() {
+  try {
+    const response = await api.get('/words');
+    vocabulary = response.words || [];
+
+    if (vocabulary.length < 4) {
+      loadingState.innerHTML = '<div style="color: var(--danger); text-align: center;">Need at least 4 words to play matching.</div>';
+      return;
+    }
+
+    // Select random 10 words or all if less
+    const selectedWords = vocabulary.sort(() => Math.random() - 0.5).slice(0, Math.min(10, vocabulary.length));
+    pairs = selectedWords.map((word, idx) => ({ word, definition: word, id: idx, matched: false }));
+
+    document.getElementById('totalCount').textContent = pairs.length;
+
+    renderGame();
+    startTimer();
+  } catch (err) {
+    console.error('Init error:', err);
+    loadingState.innerHTML = '<div style="color: var(--danger);">Failed to load words.</div>';
+  }
+}
+
+function renderGame() {
+  loadingState.style.display = 'none';
+  gameState.style.display = 'block';
+
+  wordsColumn.innerHTML = '';
+  definitionsColumn.innerHTML = '';
+
+  // Shuffle definitions
+  const definitions = pairs.map(p => p.definition).sort(() => Math.random() - 0.5);
+
+  pairs.forEach((pair, idx) => {
+    const wordItem = document.createElement('div');
+    wordItem.className = 'item';
+    wordItem.dataset.id = pair.id;
+    wordItem.textContent = pair.word.word;
+    wordItem.onclick = () => selectWord(pair, wordItem);
+    wordsColumn.appendChild(wordItem);
+  });
+
+  definitions.forEach((def, idx) => {
+    const defItem = document.createElement('div');
+    defItem.className = 'item';
+    defItem.dataset.id = idx;
+    defItem.textContent = def.definition;
+    defItem.onclick = () => selectDefinition(def, defItem, idx);
+    definitionsColumn.appendChild(defItem);
+  });
+}
+
+function selectWord(pair, element) {
+  if (element.classList.contains('correct')) return;
+
+  wordsColumn.querySelectorAll('.item').forEach(el => el.classList.remove('selected'));
+  element.classList.add('selected');
+  selectedWord = pair;
+
+  if (selectedDefinition && selectedWord && selectedDefinition.id === selectedWord.word._id) {
+    matchPair();
+  }
+}
+
+function selectDefinition(def, element, idx) {
+  if (element.classList.contains('correct')) return;
+
+  definitionsColumn.querySelectorAll('.item').forEach(el => el.classList.remove('selected'));
+  element.classList.add('selected');
+  selectedDefinition = { definition: def, id: def._id };
+
+  if (selectedWord && selectedDefinition && selectedDefinition.id === selectedWord.word._id) {
+    matchPair();
+  }
+}
+
+function matchPair() {
+  if (!selectedWord || !selectedDefinition) return;
+
+  correctCount++;
+  sessionXP += 50;
+
+  document.getElementById('correctCount').textContent = correctCount;
+  document.getElementById('xpCount').textContent = sessionXP;
+
+  const wordElements = wordsColumn.querySelectorAll('.item');
+  const defElements = definitionsColumn.querySelectorAll('.item');
+
+  wordElements.forEach(el => {
+    if (el.textContent === selectedWord.word.word) {
+      el.classList.remove('selected');
+      el.classList.add('correct');
+    }
+  });
+
+  defElements.forEach(el => {
+    if (el.textContent === selectedDefinition.definition.definition) {
+      el.classList.remove('selected');
+      el.classList.add('correct');
+    }
+  });
+
+  selectedWord = null;
+  selectedDefinition = null;
+
+  if (correctCount === pairs.length) {
+    endSession();
+  }
+}
+
+function resetGame() {
+  correctCount = 0;
+  sessionXP = 0;
+  selectedWord = null;
+  selectedDefinition = null;
+  document.getElementById('correctCount').textContent = 0;
+  document.getElementById('xpCount').textContent = 0;
+  startTime = Date.now();
+  renderGame();
+}
+
+function startTimer() {
+  timerInterval = setInterval(() => {
+    const elapsed = Math.floor((Date.now() - startTime) / 1000);
+    const mins = Math.floor(elapsed / 60);
+    const secs = elapsed % 60;
+    document.getElementById('sessionTimer').textContent = `${mins}:${secs.toString().padStart(2, '0')}`;
+
+    // Update progress
+    const progress = (correctCount / pairs.length) * 100;
+    document.getElementById('progressFill').style.width = progress + '%';
+  }, 1000);
+}
+
+function endSession() {
+  clearInterval(timerInterval);
+  const elapsed = Math.floor((Date.now() - startTime) / 1000);
+
+  document.getElementById('finalScore').textContent = Math.round((correctCount / pairs.length) * 100) + '%';
+  document.getElementById('finalTime').textContent = `${Math.floor(elapsed / 60)}:${(elapsed % 60).toString().padStart(2, '0')}`;
+  document.getElementById('finalXP').textContent = sessionXP;
+
+  // Update user stats
+  const stats = JSON.parse(localStorage.getItem('userStats') || '{}');
+  stats.points = (stats.points || 0) + sessionXP;
+  localStorage.setItem('userStats', JSON.stringify(stats));
+
+  gameState.style.display = 'none';
+  summaryState.style.display = 'block';
+}
+
+function checkStudentRole() {
+  const user = getUser();
+  if (!user || user.role !== 'student') {
+    location.href = '/login.html?role=student';
+  }
+}
+
+initGame();
+</script>
+</body>
+</html>

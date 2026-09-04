@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speaking Practice - VocabMaster</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366F1;
+            --secondary: #EC4899;
+            --success: #10B981;
+            --danger: #EF4444;
+            --warning: #F59E0B;
+            --neutral-50: #F9FAFB;
+            --neutral-900: #111827;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .session-header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-info {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .info-item {
+            text-align: center;
+        }
+
+        .info-label {
+            font-size: 0.75rem;
+            color: #999;
+            text-transform: uppercase;
+        }
+
+        .info-value {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .exit-btn {
+            padding: 0.5rem 1rem;
+            background: white;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        /* Progress */
+        .progress-section {
+            margin-bottom: 2rem;
+        }
+
+        .progress-info {
+            color: white;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #10B981, #3B82F6);
+            transition: width 0.4s ease;
+        }
+
+        /* Speaking Card */
+        .speaking-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .difficulty-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+        }
+
+        .challenge-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--neutral-900);
+        }
+
+        .challenge-context {
+            color: #666;
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+        }
+
+        /* Word to Speak */
+        .word-to-speak {
+            background: var(--neutral-50);
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            border: 2px dashed var(--primary);
+        }
+
+        .word-label {
+            font-size: 0.9rem;
+            color: #999;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+        }
+
+        .word-display {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            letter-spacing: 1px;
+        }
+
+        .word-definition {
+            margin-top: 1rem;
+            font-size: 0.95rem;
+            color: #666;
+            font-style: italic;
+        }
+
+        /* Audio Control */
+        .audio-controls {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .audio-btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+        }
+
+        .audio-btn-listen {
+            background: rgba(99, 102, 241, 0.1);
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .audio-btn-listen:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .audio-btn-slow {
+            background: white;
+            color: var(--warning);
+            border: 2px solid var(--warning);
+        }
+
+        .audio-btn-slow:hover {
+            background: var(--warning);
+            color: white;
+        }
+
+        /* Recording Section */
+        .recording-section {
+            background: var(--neutral-50);
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+        }
+
+        .recording-status {
+            font-weight: 600;
+            color: #666;
+            margin-bottom: 1.5rem;
+        }
+
+        .recording-status.recording {
+            color: var(--danger);
+            animation: pulse 1s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        .recording-button {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: none;
+            font-size: 2.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 0 auto;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .recording-button:hover {
+            transform: scale(1.05);
+        }
+
+        .recording-button.ready {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+        }
+
+        .recording-button.recording {
+            background: var(--danger);
+            color: white;
+            animation: pulse-btn 1s ease-in-out infinite;
+        }
+
+        @keyframes pulse-btn {
+            0%, 100% {
+                box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+            }
+            50% {
+                box-shadow: 0 4px 30px rgba(239, 68, 68, 0.6);
+            }
+        }
+
+        .recording-time {
+            text-align: center;
+            margin-top: 1rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        /* Playback */
+        .playback-section {
+            display: none;
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 2px solid var(--success);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .playback-section.show {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .playback-title {
+            font-weight: 600;
+            color: var(--neutral-900);
+            margin-bottom: 1rem;
+        }
+
+        .playback-button {
+            background: var(--success);
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .playback-button:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Feedback */
+        .feedback-section {
+            display: none;
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            border-left: 4px solid var(--success);
+            margin-bottom: 1.5rem;
+        }
+
+        .feedback-section.show {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+
+        .feedback-title {
+            font-weight: 700;
+            color: var(--success);
+            margin-bottom: 1rem;
+        }
+
+        .feedback-score {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .feedback-details {
+            text-align: left;
+            font-size: 0.95rem;
+            color: #666;
+        }
+
+        .feedback-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .feedback-item.good {
+            color: var(--success);
+        }
+
+        .feedback-item.needs-work {
+            color: var(--warning);
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 0.875rem 1rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 100px;
+        }
+
+        .btn-retry {
+            background: white;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .btn-retry:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-submit {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: 2px solid transparent;
+            flex: 1.5;
+        }
+
+        .btn-submit:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Summary */
+        .summary-screen {
+            display: none;
+            background: white;
+            padding: 3rem 2rem;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .summary-screen.show {
+            display: block;
+        }
+
+        .summary-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .summary-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--neutral-900);
+            margin-bottom: 1.5rem;
+        }
+
+        .summary-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-box {
+            padding: 1rem;
+            background: var(--neutral-50);
+            border-radius: 8px;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: #999;
+            margin-top: 0.25rem;
+        }
+
+        .summary-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .summary-btn {
+            flex: 1;
+            padding: 0.875rem 1rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 120px;
+        }
+
+        .summary-btn-again {
+            background: var(--primary);
+            color: white;
+        }
+
+        .summary-btn-back {
+            background: white;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        @media (max-width: 768px) {
+            .speaking-card {
+                padding: 1rem;
+            }
+
+            .word-display {
+                font-size: 2rem;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+            .summary-stats {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="session-header">
+            <div style="display:flex; align-items:center; gap:12px; margin-right:15px;">
+              <img src="https://www.image2url.com/r2/default/images/1784112907446-0463de99-8cb2-4889-82b8-3e0c5207bc0d.jpg" alt="Taleem Lexicon" style="width:35px; height:35px; border-radius:50%;">
+              <span style="font-weight:bold; color:#111827;">Taleem Lexicon</span>
+            </div>
+            <div class="header-info">
+                <button onclick="goBack()" style="background: none; border: none; font-size: 1.5rem; cursor: pointer;">←</button>
+                <div class="info-item">
+                    <div class="info-label">Words Practiced</div>
+                    <div class="info-value" id="wordsCount">0/5</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Avg Score</div>
+                    <div class="info-value" id="avgScore">0%</div>
+                </div>
+            </div>
+            <button class="exit-btn" onclick="exitPractice()">Exit</button>
+        </div>
+
+        <!-- Progress -->
+        <div class="progress-section">
+            <div class="progress-info">
+                <span id="progressText">Word 1 of 5</span>
+                <span id="earnedXP">⚡ 0 XP</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+
+        <!-- Speaking Card -->
+        <div class="speaking-card">
+            <div class="difficulty-badge">Beginner</div>
+            <div class="challenge-title">Pronunciation Practice</div>
+            <div class="challenge-context">Listen to the native speaker, then record yourself pronouncing the word.</div>
+
+            <!-- Word Display -->
+            <div class="word-to-speak">
+                <div class="word-label">Word to Speak</div>
+                <div class="word-display" id="wordDisplay">Serendipity</div>
+                <div class="word-definition" id="wordDef">Finding something good by chance</div>
+            </div>
+
+            <!-- Audio Controls -->
+            <div class="audio-controls">
+                <button class="audio-btn audio-btn-listen" onclick="listenToWord()">🔊 Listen</button>
+                <button class="audio-btn audio-btn-slow" onclick="listenSlow()">🐢 Slow</button>
+            </div>
+
+            <!-- Recording Section -->
+            <div class="recording-section">
+                <div class="recording-status" id="recordingStatus">Ready to record</div>
+                <button class="recording-button ready" id="recordBtn" onclick="toggleRecording()">🎤</button>
+                <div class="recording-time" id="recordingTime"></div>
+            </div>
+
+            <!-- Playback Section -->
+            <div class="playback-section" id="playbackSection">
+                <div class="playback-title">Your Recording</div>
+                <button class="playback-button" onclick="playRecording()">▶️ Play Back</button>
+            </div>
+
+            <!-- Feedback Section -->
+            <div class="feedback-section" id="feedbackSection">
+                <div class="feedback-title">✓ Pronunciation Score</div>
+                <div class="feedback-score" id="pronunciationScore">92%</div>
+                <div class="feedback-details">
+                    <div class="feedback-item good">✓ Clear articulation</div>
+                    <div class="feedback-item good">✓ Correct stress pattern</div>
+                    <div class="feedback-item needs-work">⚠ Slight accent on first syllable</div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <button class="btn btn-retry" id="retryBtn" onclick="retryRecording()" style="display: none;">🔄 Retry</button>
+                <button class="btn btn-submit" id="submitBtn" onclick="submitRecording()" disabled>Submit Recording</button>
+            </div>
+        </div>
+
+        <!-- Summary -->
+        <div class="summary-screen" id="summaryScreen">
+            <div class="summary-icon">🎤</div>
+            <div class="summary-title">Speaking Session Complete!</div>
+            <div class="summary-stats">
+                <div class="stat-box">
+                    <div class="stat-value" id="totalWords">5</div>
+                    <div class="stat-label">Words Practiced</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="totalScore">88%</div>
+                    <div class="stat-label">Avg Score</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="totalXP">+125 XP</div>
+                    <div class="stat-label">Experience</div>
+                </div>
+            </div>
+            <div class="summary-buttons">
+                <button class="summary-btn summary-btn-again" onclick="restartPractice()">🔄 Practice Again</button>
+                <button class="summary-btn summary-btn-back" onclick="goBack()">← Dashboard</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/api.js"></script>
+    <script>
+        const words = [
+            { word: 'Serendipity', definition: 'Finding something good by chance' },
+            { word: 'Eloquent', definition: 'Fluent and persuasive in speaking' },
+            { word: 'Ephemeral', definition: 'Lasting for a very short time' },
+            { word: 'Ubiquitous', definition: 'Present everywhere' },
+            { word: 'Pragmatic', definition: 'Dealing with things practically' }
+        ];
+
+        let currentWordIndex = 0;
+        let isRecording = false;
+        let mediaRecorder;
+        let audioChunks = [];
+        let recordingTime = 0;
+        let recordingTimer;
+        let recordedBlob;
+        let scores = [];
+        let totalXP = 0;
+
+        function loadWord() {
+            const word = words[currentWordIndex];
+            document.getElementById('wordDisplay').textContent = word.word;
+            document.getElementById('wordDef').textContent = word.definition;
+            document.getElementById('progressText').textContent = `Word ${currentWordIndex + 1} of ${words.length}`;
+            document.getElementById('wordsCount').textContent = `${currentWordIndex}/${words.length}`;
+            
+            resetRecording();
+            updateProgress();
+        }
+
+        function resetRecording() {
+            isRecording = false;
+            audioChunks = [];
+            recordingTime = 0;
+            clearInterval(recordingTimer);
+            
+            const recordBtn = document.getElementById('recordBtn');
+            recordBtn.className = 'recording-button ready';
+            recordBtn.textContent = '🎤';
+            
+            document.getElementById('recordingStatus').className = 'recording-status';
+            document.getElementById('recordingStatus').textContent = 'Ready to record';
+            document.getElementById('recordingTime').textContent = '';
+            document.getElementById('playbackSection').classList.remove('show');
+            document.getElementById('feedbackSection').classList.remove('show');
+            document.getElementById('retryBtn').style.display = 'none';
+            document.getElementById('submitBtn').disabled = true;
+        }
+
+        function listenToWord() {
+            const word = words[currentWordIndex];
+            const utterance = new SpeechSynthesisUtterance(word.word);
+            utterance.rate = 0.9;
+            window.speechSynthesis.speak(utterance);
+        }
+
+        function listenSlow() {
+            const word = words[currentWordIndex];
+            const utterance = new SpeechSynthesisUtterance(word.word);
+            utterance.rate = 0.5;
+            window.speechSynthesis.speak(utterance);
+        }
+
+        function toggleRecording() {
+            if (!isRecording) {
+                startRecording();
+            } else {
+                stopRecording();
+            }
+        }
+
+        function startRecording() {
+            navigator.mediaDevices.getUserMedia({ audio: true })
+                .then(stream => {
+                    mediaRecorder = new MediaRecorder(stream);
+                    audioChunks = [];
+
+                    mediaRecorder.addEventListener('dataavailable', event => {
+                        audioChunks.push(event.data);
+                    });
+
+                    mediaRecorder.addEventListener('stop', () => {
+                        recordedBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                        document.getElementById('playbackSection').classList.add('show');
+                        document.getElementById('submitBtn').disabled = false;
+                        document.getElementById('retryBtn').style.display = 'flex';
+                    });
+
+                    mediaRecorder.start();
+                    isRecording = true;
+
+                    const recordBtn = document.getElementById('recordBtn');
+                    recordBtn.className = 'recording-button recording';
+                    recordBtn.textContent = '⏹️';
+
+                    const status = document.getElementById('recordingStatus');
+                    status.className = 'recording-status recording';
+                    status.textContent = '● Recording...';
+
+                    recordingTime = 0;
+                    recordingTimer = setInterval(() => {
+                        recordingTime++;
+                        document.getElementById('recordingTime').textContent = recordingTime + 's';
+                    }, 1000);
+                })
+                .catch(err => alert('Microphone access denied'));
+        }
+
+        function stopRecording() {
+            isRecording = false;
+            mediaRecorder.stop();
+            clearInterval(recordingTimer);
+
+            const recordBtn = document.getElementById('recordBtn');
+            recordBtn.className = 'recording-button ready';
+            recordBtn.textContent = '🎤';
+
+            const status = document.getElementById('recordingStatus');
+            status.className = 'recording-status';
+            status.textContent = 'Recording saved';
+        }
+
+        function playRecording() {
+            if (recordedBlob) {
+                const audioUrl = URL.createObjectURL(recordedBlob);
+                const audio = new Audio(audioUrl);
+                audio.play();
+            }
+        }
+
+        function retryRecording() {
+            resetRecording();
+        }
+
+        function submitRecording() {
+            // Simulate scoring
+            const score = Math.floor(Math.random() * 20) + 75; // 75-95%
+            scores.push(score);
+            totalXP += Math.round(score / 10 * 10);
+
+            document.getElementById('pronunciationScore').textContent = score + '%';
+            document.getElementById('feedbackSection').classList.add('show');
+            document.getElementById('submitBtn').disabled = true;
+            document.getElementById('retryBtn').textContent = '✓ Continue';
+            document.getElementById('retryBtn').onclick = () => nextWord();
+
+            const avgScore = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
+            document.getElementById('avgScore').textContent = avgScore + '%';
+            document.getElementById('earnedXP').textContent = '⚡ ' + totalXP + ' XP';
+        }
+
+        function nextWord() {
+            currentWordIndex++;
+            if (currentWordIndex < words.length) {
+                loadWord();
+            } else {
+                showSummary();
+            }
+        }
+
+        function updateProgress() {
+            const progress = ((currentWordIndex) / words.length) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+
+        function showSummary() {
+            const avgScore = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
+            
+            const multipliedXP = typeof applyModeMultiplier === 'function' ? applyModeMultiplier(totalXP, 'speaking') : totalXP;
+            const dailyBonus = typeof checkAndClaimDailyBonus === 'function' ? checkAndClaimDailyBonus() : 0;
+            const finalXP = multipliedXP + dailyBonus;
+
+            document.querySelector('.speaking-card').style.display = 'none';
+            document.getElementById('totalWords').textContent = words.length;
+            document.getElementById('totalScore').textContent = avgScore + '%';
+            document.getElementById('totalXP').textContent = '+' + finalXP + ' XP' + (dailyBonus ? ' (🌟 +50 first study!)' : '');
+            
+            document.getElementById('summaryScreen').classList.add('show');
+            
+            // Save progress to API
+            saveSessionProgress('speaking', finalXP, avgScore, words.length);
+        }
+        
+        async function saveSessionProgress(sessionType, xpEarned, accuracy, wordsCompleted) {
+            try {
+                const token = getToken();
+                if (!token) return;
+                
+                const response = await fetch('/api/progress', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        sessionType,
+                        xpEarned,
+                        accuracy,
+                        wordsCompleted,
+                        correctCount: Math.round(accuracy * wordsCompleted / 100),
+                        totalCount: wordsCompleted
+                    })
+                });
+                
+                if (!response.ok) {
+                    console.log('Failed to save progress');
+                } else {
+                    console.log('Progress saved successfully');
+                    if (typeof detectNewAchievementUnlocks === 'function') {
+                        try {
+                            const newUnlocks = await detectNewAchievementUnlocks();
+                            newUnlocks.forEach((item, idx) => {
+                                setTimeout(() => {
+                                    showFeedback(`🏆 Achievement unlocked: ${item.title}`, 'success');
+                                }, idx * 700);
+                            });
+                        } catch (unlockErr) {
+                            console.log('Achievement check failed:', unlockErr.message);
+                        }
+                    }
+                    if (typeof detectStreakMilestone === 'function') {
+                        try {
+                            const hit = await detectStreakMilestone();
+                            if (hit) {
+                                setTimeout(() => {
+                                    showFeedback(`${hit.emoji} ${hit.label} ${hit.msg}`, 'success');
+                                }, 400);
+                            }
+                        } catch (streakErr) {
+                            console.log('Streak milestone check failed:', streakErr.message);
+                        }
+                    }
+                }
+            } catch (err) {
+                console.log('Error saving progress:', err.message);
+            }
+        }
+
+        function restartPractice() {
+            currentWordIndex = 0;
+            scores = [];
+            totalXP = 0;
+            
+            document.querySelector('.speaking-card').style.display = 'block';
+            document.getElementById('summaryScreen').classList.remove('show');
+            
+            loadWord();
+        }
+
+        function goBack() {
+            window.location.href = '/student-learn-v3.html';
+        }
+
+        function exitPractice() {
+            if (confirm('Exit practice? Progress will not be saved.')) {
+                goBack();
+            }
+        }
+
+       window.addEventListener('DOMContentLoaded', function() {
+           // Check authentication
+           if (!requireAuth()) return;
+
+           loadWord();
+       });
+    </script>
+</body>
+</html>
