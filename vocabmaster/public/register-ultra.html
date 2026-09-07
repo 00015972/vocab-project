@@ -1528,6 +1528,63 @@
         .creator-portal-button .star-4 { top: 4px; right: 30px; font-size: 12px; }
         .creator-portal-button .star-5 { top: 12px; right: -20px; font-size: 18px; }
         .creator-portal-button .star-6 { top: -12px; right: 15px; font-size: 8px; }
+
+        body {
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+
+        .container {
+            max-height: calc(100vh - 4rem);
+        }
+
+        @media (max-width: 768px) {
+            body {
+                display: block;
+                padding: 1rem 0.75rem 2rem;
+            }
+
+            .container {
+                width: 100%;
+                max-width: 100%;
+                max-height: none;
+                margin: 0 auto;
+                padding: 20px 16px 24px;
+                border-radius: 18px;
+            }
+
+            .header {
+                margin-bottom: 12px;
+            }
+
+            .step-title {
+                font-size: 24px;
+            }
+
+            .step-description {
+                margin-bottom: 16px;
+            }
+
+            .step-footer {
+                flex-direction: column;
+            }
+
+            .btn-back,
+            .btn-next,
+            .stealth-next,
+            .btn-submit {
+                width: 100%;
+                margin-left: 0;
+            }
+
+            .checkbox-group {
+                align-items: flex-start;
+            }
+
+            .checkbox-label {
+                line-height: 1.45;
+            }
+        }
     </style>
 </head>
 <body>
