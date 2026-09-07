@@ -29,17 +29,29 @@ function request(method, path, body, headers = {}) {
 }
 
 (async () => {
-  const email = `smoke${Date.now()}@example.com`;
-  const register = await request('POST', '/api/auth/register', { name: 'Smoke Creator', email, password: 'password123', role: 'creator' });
-  if (register.status !== 201) throw new Error(`register failed: ${register.status} ${register.text}`);
-  const registerBody = JSON.parse(register.text || '{}');
+  const providedEmail = String(process.env.SMOKE_TEST_EMAIL || '').trim().toLowerCase();
+  const providedPassword = String(process.env.SMOKE_TEST_PASSWORD || '').trim();
+  const hasProvidedCredentials = Boolean(providedEmail && providedPassword);
 
-  const login = await request('POST', '/api/auth/login', {
-    email,
-    password: 'password123',
-    role: 'creator',
-    creatorPortalCode: registerBody.creatorCode || '',
-  });
+  const email = hasProvidedCredentials ? providedEmail : `smoke${Date.now()}@example.com`;
+  const password = hasProvidedCredentials ? providedPassword : 'password1234';
+  const creatorPortalCode = String(process.env.CREATOR_ACCESS_CODE || '').trim();
+  const role = hasProvidedCredentials ? 'student' : (creatorPortalCode ? 'creator' : 'student');
+  let registerBody = {};
+
+  if (!hasProvidedCredentials) {
+    const registerPayload = { name: 'Smoke User', email, password, role };
+    if (creatorPortalCode) registerPayload.creatorPortalCode = creatorPortalCode;
+
+    const register = await request('POST', '/api/auth/register', registerPayload);
+    if (register.status !== 201) throw new Error(`register failed: ${register.status} ${register.text}`);
+    registerBody = JSON.parse(register.text || '{}');
+  }
+
+  const loginPayload = { email, password, role };
+  if (role === 'creator' && creatorPortalCode) loginPayload.creatorPortalCode = creatorPortalCode;
+
+  const login = await request('POST', '/api/auth/login', loginPayload);
   let auth = null;
   if (login.status === 200) {
     auth = JSON.parse(login.text || '{}');
@@ -51,7 +63,10 @@ function request(method, path, body, headers = {}) {
       throw new Error(`login failed: ${login.status} ${login.text}`);
     }
     if (!registerBody || !registerBody.token) {
-      throw new Error(`login blocked by verification and no registration token available: ${login.status} ${login.text}`);
+      throw new Error(
+        `login blocked by verification and no registration token available: ${login.status} ${login.text}. `
+        + 'Set SMOKE_TEST_EMAIL and SMOKE_TEST_PASSWORD in .env to run smoke against a verified account.'
+      );
     }
     auth = { token: registerBody.token };
   }
@@ -62,9 +77,11 @@ function request(method, path, body, headers = {}) {
     { word: `smoke_word_${Date.now()}_3`, definition: 'smoke definition three', difficulty: 4, domain: 'general', targetScoreRange: '600-700', learningStatus: 'in_progress' },
   ];
 
-  for (const entry of seedWords) {
-    const createWord = await request('POST', '/api/words', entry, { Authorization: `Bearer ${auth.token}` });
-    if (createWord.status !== 201) throw new Error(`seed word failed: ${createWord.status} ${createWord.text}`);
+  if (role === 'creator') {
+    for (const entry of seedWords) {
+      const createWord = await request('POST', '/api/words', entry, { Authorization: `Bearer ${auth.token}` });
+      if (createWord.status !== 201) throw new Error(`seed word failed: ${createWord.status} ${createWord.text}`);
+    }
   }
 
   const plan = await request('GET', '/api/progress/study-plan?minutes=20&wordCount=8', null, { Authorization: `Bearer ${auth.token}` });
