@@ -12,6 +12,38 @@ const { connectDB, isDbConnected } = require('./src/config/db');
 const app = express();
 const isProduction = String(process.env.NODE_ENV || '').toLowerCase() === 'production';
 
+function normalizeOrigin(rawOrigin) {
+  try {
+    const parsed = new URL(String(rawOrigin || '').trim());
+    const isDefaultPort =
+      (parsed.protocol === 'https:' && (parsed.port === '' || parsed.port === '443'))
+      || (parsed.protocol === 'http:' && (parsed.port === '' || parsed.port === '80'));
+    const portPart = isDefaultPort ? '' : `:${parsed.port}`;
+    return `${parsed.protocol}//${parsed.hostname.toLowerCase()}${portPart}`;
+  } catch {
+    return '';
+  }
+}
+
+function addOriginWithVariants(originSet, rawOrigin) {
+  const normalized = normalizeOrigin(rawOrigin);
+  if (!normalized) return;
+  originSet.add(normalized);
+
+  try {
+    const parsed = new URL(normalized);
+    const host = parsed.hostname.toLowerCase();
+    if (host === 'localhost' || host === '127.0.0.1') return;
+
+    const alternateHost = host.startsWith('www.') ? host.slice(4) : `www.${host}`;
+    if (!alternateHost) return;
+    const alt = `${parsed.protocol}//${alternateHost}${parsed.port ? `:${parsed.port}` : ''}`;
+    originSet.add(alt);
+  } catch {
+    // Ignore malformed alternate variants.
+  }
+}
+
 function validateProductionConfig() {
   if (!isProduction) return;
   const problems = [];
@@ -62,17 +94,24 @@ app.use(helmet({
   }
 }));
 
-const explicitOrigins = new Set([
-  process.env.CLIENT_URL || 'http://localhost:3000',
-  'http://localhost:3000',
-  'http://127.0.0.1:3000',
-]);
+const explicitOrigins = new Set();
+addOriginWithVariants(explicitOrigins, process.env.CLIENT_URL || 'http://localhost:3000');
+addOriginWithVariants(explicitOrigins, 'http://localhost:3000');
+addOriginWithVariants(explicitOrigins, 'http://127.0.0.1:3000');
 const localOriginPattern = /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/;
+
+function isAllowedOrigin(origin) {
+  if (!origin) return true;
+  const normalized = normalizeOrigin(origin);
+  if (explicitOrigins.has(normalized)) return true;
+  if (localOriginPattern.test(normalized)) return true;
+  return false;
+}
 
 app.use(cors({
   origin: (origin, callback) => {
     // Allow same-origin requests and local tooling that may not send Origin.
-    if (!origin || explicitOrigins.has(origin) || localOriginPattern.test(origin)) {
+    if (isAllowedOrigin(origin)) {
       return callback(null, true);
     }
     return callback(new Error('Not allowed by CORS'));
@@ -124,7 +163,7 @@ app.use('/api', (req, res, next) => {
   const hasAuthCookie = String(req.headers.cookie || '').split(';').some((part) => part.trim().startsWith('vm_auth='));
   if (!hasAuthCookie) return next();
   const origin = String(req.headers.origin || '');
-  if (origin && (explicitOrigins.has(origin) || localOriginPattern.test(origin))) return next();
+  if (origin && isAllowedOrigin(origin)) return next();
   if (!origin && String(req.headers.authorization || '').startsWith('Bearer ')) return next();
   return res.status(403).json({ message: 'Request origin is not allowed.' });
 });
