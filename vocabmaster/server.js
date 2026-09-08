@@ -122,8 +122,10 @@ if (railwayStaticUrl) {
 addOriginWithVariants(explicitOrigins, 'http://localhost:3000');
 addOriginWithVariants(explicitOrigins, 'http://127.0.0.1:3000');
 const localOriginPattern = /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/;
+const allowAllCorsOrigins = String(process.env.CORS_ALLOW_ALL || 'true').toLowerCase() === 'true';
 
 function isAllowedOrigin(origin) {
+  if (allowAllCorsOrigins) return true;
   if (!origin) return true;
   const normalized = normalizeOrigin(origin);
   if (explicitOrigins.has(normalized)) return true;
