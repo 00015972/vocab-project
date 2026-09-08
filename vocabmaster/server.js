@@ -96,6 +96,29 @@ app.use(helmet({
 
 const explicitOrigins = new Set();
 addOriginWithVariants(explicitOrigins, process.env.CLIENT_URL || 'http://localhost:3000');
+
+const configuredCorsOrigins = String(process.env.CORS_ORIGINS || '')
+  .split(',')
+  .map((entry) => entry.trim())
+  .filter(Boolean);
+for (const origin of configuredCorsOrigins) {
+  addOriginWithVariants(explicitOrigins, origin);
+}
+
+// Safety net for production: keep primary web origins accepted even when
+// environment variables are stale or partially configured.
+if (isProduction) {
+  addOriginWithVariants(explicitOrigins, 'https://taleemlexicon.com');
+  addOriginWithVariants(explicitOrigins, 'https://www.taleemlexicon.com');
+}
+
+const railwayStaticUrl = String(process.env.RAILWAY_STATIC_URL || '').trim();
+if (railwayStaticUrl) {
+  const normalizedRailwayOrigin = railwayStaticUrl.startsWith('http')
+    ? railwayStaticUrl
+    : `https://${railwayStaticUrl}`;
+  addOriginWithVariants(explicitOrigins, normalizedRailwayOrigin);
+}
 addOriginWithVariants(explicitOrigins, 'http://localhost:3000');
 addOriginWithVariants(explicitOrigins, 'http://127.0.0.1:3000');
 const localOriginPattern = /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/;
