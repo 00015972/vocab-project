@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const { OAuth2Client } = require('google-auth-library');
 const User = require('../models/User');
-const { sendVerificationEmail, sendPasswordResetEmail, isEmailServiceConfigured } = require('../services/email');
+const { sendPasswordResetEmail, isEmailServiceConfigured } = require('../services/email');
 const authMiddleware = require('../middleware/auth');
 const { isDbConnected } = require('../config/db');
 const devStore = require('../services/devStore');
@@ -223,11 +223,6 @@ router.post('/register', async (req, res) => {
       resolvedCreatorCode = await generateUniqueCreatorCode();
     }
 
-    const emailConfigured = isEmailServiceConfigured();
-    if (isProductionMode() && !emailConfigured) {
-      return res.status(503).json({ message: 'Registration is temporarily unavailable because email verification is not configured.' });
-    }
-    const verificationToken = emailConfigured ? crypto.randomBytes(32).toString('hex') : null;
     const user = new User({
       name,
       email,
@@ -235,34 +230,11 @@ router.post('/register', async (req, res) => {
       role: normalizedRole,
       creatorCode: resolvedCreatorCode,
       linkedCreatorCode: normalizedRole === 'student' && linkedCreatorCode ? linkedCreatorCode.toUpperCase() : undefined,
-      ...(emailConfigured
-        ? {
-            verificationToken: hashOneTimeToken(verificationToken),
-            verificationExpires: new Date(Date.now() + 24 * 60 * 60 * 1000),
-          }
-        : { isVerified: true }),
+      isVerified: true,
     });
     await user.save();
 
     const userResp = buildAuthUser(user);
-
-    if (emailConfigured) {
-      try {
-        await sendVerificationEmail(email, name, verificationToken);
-      } catch (emailErr) {
-        console.error('Verification email send error:', emailErr);
-        await User.deleteOne({ _id: user._id, isVerified: false });
-        return res.status(502).json({
-          message: 'Registration could not be completed because the verification email failed. Please try again later.',
-        });
-      }
-      return res.status(201).json({
-        user: userResp,
-        message: 'Registration successful! Please check your email to verify your account.',
-        emailVerificationRequired: true,
-        creatorCode: user.creatorCode || null,
-      });
-    }
     establishAuthSession(res, user);
     return res.status(201).json({
       user: userResp,
@@ -324,10 +296,6 @@ router.post('/login', async (req, res) => {
     const effectiveRole = user.role || 'creator';
     if (expectedRole && expectedRole !== effectiveRole) {
       return res.status(403).json({ message: `This account is registered as ${effectiveRole}. Use the correct portal.` });
-    }
-
-    if (!user.isVerified) {
-      return res.status(403).json({ message: 'Please verify your email before logging in. Check your inbox.' });
     }
 
     user.lastLogin = new Date();
