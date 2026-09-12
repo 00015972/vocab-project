@@ -1,0 +1,40 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "start-vocabmaster",
+			"type": "shell",
+			"command": "node server.js",
+			"args": [],
+			"isBackground": true,
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "smoke-vocabmaster",
+			"type": "shell",
+			"command": "node scripts/smoke-test.js",
+			"args": [],
+			"problemMatcher": [],
+			"group": "test"
+		},
+		{
+			"label": "Verify planner regression tests",
+			"type": "shell",
+			"command": "node --test tests/progressionWiring.test.js tests/behaviorAnalytics.test.js",
+			"problemMatcher": [],
+			"group": "test"
+		},
+		{
+			"label": "test-study-plan-part1",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"tests/studyPlan.part1.contract.test.js"
+			],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "test"
+		}
+	]
+}
