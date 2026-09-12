@@ -250,6 +250,40 @@ router.post('/register', async (req, res) => {
   }
 });
 
+// POST /api/auth/creator-access
+router.post('/creator-access', async (req, res) => {
+  try {
+    if (!requirePersistentDatabase(res)) return;
+    const creatorCode = String(req.body.creatorCode || '').trim().toUpperCase();
+    if (!creatorCode) {
+      return res.status(400).json({ message: 'Creator code is required.' });
+    }
+
+    let user = null;
+    if (isDbConnected()) {
+      user = await User.findOne({ creatorCode: creatorCode, role: 'creator' }).exec();
+    } else {
+      user = devStore.listUsers().find((entry) => String(entry.role || 'student').toLowerCase() === 'creator' && String(entry.creatorCode || '').toUpperCase() === creatorCode);
+    }
+
+    if (!user) {
+      return res.status(403).json({ message: 'Invalid creator code.' });
+    }
+    if (user.isActive === false) {
+      return res.status(403).json({ message: 'Your creator account is deactivated.' });
+    }
+
+    establishAuthSession(res, user);
+    return res.json({
+      user: buildAuthUser(user),
+      message: 'Creator access granted.',
+    });
+  } catch (err) {
+    console.error('Creator access error:', err);
+    return res.status(500).json({ message: 'Creator access failed.' });
+  }
+});
+
 // POST /api/auth/login
 router.post('/login', async (req, res) => {
   try {

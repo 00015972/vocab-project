@@ -143,18 +143,14 @@
     </div>
 
     <div class="title">Creator Control</div>
-    <div class="muted">Sign in with your creator account email and password.</div>
+    <div class="muted">Enter your creator code to open the creator dashboard.</div>
 
     <div id="alertBox"></div>
 
     <form id="creatorForm">
       <div class="form-group">
-        <label for="creatorEmail">Email</label>
-        <input type="email" id="creatorEmail" autocomplete="email" placeholder="creator@example.com" required />
-      </div>
-      <div class="form-group">
-        <label for="creatorPassword">Password</label>
-        <input type="password" id="creatorPassword" autocomplete="current-password" placeholder="Enter your password" required />
+        <label for="creatorCode">Creator Code</label>
+        <input type="text" id="creatorCode" autocomplete="off" placeholder="e.g. ABCD1234" maxlength="20" required />
       </div>
 
       <button type="submit" id="submitBtn">Open Dashboard</button>
@@ -168,26 +164,43 @@
   <div id="toast"></div>
   <script src="/js/api.js"></script>
   <script>
+    function escapeHtml(value) {
+      return String(value || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/\"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function setLoading(button, isLoading, text) {
+      if (!button) return;
+      button.disabled = isLoading;
+      button.textContent = isLoading ? text : 'Open Dashboard';
+    }
+
     const form = document.getElementById('creatorForm');
     form.addEventListener('submit', async function (event) {
       event.preventDefault();
-      const email = document.getElementById('creatorEmail').value.trim();
-      const password = document.getElementById('creatorPassword').value;
+      const creatorCode = document.getElementById('creatorCode').value.trim();
       const submitBtn = document.getElementById('submitBtn');
       const alertBox = document.getElementById('alertBox');
 
       alertBox.innerHTML = '';
-      setLoading(submitBtn, true, 'Entering...');
+      setLoading(submitBtn, true, 'Checking code...');
 
       try {
-        const data = await api.post('/auth/login', { email, password, role: 'creator' });
-        setAuth(null, data.user);
-        // use relative redirect to respect hosting subpaths
-        window.location.href = 'creator-dashboard-new.html';
+        const data = await api.post('/auth/creator-access', { creatorCode });
+        if (data && data.user) {
+          setAuth(null, data.user);
+          window.location.href = '/creator-dashboard-new.html';
+          return;
+        }
+        throw new Error('Creator access could not be confirmed.');
       } catch (err) {
-        alertBox.innerHTML = '<div class="alert alert-error">' + esc(err.message) + '</div>';
+        alertBox.innerHTML = '<div class="alert alert-error">' + escapeHtml(err && err.message ? err.message : 'Invalid creator code.') + '</div>';
       } finally {
-        setLoading(submitBtn, false, 'Enter Creator Studio');
+        setLoading(submitBtn, false, 'Open Dashboard');
       }
     });
   </script>
