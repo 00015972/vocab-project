@@ -721,31 +721,56 @@
 
         @media (max-width: 768px) {
             body {
-                display: block;
-                padding: 1rem 0.75rem 2rem;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 1rem;
+                overflow: auto;
             }
 
             .container {
-                width: 100%;
+                width: min(100%, 900px);
                 min-height: 0;
                 max-width: 100%;
                 max-height: none;
+                height: auto;
                 margin: 0 auto;
-                border-radius: 18px;
+                border-radius: 16px;
+                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
             }
 
-            .container .right-panel {
-                padding: 16px;
+            .content {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                min-height: 540px;
+            }
+
+            .left-panel {
+                display: flex;
+            }
+
+            .right-panel {
+                padding: 2rem 1.5rem;
             }
 
             .title {
-                font-size: 24px;
+                font-size: 1.5rem;
+            }
+
+            .subtitle,
+            .auth-mode,
+            .social-auth p {
+                font-size: 0.85rem;
             }
 
             .form-footer {
-                flex-direction: column;
-                align-items: flex-start;
+                flex-direction: row;
+                align-items: center;
                 gap: 0.75rem;
+            }
+
+            .social-auth {
+                flex-direction: row;
             }
         }
     </style>
