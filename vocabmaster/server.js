@@ -218,14 +218,32 @@ if (isProduction) {
 
 app.use(session(sessionOptions));
 
-// CSRF protection middleware - skip for API routes
+// CSRF protection should only apply to state-changing requests.
+// Public page loads, static frontend assets, and API requests are allowed.
 const csrfProtection = csrf({ cookie: false });
 app.use((req, res, next) => {
-  // Skip CSRF for API routes (they use JWT instead)
+  const safeMethods = ['GET', 'HEAD', 'OPTIONS'];
+
+  if (safeMethods.includes(req.method)) {
+    return next();
+  }
+
   if (req.path.startsWith('/api/')) {
     return next();
   }
-  csrfProtection(req, res, next);
+
+  if (
+    req.path === '/' ||
+    req.path.endsWith('.html') ||
+    req.path.startsWith('/public/') ||
+    req.path.startsWith('/css/') ||
+    req.path.startsWith('/js/') ||
+    req.path.startsWith('/assets/')
+  ) {
+    return next();
+  }
+
+  return csrfProtection(req, res, next);
 });
 
 app.get('/api/health', (req, res) => {
