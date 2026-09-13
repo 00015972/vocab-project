@@ -7,7 +7,10 @@ const session = require('express-session');
 const MongoStore = require('connect-mongo');
 const csrf = require('express-csurf');
 const path = require('path');
+const passport = require('passport');
+const GitHubStrategy = require('passport-github2').Strategy;
 const { connectDB, isDbConnected } = require('./src/config/db');
+const User = require('./src/models/User');
 
 const app = express();
 const isProduction = String(process.env.NODE_ENV || '').toLowerCase() === 'production';
@@ -218,6 +221,56 @@ if (isProduction) {
 
 app.use(session(sessionOptions));
 
+// Initialize Passport
+app.use(passport.initialize());
+app.use(passport.session());
+
+// Passport serialization
+passport.serializeUser((user, done) => {
+  done(null, user._id);
+});
+
+passport.deserializeUser(async (id, done) => {
+  try {
+    const user = await User.findById(id);
+    done(null, user);
+  } catch (err) {
+    done(err);
+  }
+});
+
+// GitHub OAuth Strategy
+if (process.env.GITHUB_CLIENT_ID && process.env.GITHUB_CLIENT_SECRET) {
+  passport.use(new GitHubStrategy({
+    clientID: process.env.GITHUB_CLIENT_ID,
+    clientSecret: process.env.GITHUB_CLIENT_SECRET,
+    callbackURL: `${process.env.CLIENT_URL || 'http://localhost:3000'}/auth/github/callback`,
+    passReqToCallback: false,
+  }, async (accessToken, refreshToken, profile, done) => {
+    try {
+      const email = profile.emails && profile.emails.length > 0 ? profile.emails[0].value : `${profile.username}@github.local`;
+      let user = await User.findOne({ email });
+      
+      if (!user) {
+        user = new User({
+          name: profile.displayName || profile.username || 'GitHub User',
+          email,
+          passwordHash: '', // OAuth users don't have passwords
+          role: 'student',
+          githubId: profile.id,
+          avatar: profile.photos && profile.photos[0] ? profile.photos[0].value : null,
+          isVerified: true,
+        });
+        await user.save();
+      }
+      
+      done(null, user);
+    } catch (err) {
+      done(err);
+    }
+  }));
+}
+
 // CSRF protection middleware - skip for API routes
 const csrfProtection = csrf({ cookie: false });
 app.use((req, res, next) => {
@@ -242,6 +295,57 @@ app.get('/api/csrf-token', csrfProtection, (req, res) => {
 
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index-ultra.html'));
+});
+
+// GitHub OAuth routes
+app.get('/auth/github', (req, res, next) => {
+  if (!process.env.GITHUB_CLIENT_ID || !process.env.GITHUB_CLIENT_SECRET) {
+    return res.status(503).json({ message: 'GitHub OAuth is not configured.' });
+  }
+  passport.authenticate('github', { scope: ['user:email'], session: false })(req, res, next);
+});
+
+app.get('/auth/github/callback', (req, res, next) => {
+  passport.authenticate('github', { session: false }, (err, user, info) => {
+    if (err) {
+      console.error('GitHub auth error:', err);
+      return res.redirect('/login-ultra.html?error=github_auth_failed');
+    }
+    if (!user) {
+      console.error('GitHub auth: no user returned');
+      return res.redirect('/login-ultra.html?error=github_auth_failed');
+    }
+    try {
+      const jwt = require('jsonwebtoken');
+      const AUTH_COOKIE_NAME = 'vm_auth';
+      const AUTH_COOKIE_MAX_AGE_MS = Math.max(60_000, Number(process.env.JWT_COOKIE_MAX_AGE_MS) || (7 * 24 * 60 * 60 * 1000));
+      
+      const token = jwt.sign(
+        { id: String(user._id) },
+        process.env.JWT_SECRET,
+        {
+          algorithm: 'HS256',
+          expiresIn: process.env.JWT_EXPIRES_IN || '7d',
+          issuer: 'vocabmaster',
+          audience: 'vocabmaster-web',
+          subject: String(user._id),
+        }
+      );
+      
+      res.cookie(AUTH_COOKIE_NAME, token, {
+        httpOnly: true,
+        secure: isProduction,
+        sameSite: 'strict',
+        path: '/',
+        maxAge: AUTH_COOKIE_MAX_AGE_MS,
+      });
+      
+      res.redirect('/student-learn-v3.html');
+    } catch (redirectErr) {
+      console.error('GitHub auth redirect error:', redirectErr);
+      res.redirect('/login-ultra.html?error=session_error');
+    }
+  })(req, res, next);
 });
 
 app.use(express.static(path.join(__dirname, 'public')));

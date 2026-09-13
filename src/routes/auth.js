@@ -644,6 +644,12 @@ router.post('/logout', authMiddleware, async (req, res) => {
   }
 });
 
+// GET /api/auth/github/config - Check if GitHub OAuth is configured
+router.get('/github/config', (req, res) => {
+  const enabled = !!(process.env.GITHUB_CLIENT_ID && process.env.GITHUB_CLIENT_SECRET);
+  res.json({ enabled });
+});
+
 module.exports = router;
 module.exports.__internals = {
   isValidCreatorAccessCode,
