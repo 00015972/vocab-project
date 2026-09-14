@@ -1566,18 +1566,16 @@
       try {
         const hasAccess = await ensureCreatorAccess();
         if (!hasAccess) {
-          document.querySelector('.shell').classList.add('hidden');
-          document.getElementById('creatorGate').classList.remove('hidden');
-          const gateText = document.querySelector('.gate-card p');
-          if (gateText) gateText.textContent = 'We couldn\'t open Creator Studio automatically. Please use the creator portal to enter your access code.';
+          // Redirect unauthenticated users to the Creator Portal immediately.
+          window.location.href = '/creator-portal.html';
           return;
         }
 
         const me = await api.get('/auth/me');
         currentUser = me.user;
         if ((currentUser.role || 'student') !== 'creator') {
-          document.querySelector('.shell').classList.add('hidden');
-          document.getElementById('creatorGate').classList.remove('hidden');
+          // If the authenticated user is not a creator, redirect to the portal.
+          window.location.href = '/creator-portal.html';
           return;
         }
         document.getElementById('subtitle').textContent = 'Welcome back, ' + (currentUser.name || 'Creator');
