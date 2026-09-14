@@ -246,8 +246,30 @@ router.post('/register', async (req, res) => {
 // POST /api/auth/creator-access
 router.post('/creator-access', async (req, res) => {
   try {
-    if (!requirePersistentDatabase(res)) return;
     const creatorCode = String(req.body.creatorCode || '').trim().toUpperCase();
+
+    // If the configured secret access code matches, grant direct portal access
+    // without requiring an existing creator user account.
+    try {
+      if (validateCreatorAccessCode(creatorCode)) {
+        const syntheticUser = {
+          _id: `creator-access-${Date.now()}`,
+          name: 'Creator',
+          email: null,
+          role: 'creator',
+          creatorCode: creatorCode,
+          linkedCreatorCode: null,
+          createdAt: new Date().toISOString(),
+          isActive: true,
+        };
+        establishAuthSession(res, syntheticUser);
+        return res.json({ user: buildAuthUser(syntheticUser), message: 'Creator access granted.' });
+      }
+    } catch (e) {
+      // if validator fails for any reason, fall back to normal flow
+    }
+
+    if (!requirePersistentDatabase(res)) return;
     if (!creatorCode) {
       return res.status(400).json({ message: 'Creator code is required.' });
     }
