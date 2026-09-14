@@ -43,11 +43,11 @@ async function getDeckAccessContext(userId) {
       return { user, role, sourceUserIds: [userId] };
     }
     if (role === 'student') {
-      // Restrict student browsing to their linked creator only
-      const linkedCode = String(user.linkedCreatorCode || '').trim().toUpperCase();
-      if (!linkedCode) return { user, role, sourceUserIds: [] };
-      const creator = devStore.listUsers().find((entry) => String(entry.creatorCode || '').trim().toUpperCase() === linkedCode);
-      return creator ? { user, role, sourceUserIds: [String(creator._id)] } : { user, role, sourceUserIds: [] };
+      const creatorIds = devStore
+        .listUsers()
+        .filter((entry) => (entry.role || 'student') === 'creator')
+        .map((entry) => String(entry._id));
+      return { user, role, sourceUserIds: creatorIds };
     }
     return { user, role, sourceUserIds: [userId] };
   }
@@ -59,11 +59,8 @@ async function getDeckAccessContext(userId) {
     return { user, role, sourceUserIds: [userId] };
   }
   if (role === 'student') {
-    // Limit student browsing to their linked creator only
-    const linkedCode = String(user.linkedCreatorCode || '').trim().toUpperCase();
-    if (!linkedCode) return { user, role, sourceUserIds: [] };
-    const creator = await User.findOne({ creatorCode: linkedCode }).select('_id').lean();
-    return creator ? { user, role, sourceUserIds: [String(creator._id)] } : { user, role, sourceUserIds: [] };
+    const creatorRows = await User.find({ role: 'creator' }).select('_id').lean();
+    return { user, role, sourceUserIds: creatorRows.map((entry) => String(entry._id)) };
   }
   return { user, role, sourceUserIds: [userId] };
 }

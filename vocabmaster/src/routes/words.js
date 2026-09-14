@@ -1102,36 +1102,27 @@ async function getWordAccessContext(userId) {
       };
     }
     if (role === 'student') {
-      // Restrict student access to the single creator identified by their linkedCreatorCode.
-      const linkedCode = String(user.linkedCreatorCode || '').trim().toUpperCase();
-      if (!linkedCode) {
+      const creatorIds = devStore
+        .listUsers()
+        .filter((entry) => (entry.role || 'student') === 'creator')
+        .map((entry) => String(entry._id));
+      if (creatorIds.length) {
         return {
           user,
           role,
-          sourceUserId: null,
-          sourceUserIds: [],
+          sourceUserId: creatorIds[0],
+          sourceUserIds: creatorIds,
           canManageWords: false,
-          hasCreatorContent: false,
-        };
-      }
-      const creator = devStore.listUsers().find((entry) => String(entry.creatorCode || '').trim().toUpperCase() === linkedCode);
-      if (!creator) {
-        return {
-          user,
-          role,
-          sourceUserId: null,
-          sourceUserIds: [],
-          canManageWords: false,
-          hasCreatorContent: false,
+          hasCreatorContent: true,
         };
       }
       return {
         user,
         role,
-        sourceUserId: String(creator._id),
-        sourceUserIds: [String(creator._id)],
+        sourceUserId: null,
+        sourceUserIds: [],
         canManageWords: false,
-        hasCreatorContent: true,
+        hasCreatorContent: false,
       };
     }
     return { user, role: 'creator', sourceUserId: userId, sourceUserIds: [userId], canManageWords: true, hasCreatorContent: true };
@@ -1151,36 +1142,25 @@ async function getWordAccessContext(userId) {
     };
   }
   if (role === 'student') {
-    // Limit student scope to their linked creator (if any).
-    const linkedCode = String(user.linkedCreatorCode || '').trim().toUpperCase();
-    if (!linkedCode) {
+    const creatorRows = await User.find({ role: 'creator' }).select('_id').lean();
+    const creatorIds = creatorRows.map((entry) => String(entry._id));
+    if (creatorIds.length) {
       return {
         user,
         role,
-        sourceUserId: null,
-        sourceUserIds: [],
+        sourceUserId: creatorIds[0],
+        sourceUserIds: creatorIds,
         canManageWords: false,
-        hasCreatorContent: false,
-      };
-    }
-    const creator = await User.findOne({ creatorCode: linkedCode }).select('_id').lean();
-    if (!creator) {
-      return {
-        user,
-        role,
-        sourceUserId: null,
-        sourceUserIds: [],
-        canManageWords: false,
-        hasCreatorContent: false,
+        hasCreatorContent: true,
       };
     }
     return {
       user,
       role,
-      sourceUserId: String(creator._id),
-      sourceUserIds: [String(creator._id)],
+      sourceUserId: null,
+      sourceUserIds: [],
       canManageWords: false,
-      hasCreatorContent: true,
+      hasCreatorContent: false,
     };
   }
   return { user, role: 'creator', sourceUserId: userId, sourceUserIds: [userId], canManageWords: true, hasCreatorContent: true };
