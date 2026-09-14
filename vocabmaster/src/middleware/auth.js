@@ -49,6 +49,28 @@ async function authMiddleware(req, res, next) {
     const userId = String(decoded.sub || decoded.id || '');
     if (!userId) throw new Error('Token subject is missing.');
 
+    // If this is a synthetic creator-access session (no DB record), allow it
+    // by reconstructing the authenticated user from token claims. Synthetic
+    // session IDs use prefix `creator-access-`.
+    if (userId.startsWith('creator-access-')) {
+      const authUser = {
+        _id: userId,
+        name: 'Creator',
+        email: decoded.email || null,
+        role: 'creator',
+        creatorCode: decoded.creatorCode || null,
+        linkedCreatorCode: null,
+        avatar: null,
+        createdAt: new Date().toISOString(),
+        isVerified: true,
+        isActive: true,
+        sessionVersion: Math.max(0, Number(decoded.sessionVersion) || 0),
+      };
+      req.user = { id: userId };
+      req.authUser = authUser;
+      return next();
+    }
+
     if (String(process.env.NODE_ENV || '').toLowerCase() === 'production' && !isDbConnected()) {
       return res.status(503).json({ message: 'Authentication is temporarily unavailable.' });
     }

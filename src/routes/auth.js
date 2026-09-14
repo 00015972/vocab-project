@@ -89,7 +89,9 @@ function getGoogleClient() {
 function issueAuthToken(user) {
   const userId = String(user && (user._id || user.id) || '');
   const sessionVersion = Math.max(0, Number(user && user.sessionVersion) || 0);
-  return jwt.sign({ id: userId, sessionVersion }, process.env.JWT_SECRET, {
+  const payload = { id: userId, sessionVersion };
+  if (user && user.creatorCode) payload.creatorCode = String(user.creatorCode);
+  return jwt.sign(payload, process.env.JWT_SECRET, {
     algorithm: 'HS256',
     expiresIn: process.env.JWT_EXPIRES_IN || '7d',
     issuer: JWT_ISSUER,
