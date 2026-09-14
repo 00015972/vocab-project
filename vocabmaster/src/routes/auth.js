@@ -673,7 +673,7 @@ router.post('/logout', authMiddleware, async (req, res) => {
 
 module.exports = router;
 module.exports.__internals = {
-  isValidCreatorAccessCode,
+  validateCreatorAccessCode,
   validatePassword,
   hashOneTimeToken,
   authCookieOptions,
