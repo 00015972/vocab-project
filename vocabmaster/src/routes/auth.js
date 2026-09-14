@@ -9,9 +9,9 @@ const { sendPasswordResetEmail, isEmailServiceConfigured } = require('../service
 const authMiddleware = require('../middleware/auth');
 const { isDbConnected } = require('../config/db');
 const devStore = require('../services/devStore');
+const { validateCreatorAccessCode } = require('../services/creatorAccessValidator');
 
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || '';
-const CREATOR_ACCESS_CODE = String(process.env.CREATOR_ACCESS_CODE || '').trim();
 const AUTH_COOKIE_NAME = 'vm_auth';
 const AUTH_COOKIE_MAX_AGE_MS = Math.max(60_000, Number(process.env.JWT_COOKIE_MAX_AGE_MS) || (7 * 24 * 60 * 60 * 1000));
 const JWT_ISSUER = 'vocabmaster';
@@ -28,14 +28,7 @@ function normalizeEmail(value) {
   return String(value || '').trim().toLowerCase();
 }
 
-function isValidCreatorAccessCode(candidateCode) {
-  const candidate = Buffer.from(String(candidateCode || '').trim(), 'utf8');
-  const configured = Buffer.from(CREATOR_ACCESS_CODE, 'utf8');
-  return candidate.length > 0
-    && configured.length > 0
-    && candidate.length === configured.length
-    && crypto.timingSafeEqual(candidate, configured);
-}
+
 
 function validatePassword(password, label = 'Password') {
   if (typeof password !== 'string') return `${label} is required.`;
@@ -163,7 +156,7 @@ router.post('/register', async (req, res) => {
       if (!CREATOR_ACCESS_CODE) {
         return res.status(403).json({ message: 'Creator registration is disabled.' });
       }
-      if (!isValidCreatorAccessCode(creatorPortalCode)) {
+      if (!validateCreatorAccessCode(creatorPortalCode)) {
         return res.status(403).json({ message: 'Invalid creator access code.' });
       }
     }
