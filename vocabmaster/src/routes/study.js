@@ -265,10 +265,8 @@ async function resolveDiagnosticWordOwnerIds(userId) {
     if (!user) return [];
     const role = String(user.role || 'student').toLowerCase();
     if (role === 'student') {
-      const linkedCode = String(user.linkedCreatorCode || '').trim().toUpperCase();
-      if (!linkedCode) return [];
-      const linkedCreator = devStore.listUsers().find((entry) => String(entry.creatorCode || '').trim().toUpperCase() === linkedCode);
-      return linkedCreator ? [String(linkedCreator._id)] : [];
+      // No class model: students should be able to access creator content globally.
+      return ['*'];
     }
     return [String(user._id)];
   }
@@ -276,10 +274,8 @@ async function resolveDiagnosticWordOwnerIds(userId) {
   const user = await User.findById(userId).select('role linkedCreatorCode').lean();
   if (!user) return [];
   if (String(user.role || 'student').toLowerCase() === 'student') {
-    const linkedCode = String(user.linkedCreatorCode || '').trim().toUpperCase();
-    if (!linkedCode) return [];
-    const creator = await User.findOne({ creatorCode: linkedCode }).select('_id').lean();
-    return creator ? [String(creator._id)] : [];
+    // No class model: students should be able to access creator content globally.
+    return ['*'];
   }
   return [String(user._id)];
 }
