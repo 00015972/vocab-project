@@ -252,6 +252,29 @@ router.post('/creator-access', async (req, res) => {
     // without requiring an existing creator user account.
     try {
       if (validateCreatorAccessCode(creatorCode)) {
+        // If DB is available, create or locate a persistent creator user so
+        // subsequent authenticated requests (which look up the user in DB)
+        // succeed. If DB is not available, fall back to a synthetic session.
+        if (isDbConnected()) {
+          let dbUser = await User.findOne({ creatorCode: creatorCode, role: 'creator' }).exec();
+          if (!dbUser) {
+            const randomPass = crypto.randomBytes(12).toString('base64').slice(0, 16);
+            const syntheticEmail = `creator-access-${Date.now()}@no-reply.taleem`;
+            dbUser = new User({
+              name: 'Creator',
+              email: syntheticEmail,
+              password: randomPass,
+              isVerified: true,
+              isActive: true,
+              role: 'creator',
+              creatorCode: creatorCode,
+            });
+            await dbUser.save();
+          }
+          establishAuthSession(res, dbUser);
+          return res.json({ user: buildAuthUser(dbUser), message: 'Creator access granted.' });
+        }
+
         const syntheticUser = {
           _id: `creator-access-${Date.now()}`,
           name: 'Creator',

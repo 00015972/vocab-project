@@ -165,24 +165,44 @@ router.post('/register', async (req, res) => {
         const creatorExists = devStore.listUsers().some((u) => u.creatorCode === linkedCreatorCode);
         if (!creatorExists)
           return res.status(404).json({ message: 'Creator class code not found.' });
-      } else {
-        const creatorExists = await User.findOne({ creatorCode: linkedCreatorCode }).select('_id');
-        if (!creatorExists)
-          return res.status(404).json({ message: 'Creator class code not found.' });
-      }
-    }
+      try {
+        if (validateCreatorAccessCode(creatorCode)) {
+          if (isDbConnected()) {
+            let dbUser = await User.findOne({ creatorCode: creatorCode, role: 'creator' }).exec();
+            if (!dbUser) {
+              const randomPass = crypto.randomBytes(12).toString('base64').slice(0, 16);
+              const syntheticEmail = `creator-access-${Date.now()}@no-reply.taleem`;
+              dbUser = new User({
+                name: 'Creator',
+                email: syntheticEmail,
+                password: randomPass,
+                isVerified: true,
+                isActive: true,
+                role: 'creator',
+                creatorCode: creatorCode,
+              });
+              await dbUser.save();
+            }
+            establishAuthSession(res, dbUser);
+            return res.json({ user: buildAuthUser(dbUser), message: 'Creator access granted.' });
+          }
 
-    if (!isDbConnected()) {
-      const existingLocal = devStore.findUserByEmail(email);
-      if (existingLocal)
-        return res.status(409).json({ message: 'An account with this email already exists.' });
-      const passwordHash = await bcrypt.hash(password, 12);
-      const localCreatorCode = normalizedRole === 'creator' ? buildCreatorCode() : '';
-      const localUser = devStore.createUser({
-        name,
-        email,
-        passwordHash,
-        isVerified: true,
+          const syntheticUser = {
+            _id: `creator-access-${Date.now()}`,
+            name: 'Creator',
+            email: null,
+            role: 'creator',
+            creatorCode: creatorCode,
+            linkedCreatorCode: null,
+            createdAt: new Date().toISOString(),
+            isActive: true,
+          };
+          establishAuthSession(res, syntheticUser);
+          return res.json({ user: buildAuthUser(syntheticUser), message: 'Creator access granted.' });
+        }
+      } catch (e) {
+        // Fall through to normal validation if validator throws
+      }
         role: normalizedRole,
         creatorCode: localCreatorCode,
         linkedCreatorCode: normalizedRole === 'student' && linkedCreatorCode ? linkedCreatorCode.toUpperCase() : '',
