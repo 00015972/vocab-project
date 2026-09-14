@@ -198,7 +198,8 @@
         }
         throw new Error('Creator access could not be confirmed.');
       } catch (err) {
-        alertBox.innerHTML = '<div class="alert alert-error">' + escapeHtml(err && err.message ? err.message : 'Invalid creator code.') + '</div>';
+        // Always show a concise, non-revealing message for invalid attempts.
+        alertBox.innerHTML = '<div class="alert alert-error">Wrong or invalid creator code.</div>';
       } finally {
         setLoading(submitBtn, false, 'Open Dashboard');
       }
