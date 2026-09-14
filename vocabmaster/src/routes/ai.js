@@ -147,8 +147,45 @@ function buildRuleBasedWordList(topic, numWords, level) {
   return seeded.slice(0, Math.max(1, Math.min(40, Number(numWords) || 10)));
 }
 
+async function callHuggingFaceForJson(prompt) {
+  const HF_KEY = String(process.env.HUGGINGFACE_API_KEY || '').trim();
+  const HF_MODEL = String(process.env.HUGGINGFACE_MODEL || 'google/flan-t5-large').trim();
+  if (!HF_KEY) throw new Error('Hugging Face API key not configured');
+  const url = `https://api-inference.huggingface.co/models/${HF_MODEL}`;
+  const payload = { inputs: prompt, parameters: { max_new_tokens: 800, temperature: 0.35 } };
+  const resp = await axios.post(url, payload, {
+    headers: { Authorization: `Bearer ${HF_KEY}`, Accept: 'application/json' },
+    timeout: 30000,
+  });
+
+  // Try to extract text from common HF responses
+  let content = '';
+  if (!resp || resp.data === undefined || resp.data === null) {
+    throw new Error('Empty Hugging Face response');
+  }
+  if (typeof resp.data === 'string') content = resp.data;
+  else if (Array.isArray(resp.data) && resp.data[0] && typeof resp.data[0].generated_text === 'string') content = resp.data[0].generated_text;
+  else if (resp.data && typeof resp.data.generated_text === 'string') content = resp.data.generated_text;
+  else content = typeof resp.data === 'object' ? JSON.stringify(resp.data) : String(resp.data);
+
+  const jsonText = extractJsonArrayText(content);
+  if (!jsonText) throw new Error('Hugging Face returned unexpected format.');
+  return JSON.parse(jsonText);
+}
+
 async function generateWordListWithFallback(prompt, options = {}) {
   const providerErrors = [];
+
+  // Try Hugging Face Inference API first (if configured)
+  try {
+    const hfWords = await callHuggingFaceForJson(prompt);
+    if (Array.isArray(hfWords) && hfWords.length) {
+      console.info('generateWordListWithFallback provider=huggingface words=' + hfWords.length);
+      return { words: hfWords, provider: 'huggingface', model: process.env.HUGGINGFACE_MODEL || 'google/flan-t5-large' };
+    }
+  } catch (err) {
+    providerErrors.push(summarizeProviderError('huggingface', err));
+  }
 
   try {
     const geminiPayload = await callGeminiForJson(prompt);
