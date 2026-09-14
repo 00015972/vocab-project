@@ -1149,14 +1149,8 @@ router.post('/enrich-words', async (req, res) => {
       return res.status(400).json({ message: 'No valid words found.' });
     }
 
-    const groqModel = String(process.env.GROQ_MODEL || 'canopylabs/orpheus-v1-english').trim();
-    const groq = getGroq();
-    console.info('AI enrich-words request using Groq model:', groqModel, 'words:', cleaned.length);
-    const completion = await groq.chat.completions.create({
-      model: groqModel,
-      messages: [{
-        role: 'user',
-        content: `For each word in this list, provide a clear definition, a natural example sentence, and the part of speech.
+    // Prefer Hugging Face for enrichment, then Gemini, then Groq as a final fallback.
+    const prompt = `For each word in this list, provide a clear definition, a natural example sentence, and the part of speech.
 
 Words: ${cleaned.map((w, i) => `${i + 1}. ${w}`).join('\n')}
 
@@ -1167,21 +1161,49 @@ Rules:
 - Part of speech: one of noun, verb, adjective, adverb, phrase, idiom, other.
 
 Respond ONLY with a valid JSON array, no markdown, no explanation:
-[{"word":"...","definition":"...","example":"...","partOfSpeech":"..."}]`
-      }],
-      max_tokens: 4000,
-      temperature: 0.4,
-    });
-
-    const raw = completion.choices[0].message.content.trim();
-    const match = raw.match(/\[[\s\S]*\]/);
-    if (!match) return res.status(500).json({ message: 'AI returned unexpected format.' });
+[{"word":"...","definition":"...","example":"...","partOfSpeech":"..."}]`;
 
     let enriched;
+
+    // Try Hugging Face first
     try {
-      enriched = JSON.parse(match[0]);
-    } catch {
-      return res.status(500).json({ message: 'AI response could not be parsed.' });
+      enriched = await callHuggingFaceForJson(prompt);
+      console.info('AI enrich-words response provider=huggingface model=' + (process.env.HUGGINGFACE_MODEL || 'google/flan-t5-large') + ' returned words=' + (Array.isArray(enriched) ? enriched.length : 0));
+    } catch (hfErr) {
+      // Try Gemini next
+      try {
+        const geminiPayload = await callGeminiForJson(prompt);
+        const gemWords = extractWordArrayFromPayload(geminiPayload);
+        if (Array.isArray(gemWords) && gemWords.length) {
+          enriched = gemWords;
+          console.info('AI enrich-words response provider=gemini model=' + GEMINI_MODEL + ' returned words=' + gemWords.length);
+        } else {
+          throw new Error('Gemini returned unexpected format.');
+        }
+      } catch (gemErr) {
+        // Final fallback to Groq (existing behavior)
+        const groqModel = String(process.env.GROQ_MODEL || 'canopylabs/orpheus-v1-english').trim();
+        const groq = getGroq();
+        console.info('AI enrich-words request using Groq model:', groqModel, 'words:', cleaned.length);
+        const completion = await groq.chat.completions.create({
+          model: groqModel,
+          messages: [{ role: 'user', content: prompt }],
+          max_tokens: 4000,
+          temperature: 0.4,
+        });
+
+        const raw = completion.choices[0].message.content.trim();
+        const match = raw.match(/\[[\s\S]*\]/);
+        if (!match) return res.status(500).json({ message: 'AI returned unexpected format.' });
+
+        try {
+          enriched = JSON.parse(match[0]);
+        } catch {
+          return res.status(500).json({ message: 'AI response could not be parsed.' });
+        }
+
+        console.info('AI enrich-words response provider=groq model=' + groqModel + ' returned words=' + (Array.isArray(enriched) ? enriched.length : 0));
+      }
     }
 
     const normalized = normalizeGeneratedWordList(enriched);
