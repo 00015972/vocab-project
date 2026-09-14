@@ -18,10 +18,10 @@ function normalizeCode(code) {
 }
 
 function validateCreatorAccessCode(candidate) {
-  const c = normalizeCode(candidate);
+  const c = normalizeCode(candidate).toUpperCase();
   if (!c) return false;
 
-  const configured = normalizeCode(process.env.CREATOR_ACCESS_CODE || '');
+  const configured = normalizeCode(process.env.CREATOR_ACCESS_CODE || '').toUpperCase();
   if (configured) {
     const candBuf = _toBuffer(c);
     const confBuf = _toBuffer(configured);
