@@ -1102,27 +1102,36 @@ async function getWordAccessContext(userId) {
       };
     }
     if (role === 'student') {
-      const creatorIds = devStore
-        .listUsers()
-        .filter((entry) => (entry.role || 'student') === 'creator')
-        .map((entry) => String(entry._id));
-      if (creatorIds.length) {
+      // Restrict student access to the single creator identified by their linkedCreatorCode.
+      const linkedCode = String(user.linkedCreatorCode || '').trim().toUpperCase();
+      if (!linkedCode) {
         return {
           user,
           role,
-          sourceUserId: creatorIds[0],
-          sourceUserIds: creatorIds,
+          sourceUserId: null,
+          sourceUserIds: [],
           canManageWords: false,
-          hasCreatorContent: true,
+          hasCreatorContent: false,
+        };
+      }
+      const creator = devStore.listUsers().find((entry) => String(entry.creatorCode || '').trim().toUpperCase() === linkedCode);
+      if (!creator) {
+        return {
+          user,
+          role,
+          sourceUserId: null,
+          sourceUserIds: [],
+          canManageWords: false,
+          hasCreatorContent: false,
         };
       }
       return {
         user,
         role,
-        sourceUserId: null,
-        sourceUserIds: [],
+        sourceUserId: String(creator._id),
+        sourceUserIds: [String(creator._id)],
         canManageWords: false,
-        hasCreatorContent: false,
+        hasCreatorContent: true,
       };
     }
     return { user, role: 'creator', sourceUserId: userId, sourceUserIds: [userId], canManageWords: true, hasCreatorContent: true };
@@ -1142,25 +1151,36 @@ async function getWordAccessContext(userId) {
     };
   }
   if (role === 'student') {
-    const creatorRows = await User.find({ role: 'creator' }).select('_id').lean();
-    const creatorIds = creatorRows.map((entry) => String(entry._id));
-    if (creatorIds.length) {
+    // Limit student scope to their linked creator (if any).
+    const linkedCode = String(user.linkedCreatorCode || '').trim().toUpperCase();
+    if (!linkedCode) {
       return {
         user,
         role,
-        sourceUserId: creatorIds[0],
-        sourceUserIds: creatorIds,
+        sourceUserId: null,
+        sourceUserIds: [],
         canManageWords: false,
-        hasCreatorContent: true,
+        hasCreatorContent: false,
+      };
+    }
+    const creator = await User.findOne({ creatorCode: linkedCode }).select('_id').lean();
+    if (!creator) {
+      return {
+        user,
+        role,
+        sourceUserId: null,
+        sourceUserIds: [],
+        canManageWords: false,
+        hasCreatorContent: false,
       };
     }
     return {
       user,
       role,
-      sourceUserId: null,
-      sourceUserIds: [],
+      sourceUserId: String(creator._id),
+      sourceUserIds: [String(creator._id)],
       canManageWords: false,
-      hasCreatorContent: false,
+      hasCreatorContent: true,
     };
   }
   return { user, role: 'creator', sourceUserId: userId, sourceUserIds: [userId], canManageWords: true, hasCreatorContent: true };

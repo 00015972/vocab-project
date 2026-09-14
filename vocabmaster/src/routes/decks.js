@@ -43,24 +43,27 @@ async function getDeckAccessContext(userId) {
       return { user, role, sourceUserIds: [userId] };
     }
     if (role === 'student') {
-      const creatorIds = devStore
-        .listUsers()
-        .filter((entry) => (entry.role || 'student') === 'creator')
-        .map((entry) => String(entry._id));
-      return { user, role, sourceUserIds: creatorIds };
+      // Restrict student browsing to their linked creator only
+      const linkedCode = String(user.linkedCreatorCode || '').trim().toUpperCase();
+      if (!linkedCode) return { user, role, sourceUserIds: [] };
+      const creator = devStore.listUsers().find((entry) => String(entry.creatorCode || '').trim().toUpperCase() === linkedCode);
+      return creator ? { user, role, sourceUserIds: [String(creator._id)] } : { user, role, sourceUserIds: [] };
     }
     return { user, role, sourceUserIds: [userId] };
   }
 
-  const user = await User.findById(userId).select('role').lean();
+  const user = await User.findById(userId).select('role linkedCreatorCode').lean();
   if (!user) return null;
   const role = user.role || 'creator';
   if (GLOBAL_WORD_SCOPE) {
     return { user, role, sourceUserIds: [userId] };
   }
   if (role === 'student') {
-    const creatorRows = await User.find({ role: 'creator' }).select('_id').lean();
-    return { user, role, sourceUserIds: creatorRows.map((entry) => String(entry._id)) };
+    // Limit student browsing to their linked creator only
+    const linkedCode = String(user.linkedCreatorCode || '').trim().toUpperCase();
+    if (!linkedCode) return { user, role, sourceUserIds: [] };
+    const creator = await User.findOne({ creatorCode: linkedCode }).select('_id').lean();
+    return creator ? { user, role, sourceUserIds: [String(creator._id)] } : { user, role, sourceUserIds: [] };
   }
   return { user, role, sourceUserIds: [userId] };
 }
