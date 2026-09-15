@@ -151,7 +151,17 @@ async function generateWordListWithFallback(prompt, options = {}) {
   const providerErrors = [];
 
   try {
-    const groqModel = String(process.env.GROQ_MODEL || 'llama-3.3-70b-versatile').trim();
+    const geminiPayload = await callGeminiForJson(prompt);
+    const words = extractWordArrayFromPayload(geminiPayload);
+    if (!words.length) throw new Error('Gemini did not return a JSON array.');
+    console.info('generateWordListWithFallback provider=gemini words=' + (Array.isArray(words) ? words.length : 0));
+    return { words, provider: 'gemini', model: GEMINI_MODEL };
+  } catch (err) {
+    providerErrors.push(summarizeProviderError('gemini', err));
+  }
+
+  try {
+    const groqModel = String(process.env.GROQ_MODEL || 'canopylabs/orpheus-v1-english').trim();
     const groq = getGroq();
     const completion = await groq.chat.completions.create({
       model: groqModel,
@@ -168,16 +178,6 @@ async function generateWordListWithFallback(prompt, options = {}) {
     return { words: JSON.parse(jsonText), provider: 'groq', model: groqModel };
   } catch (err) {
     providerErrors.push(summarizeProviderError('groq', err));
-  }
-
-  try {
-    const geminiPayload = await callGeminiForJson(prompt);
-    const words = extractWordArrayFromPayload(geminiPayload);
-    if (!words.length) throw new Error('Gemini did not return a JSON array.');
-    console.info('generateWordListWithFallback provider=gemini words=' + (Array.isArray(words) ? words.length : 0));
-    return { words, provider: 'gemini', model: GEMINI_MODEL };
-  } catch (err) {
-    providerErrors.push(summarizeProviderError('gemini', err));
   }
 
   try {
