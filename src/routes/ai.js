@@ -1,6 +1,5 @@
 const express = require('express');
 const router = express.Router();
-const { callHuggingFace, HUGGINGFACE_MODEL_DEFAULT } = require('../services/hfClient');
 
 function buildPrompt({ text, language = 'English', maxItems = 500 }) {
   const safeText = String(text || '').replace(/`/g, "'");
@@ -9,32 +8,14 @@ function buildPrompt({ text, language = 'English', maxItems = 500 }) {
 
 router.post('/parse-and-enrich', async (req, res) => {
   try {
-    const { text, language, maxItems, model } = req.body || {};
+    const { text, language, maxItems } = req.body || {};
     if (!text || !String(text).trim()) return res.status(400).json({ error: 'text is required' });
+
     const prompt = buildPrompt({ text, language, maxItems: Number(maxItems) || 500 });
-    const hfResp = await callHuggingFace(prompt, model || HUGGINGFACE_MODEL_DEFAULT);
-
-    // hfResp may be string, array, or object. Try to extract JSON array.
-    let raw = hfResp;
-    if (Array.isArray(hfResp)) raw = hfResp.map(x => (x.generated_text || x.text || JSON.stringify(x))).join('\n');
-    if (typeof hfResp === 'object' && hfResp.generated_text) raw = hfResp.generated_text;
-    raw = String(raw || '');
-
-    const match = raw.match(/(\[.*\])/s);
-    if (!match) return res.status(502).json({ error: 'Could not parse JSON array from provider response', raw: raw.slice(0, 1000) });
-    let items = JSON.parse(match[1]);
-    if (!Array.isArray(items)) return res.status(502).json({ error: 'Provider returned non-array JSON' });
-
-    // Normalize items
-    items = items.map(it => ({
-      word: String(it.word || it.text || '').trim(),
-      normalized: String(it.normalized || it.lemma || it.word || '').trim(),
-      definition: String(it.definition || it.def || '').trim(),
-      example: String(it.example || it.sentence || '').trim(),
-      partOfSpeech: String(it.partOfSpeech || it.pos || '').trim(),
-    })).filter(it => it.word && it.word.length > 0);
-
-    return res.json({ items });
+    return res.status(501).json({
+      error: 'This parser is disabled. Use the main vocab generation flow with Groq/Gemini/OpenAI instead.',
+      promptPreview: String(prompt).slice(0, 120),
+    });
   } catch (err) {
     console.error('AI parse error:', err);
     return res.status(500).json({ error: err.message });
