@@ -53,6 +53,10 @@ function getGroq() {
   });
 }
 
+function getHuggingFaceModelName() {
+  return String(process.env.HUGGINGFACE_MODEL || process.env.HUGGINGFACE_MODEL_DEFAULT || 'google/flan-t5-large').trim();
+}
+
 function extractJsonArrayText(raw) {
   const text = String(raw || '').trim();
   const match = text.match(/\[[\s\S]*\]/);
@@ -149,7 +153,7 @@ function buildRuleBasedWordList(topic, numWords, level) {
 
 async function callHuggingFaceForJson(prompt) {
   const HF_KEY = String(process.env.HUGGINGFACE_API_KEY || '').trim();
-  const HF_MODEL = String(process.env.HUGGINGFACE_MODEL || 'google/flan-t5-large').trim();
+  const HF_MODEL = getHuggingFaceModelName();
   if (!HF_KEY) throw new Error('Hugging Face API key not configured');
   const url = `https://api-inference.huggingface.co/models/${HF_MODEL}`;
   const payload = { inputs: prompt, parameters: { max_new_tokens: 800, temperature: 0.35 } };
@@ -181,7 +185,7 @@ async function generateWordListWithFallback(prompt, options = {}) {
     const hfWords = await callHuggingFaceForJson(prompt);
     if (Array.isArray(hfWords) && hfWords.length) {
       console.info('generateWordListWithFallback provider=huggingface words=' + hfWords.length);
-      return { words: hfWords, provider: 'huggingface', model: process.env.HUGGINGFACE_MODEL || 'google/flan-t5-large' };
+      return { words: hfWords, provider: 'huggingface', model: getHuggingFaceModelName() };
     }
   } catch (err) {
     providerErrors.push(summarizeProviderError('huggingface', err));
@@ -1164,29 +1168,34 @@ Respond ONLY with a valid JSON array, no markdown, no explanation:
 [{"word":"...","definition":"...","example":"...","partOfSpeech":"..."}]`;
 
     let enriched;
+    let provider = 'huggingface';
+    let providerModel = getHuggingFaceModelName();
 
     // Try Hugging Face first
     try {
       enriched = await callHuggingFaceForJson(prompt);
-      console.info('AI enrich-words response provider=huggingface model=' + (process.env.HUGGINGFACE_MODEL || 'google/flan-t5-large') + ' returned words=' + (Array.isArray(enriched) ? enriched.length : 0));
+      console.info('AI enrich-words response provider=huggingface model=' + providerModel + ' returned words=' + (Array.isArray(enriched) ? enriched.length : 0));
     } catch (hfErr) {
       // Try Gemini next
+      provider = 'gemini';
+      providerModel = GEMINI_MODEL;
       try {
         const geminiPayload = await callGeminiForJson(prompt);
         const gemWords = extractWordArrayFromPayload(geminiPayload);
         if (Array.isArray(gemWords) && gemWords.length) {
           enriched = gemWords;
-          console.info('AI enrich-words response provider=gemini model=' + GEMINI_MODEL + ' returned words=' + gemWords.length);
+          console.info('AI enrich-words response provider=gemini model=' + providerModel + ' returned words=' + gemWords.length);
         } else {
           throw new Error('Gemini returned unexpected format.');
         }
       } catch (gemErr) {
         // Final fallback to Groq (existing behavior)
-        const groqModel = String(process.env.GROQ_MODEL || 'canopylabs/orpheus-v1-english').trim();
+        provider = 'groq';
+        providerModel = String(process.env.GROQ_MODEL || 'canopylabs/orpheus-v1-english').trim();
         const groq = getGroq();
-        console.info('AI enrich-words request using Groq model:', groqModel, 'words:', cleaned.length);
+        console.info('AI enrich-words request using Groq model:', providerModel, 'words:', cleaned.length);
         const completion = await groq.chat.completions.create({
-          model: groqModel,
+          model: providerModel,
           messages: [{ role: 'user', content: prompt }],
           max_tokens: 4000,
           temperature: 0.4,
@@ -1202,7 +1211,7 @@ Respond ONLY with a valid JSON array, no markdown, no explanation:
           return res.status(500).json({ message: 'AI response could not be parsed.' });
         }
 
-        console.info('AI enrich-words response provider=groq model=' + groqModel + ' returned words=' + (Array.isArray(enriched) ? enriched.length : 0));
+        console.info('AI enrich-words response provider=groq model=' + providerModel + ' returned words=' + (Array.isArray(enriched) ? enriched.length : 0));
       }
     }
 
@@ -1219,8 +1228,8 @@ Respond ONLY with a valid JSON array, no markdown, no explanation:
     }).slice(0, 60);
 
     // Include provider/model info so frontend can show which provider responded
-    console.info('AI enrich-words response provider=groq model=' + groqModel + ' returned words=' + result.length);
-    res.json({ words: result, provider: 'groq', model: groqModel });
+    console.info('AI enrich-words response provider=' + provider + ' model=' + providerModel + ' returned words=' + result.length);
+    res.json({ words: result, provider, model: providerModel });
   } catch (err) {
     console.error('AI enrich-words error:', err.message);
     res.status(500).json({ message: 'AI request failed: ' + err.message });
@@ -1646,4 +1655,5 @@ module.exports.__internals = {
   normalizeGeneratedWordList,
   buildFallbackDefinition,
   buildFallbackExample,
+  getHuggingFaceModelName,
 };
