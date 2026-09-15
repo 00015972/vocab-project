@@ -180,7 +180,27 @@ async function callHuggingFaceForJson(prompt) {
 async function generateWordListWithFallback(prompt, options = {}) {
   const providerErrors = [];
 
-  // Try Hugging Face Inference API first (if configured)
+  try {
+    const groqModel = String(process.env.GROQ_MODEL || 'llama-3.3-70b-versatile').trim();
+    const groq = getGroq();
+    const completion = await groq.chat.completions.create({
+      model: groqModel,
+      messages: [{ role: 'user', content: prompt }],
+      max_tokens: 3000,
+      temperature: 0.6,
+    });
+    const raw = completion && completion.choices && completion.choices[0] && completion.choices[0].message
+      ? completion.choices[0].message.content
+      : '';
+    const jsonText = extractJsonArrayText(raw);
+    if (!jsonText) throw new Error('Groq returned unexpected format.');
+    console.info('generateWordListWithFallback provider=groq model=' + groqModel + ' words=unknown');
+    return { words: JSON.parse(jsonText), provider: 'groq', model: groqModel };
+  } catch (err) {
+    providerErrors.push(summarizeProviderError('groq', err));
+  }
+
+  // Try Hugging Face next if Groq is unavailable.
   try {
     const hfWords = await callHuggingFaceForJson(prompt);
     if (Array.isArray(hfWords) && hfWords.length) {
@@ -199,26 +219,6 @@ async function generateWordListWithFallback(prompt, options = {}) {
     return { words, provider: 'gemini', model: GEMINI_MODEL };
   } catch (err) {
     providerErrors.push(summarizeProviderError('gemini', err));
-  }
-
-  try {
-    const groqModel = String(process.env.GROQ_MODEL || 'canopylabs/orpheus-v1-english').trim();
-    const groq = getGroq();
-    const completion = await groq.chat.completions.create({
-      model: groqModel,
-      messages: [{ role: 'user', content: prompt }],
-      max_tokens: 3000,
-      temperature: 0.6,
-    });
-    const raw = completion && completion.choices && completion.choices[0] && completion.choices[0].message
-      ? completion.choices[0].message.content
-      : '';
-    const jsonText = extractJsonArrayText(raw);
-    if (!jsonText) throw new Error('Groq returned unexpected format.');
-    console.info('generateWordListWithFallback provider=groq model=' + groqModel + ' words=unknown');
-    return { words: JSON.parse(jsonText), provider: 'groq', model: groqModel };
-  } catch (err) {
-    providerErrors.push(summarizeProviderError('groq', err));
   }
 
   try {
@@ -1153,7 +1153,7 @@ router.post('/enrich-words', async (req, res) => {
       return res.status(400).json({ message: 'No valid words found.' });
     }
 
-    // Prefer Hugging Face for enrichment, then Gemini, then Groq as a final fallback.
+    // Prefer Groq first, then Hugging Face, then Gemini as a final fallback.
     const prompt = `For each word in this list, provide a clear definition, a natural example sentence, and the part of speech.
 
 Words: ${cleaned.map((w, i) => `${i + 1}. ${w}`).join('\n')}
@@ -1168,50 +1168,43 @@ Respond ONLY with a valid JSON array, no markdown, no explanation:
 [{"word":"...","definition":"...","example":"...","partOfSpeech":"..."}]`;
 
     let enriched;
-    let provider = 'huggingface';
-    let providerModel = getHuggingFaceModelName();
+    let provider = 'groq';
+    let providerModel = String(process.env.GROQ_MODEL || 'llama-3.3-70b-versatile').trim();
 
-    // Try Hugging Face first
     try {
-      enriched = await callHuggingFaceForJson(prompt);
-      console.info('AI enrich-words response provider=huggingface model=' + providerModel + ' returned words=' + (Array.isArray(enriched) ? enriched.length : 0));
-    } catch (hfErr) {
-      // Try Gemini next
-      provider = 'gemini';
-      providerModel = GEMINI_MODEL;
+      const groq = getGroq();
+      const completion = await groq.chat.completions.create({
+        model: providerModel,
+        messages: [{ role: 'user', content: prompt }],
+        max_tokens: 4000,
+        temperature: 0.4,
+      });
+      const raw = completion.choices[0].message.content.trim();
+      const match = raw.match(/\[[\s\S]*\]/);
+      if (!match) throw new Error('Groq returned unexpected format.');
+      enriched = JSON.parse(match[0]);
+      console.info('AI enrich-words response provider=groq model=' + providerModel + ' returned words=' + (Array.isArray(enriched) ? enriched.length : 0));
+    } catch (groqErr) {
+      provider = 'huggingface';
+      providerModel = getHuggingFaceModelName();
       try {
-        const geminiPayload = await callGeminiForJson(prompt);
-        const gemWords = extractWordArrayFromPayload(geminiPayload);
-        if (Array.isArray(gemWords) && gemWords.length) {
-          enriched = gemWords;
-          console.info('AI enrich-words response provider=gemini model=' + providerModel + ' returned words=' + gemWords.length);
-        } else {
-          throw new Error('Gemini returned unexpected format.');
-        }
-      } catch (gemErr) {
-        // Final fallback to Groq (existing behavior)
-        provider = 'groq';
-        providerModel = String(process.env.GROQ_MODEL || 'canopylabs/orpheus-v1-english').trim();
-        const groq = getGroq();
-        console.info('AI enrich-words request using Groq model:', providerModel, 'words:', cleaned.length);
-        const completion = await groq.chat.completions.create({
-          model: providerModel,
-          messages: [{ role: 'user', content: prompt }],
-          max_tokens: 4000,
-          temperature: 0.4,
-        });
-
-        const raw = completion.choices[0].message.content.trim();
-        const match = raw.match(/\[[\s\S]*\]/);
-        if (!match) return res.status(500).json({ message: 'AI returned unexpected format.' });
-
+        enriched = await callHuggingFaceForJson(prompt);
+        console.info('AI enrich-words response provider=huggingface model=' + providerModel + ' returned words=' + (Array.isArray(enriched) ? enriched.length : 0));
+      } catch (hfErr) {
+        provider = 'gemini';
+        providerModel = GEMINI_MODEL;
         try {
-          enriched = JSON.parse(match[0]);
-        } catch {
-          return res.status(500).json({ message: 'AI response could not be parsed.' });
+          const geminiPayload = await callGeminiForJson(prompt);
+          const gemWords = extractWordArrayFromPayload(geminiPayload);
+          if (Array.isArray(gemWords) && gemWords.length) {
+            enriched = gemWords;
+            console.info('AI enrich-words response provider=gemini model=' + providerModel + ' returned words=' + gemWords.length);
+          } else {
+            throw new Error('Gemini returned unexpected format.');
+          }
+        } catch (gemErr) {
+          return res.status(500).json({ message: 'AI request failed: ' + (gemErr && gemErr.message ? gemErr.message : 'No AI provider succeeded.') });
         }
-
-        console.info('AI enrich-words response provider=groq model=' + providerModel + ' returned words=' + (Array.isArray(enriched) ? enriched.length : 0));
       }
     }
 
