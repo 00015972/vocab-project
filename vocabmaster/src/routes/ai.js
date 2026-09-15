@@ -53,10 +53,6 @@ function getGroq() {
   });
 }
 
-function getHuggingFaceModelName() {
-  return String(process.env.HUGGINGFACE_MODEL || process.env.HUGGINGFACE_MODEL_DEFAULT || 'google/flan-t5-large').trim();
-}
-
 function extractJsonArrayText(raw) {
   const text = String(raw || '').trim();
   const match = text.match(/\[[\s\S]*\]/);
@@ -151,32 +147,6 @@ function buildRuleBasedWordList(topic, numWords, level) {
   return seeded.slice(0, Math.max(1, Math.min(40, Number(numWords) || 10)));
 }
 
-async function callHuggingFaceForJson(prompt) {
-  const HF_KEY = String(process.env.HUGGINGFACE_API_KEY || '').trim();
-  const HF_MODEL = getHuggingFaceModelName();
-  if (!HF_KEY) throw new Error('Hugging Face API key not configured');
-  const url = `https://api-inference.huggingface.co/models/${HF_MODEL}`;
-  const payload = { inputs: prompt, parameters: { max_new_tokens: 800, temperature: 0.35 } };
-  const resp = await axios.post(url, payload, {
-    headers: { Authorization: `Bearer ${HF_KEY}`, Accept: 'application/json' },
-    timeout: 30000,
-  });
-
-  // Try to extract text from common HF responses
-  let content = '';
-  if (!resp || resp.data === undefined || resp.data === null) {
-    throw new Error('Empty Hugging Face response');
-  }
-  if (typeof resp.data === 'string') content = resp.data;
-  else if (Array.isArray(resp.data) && resp.data[0] && typeof resp.data[0].generated_text === 'string') content = resp.data[0].generated_text;
-  else if (resp.data && typeof resp.data.generated_text === 'string') content = resp.data.generated_text;
-  else content = typeof resp.data === 'object' ? JSON.stringify(resp.data) : String(resp.data);
-
-  const jsonText = extractJsonArrayText(content);
-  if (!jsonText) throw new Error('Hugging Face returned unexpected format.');
-  return JSON.parse(jsonText);
-}
-
 async function generateWordListWithFallback(prompt, options = {}) {
   const providerErrors = [];
 
@@ -198,17 +168,6 @@ async function generateWordListWithFallback(prompt, options = {}) {
     return { words: JSON.parse(jsonText), provider: 'groq', model: groqModel };
   } catch (err) {
     providerErrors.push(summarizeProviderError('groq', err));
-  }
-
-  // Try Hugging Face next if Groq is unavailable.
-  try {
-    const hfWords = await callHuggingFaceForJson(prompt);
-    if (Array.isArray(hfWords) && hfWords.length) {
-      console.info('generateWordListWithFallback provider=huggingface words=' + hfWords.length);
-      return { words: hfWords, provider: 'huggingface', model: getHuggingFaceModelName() };
-    }
-  } catch (err) {
-    providerErrors.push(summarizeProviderError('huggingface', err));
   }
 
   try {
@@ -1153,7 +1112,7 @@ router.post('/enrich-words', async (req, res) => {
       return res.status(400).json({ message: 'No valid words found.' });
     }
 
-    // Prefer Groq first, then Hugging Face, then Gemini as a final fallback.
+    // Prefer Groq first, then Gemini, then OpenAI as a final fallback.
     const prompt = `For each word in this list, provide a clear definition, a natural example sentence, and the part of speech.
 
 Words: ${cleaned.map((w, i) => `${i + 1}. ${w}`).join('\n')}
@@ -1185,25 +1144,37 @@ Respond ONLY with a valid JSON array, no markdown, no explanation:
       enriched = JSON.parse(match[0]);
       console.info('AI enrich-words response provider=groq model=' + providerModel + ' returned words=' + (Array.isArray(enriched) ? enriched.length : 0));
     } catch (groqErr) {
-      provider = 'huggingface';
-      providerModel = getHuggingFaceModelName();
+      provider = 'gemini';
+      providerModel = GEMINI_MODEL;
       try {
-        enriched = await callHuggingFaceForJson(prompt);
-        console.info('AI enrich-words response provider=huggingface model=' + providerModel + ' returned words=' + (Array.isArray(enriched) ? enriched.length : 0));
-      } catch (hfErr) {
-        provider = 'gemini';
-        providerModel = GEMINI_MODEL;
+        const geminiPayload = await callGeminiForJson(prompt);
+        const gemWords = extractWordArrayFromPayload(geminiPayload);
+        if (Array.isArray(gemWords) && gemWords.length) {
+          enriched = gemWords;
+          console.info('AI enrich-words response provider=gemini model=' + providerModel + ' returned words=' + gemWords.length);
+        } else {
+          throw new Error('Gemini returned unexpected format.');
+        }
+      } catch (gemErr) {
+        provider = 'openai';
+        providerModel = 'gpt-4o-mini';
         try {
-          const geminiPayload = await callGeminiForJson(prompt);
-          const gemWords = extractWordArrayFromPayload(geminiPayload);
-          if (Array.isArray(gemWords) && gemWords.length) {
-            enriched = gemWords;
-            console.info('AI enrich-words response provider=gemini model=' + providerModel + ' returned words=' + gemWords.length);
-          } else {
-            throw new Error('Gemini returned unexpected format.');
-          }
-        } catch (gemErr) {
-          return res.status(500).json({ message: 'AI request failed: ' + (gemErr && gemErr.message ? gemErr.message : 'No AI provider succeeded.') });
+          const openai = getOpenAI();
+          const completion = await openai.chat.completions.create({
+            model: providerModel,
+            messages: [{ role: 'user', content: prompt }],
+            max_tokens: 4000,
+            temperature: 0.4,
+          });
+          const raw = completion && completion.choices && completion.choices[0] && completion.choices[0].message
+            ? completion.choices[0].message.content
+            : '';
+          const match = String(raw || '').match(/\[[\s\S]*\]/);
+          if (!match) throw new Error('OpenAI returned unexpected format.');
+          enriched = JSON.parse(match[0]);
+          console.info('AI enrich-words response provider=openai model=' + providerModel + ' returned words=' + (Array.isArray(enriched) ? enriched.length : 0));
+        } catch (openAiErr) {
+          return res.status(500).json({ message: 'AI request failed: ' + (openAiErr && openAiErr.message ? openAiErr.message : 'No AI provider succeeded.') });
         }
       }
     }
@@ -1648,5 +1619,4 @@ module.exports.__internals = {
   normalizeGeneratedWordList,
   buildFallbackDefinition,
   buildFallbackExample,
-  getHuggingFaceModelName,
 };
