@@ -161,6 +161,25 @@ async function generateWordListWithFallback(prompt, options = {}) {
   }
 
   try {
+    const openai = getOpenAI();
+    const completion = await openai.chat.completions.create({
+      model: 'gpt-4o-mini',
+      messages: [{ role: 'user', content: prompt }],
+      max_tokens: 3000,
+      temperature: 0.6,
+    });
+    const raw = completion && completion.choices && completion.choices[0] && completion.choices[0].message
+      ? completion.choices[0].message.content
+      : '';
+    const jsonText = extractJsonArrayText(raw);
+    if (!jsonText) throw new Error('OpenAI returned unexpected format.');
+    console.info('generateWordListWithFallback provider=openai model=gpt-4o-mini words=unknown');
+    return { words: JSON.parse(jsonText), provider: 'openai', model: 'gpt-4o-mini' };
+  } catch (err) {
+    providerErrors.push(summarizeProviderError('openai', err));
+  }
+
+  try {
     const groqModel = String(process.env.GROQ_MODEL || 'canopylabs/orpheus-v1-english').trim();
     const groq = getGroq();
     const completion = await groq.chat.completions.create({
@@ -178,25 +197,6 @@ async function generateWordListWithFallback(prompt, options = {}) {
     return { words: JSON.parse(jsonText), provider: 'groq', model: groqModel };
   } catch (err) {
     providerErrors.push(summarizeProviderError('groq', err));
-  }
-
-  try {
-    const openai = getOpenAI();
-    const completion = await openai.chat.completions.create({
-      model: 'gpt-4o-mini',
-      messages: [{ role: 'user', content: prompt }],
-      max_tokens: 3000,
-      temperature: 0.6,
-    });
-    const raw = completion && completion.choices && completion.choices[0] && completion.choices[0].message
-      ? completion.choices[0].message.content
-      : '';
-    const jsonText = extractJsonArrayText(raw);
-    if (!jsonText) throw new Error('OpenAI returned unexpected format.');
-    console.info('generateWordListWithFallback provider=openai model=gpt-4o-mini words=unknown');
-    return { words: JSON.parse(jsonText), provider: 'openai', model: 'gpt-4o-mini' };
-  } catch (err) {
-    providerErrors.push(summarizeProviderError('openai', err));
   }
 
   return {
@@ -1127,54 +1127,54 @@ Respond ONLY with a valid JSON array, no markdown, no explanation:
 [{"word":"...","definition":"...","example":"...","partOfSpeech":"..."}]`;
 
     let enriched;
-    let provider = 'groq';
-    let providerModel = String(process.env.GROQ_MODEL || 'llama-3.3-70b-versatile').trim();
+    let provider = 'gemini';
+    let providerModel = GEMINI_MODEL;
 
     try {
-      const groq = getGroq();
-      const completion = await groq.chat.completions.create({
-        model: providerModel,
-        messages: [{ role: 'user', content: prompt }],
-        max_tokens: 4000,
-        temperature: 0.4,
-      });
-      const raw = completion.choices[0].message.content.trim();
-      const match = raw.match(/\[[\s\S]*\]/);
-      if (!match) throw new Error('Groq returned unexpected format.');
-      enriched = JSON.parse(match[0]);
-      console.info('AI enrich-words response provider=groq model=' + providerModel + ' returned words=' + (Array.isArray(enriched) ? enriched.length : 0));
-    } catch (groqErr) {
-      provider = 'gemini';
-      providerModel = GEMINI_MODEL;
+      const geminiPayload = await callGeminiForJson(prompt);
+      const gemWords = extractWordArrayFromPayload(geminiPayload);
+      if (Array.isArray(gemWords) && gemWords.length) {
+        enriched = gemWords;
+        console.info('AI enrich-words response provider=gemini model=' + providerModel + ' returned words=' + gemWords.length);
+      } else {
+        throw new Error('Gemini returned unexpected format.');
+      }
+    } catch (gemErr) {
+      provider = 'openai';
+      providerModel = 'gpt-4o-mini';
       try {
-        const geminiPayload = await callGeminiForJson(prompt);
-        const gemWords = extractWordArrayFromPayload(geminiPayload);
-        if (Array.isArray(gemWords) && gemWords.length) {
-          enriched = gemWords;
-          console.info('AI enrich-words response provider=gemini model=' + providerModel + ' returned words=' + gemWords.length);
-        } else {
-          throw new Error('Gemini returned unexpected format.');
-        }
-      } catch (gemErr) {
-        provider = 'openai';
-        providerModel = 'gpt-4o-mini';
+        const openai = getOpenAI();
+        const completion = await openai.chat.completions.create({
+          model: providerModel,
+          messages: [{ role: 'user', content: prompt }],
+          max_tokens: 4000,
+          temperature: 0.4,
+        });
+        const raw = completion && completion.choices && completion.choices[0] && completion.choices[0].message
+          ? completion.choices[0].message.content
+          : '';
+        const match = String(raw || '').match(/\[[\s\S]*\]/);
+        if (!match) throw new Error('OpenAI returned unexpected format.');
+        enriched = JSON.parse(match[0]);
+        console.info('AI enrich-words response provider=openai model=' + providerModel + ' returned words=' + (Array.isArray(enriched) ? enriched.length : 0));
+      } catch (openAiErr) {
+        provider = 'groq';
+        providerModel = String(process.env.GROQ_MODEL || 'canopylabs/orpheus-v1-english').trim();
         try {
-          const openai = getOpenAI();
-          const completion = await openai.chat.completions.create({
+          const groq = getGroq();
+          const completion = await groq.chat.completions.create({
             model: providerModel,
             messages: [{ role: 'user', content: prompt }],
             max_tokens: 4000,
             temperature: 0.4,
           });
-          const raw = completion && completion.choices && completion.choices[0] && completion.choices[0].message
-            ? completion.choices[0].message.content
-            : '';
-          const match = String(raw || '').match(/\[[\s\S]*\]/);
-          if (!match) throw new Error('OpenAI returned unexpected format.');
+          const raw = completion.choices[0].message.content.trim();
+          const match = raw.match(/\[[\s\S]*\]/);
+          if (!match) throw new Error('Groq returned unexpected format.');
           enriched = JSON.parse(match[0]);
-          console.info('AI enrich-words response provider=openai model=' + providerModel + ' returned words=' + (Array.isArray(enriched) ? enriched.length : 0));
-        } catch (openAiErr) {
-          return res.status(500).json({ message: 'AI request failed: ' + (openAiErr && openAiErr.message ? openAiErr.message : 'No AI provider succeeded.') });
+          console.info('AI enrich-words response provider=groq model=' + providerModel + ' returned words=' + (Array.isArray(enriched) ? enriched.length : 0));
+        } catch (groqErr) {
+          return res.status(500).json({ message: 'AI request failed: ' + (groqErr && groqErr.message ? groqErr.message : 'No AI provider succeeded.') });
         }
       }
     }
